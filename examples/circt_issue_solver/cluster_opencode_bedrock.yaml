@@ -1,0 +1,106 @@
+# Ray cluster for the CIRCT issue-solving example:
+# OpenCode + AWS Bedrock.
+#
+# Before `chia up`:
+#   export AWS_PROFILE=default
+#   export AWS_REGION=us-east-1
+#   export CHIA_HEAD=$(hostname)
+#
+# AWS credentials/config are mounted read-only from ~/.aws into
+# the OpenCode workers. OpenCode uses the normal AWS credential chain.
+
+#10/05/2026. Written with ChatGPT. Should be similar to current .yaml setups, except able to invoke bedorkc instead. 
+cluster_name: circt_issue_solver_opencode_bedrock
+
+available_node_types:
+    circt_llm:
+        resources: {"llm": 2}
+        balance_level: cluster
+        min_workers: 2
+        max_workers: 2
+
+        docker:
+            image: "ghcr.io/ucb-bar/chia-opencode:latest"
+            container_name: "circt_issue_solver_opencode_bedrock_llm_${USER}"
+            pull_before_run: True
+
+            run_options:
+                - --ulimit nofile=65536:65536
+                - --shm-size=10.24gb
+                - "--user $(id -u):$(id -g)"
+
+                # OpenCode / Bedrock authentication.
+                - "-v ${HOME}/.aws:/home/ray/.aws:ro"
+                - "-e HOME=/home/ray"
+                - "-e AWS_PROFILE=${AWS_PROFILE}"
+                - "-e AWS_REGION=${AWS_REGION}"
+                - "-e AWS_DEFAULT_REGION=${AWS_REGION}"
+                - "-e AWS_SDK_LOAD_CONFIG=1"
+
+            run_setup_commands:
+                - echo "user:x:$(id -u):$(id -g)::/home/ray:/bin/bash" >> /etc/passwd
+
+        compatible_ips: ["${CHIA_HEAD}"]
+
+    circt_worker:
+        resources: {"circt": 1}
+        balance_level: cluster
+        min_workers: 2
+        max_workers: 2
+
+        docker:
+            image: "ghcr.io/ucb-bar/chia-circt:latest"
+            container_name: "circt_issue_solver_worker_${USER}"
+            pull_before_run: True
+
+            run_options:
+                - --ulimit nofile=65536:65536
+                - --shm-size=10.24gb
+
+            run_setup_commands:
+                - echo "user:x:$(id -u):$(id -g)::/home/ray:/bin/bash" >> /etc/passwd
+                - git config --global user.email 'circt_issue_solver@chia' || true
+                - git config --global user.name 'circt_issue_solver' || true
+                - git config --global --add safe.directory /workspace/circt || true
+                - /home/ray/anaconda3/envs/py_worker/bin/pip install --quiet lit || true
+
+        compatible_ips: ["${CHIA_HEAD}"]
+
+provider:
+    head_ip: ${CHIA_HEAD}
+
+auth:
+    ssh_user: ${USER}
+
+# 2 OpenCode workers + 2 CIRCT workers.
+min_workers: 4
+max_workers: 4
+
+upscaling_speed: 1.0
+idle_timeout_minutes: 5
+
+file_mounts: {}
+cluster_synced_files: []
+file_mounts_sync_continuously: False
+
+rsync_exclude:
+    - "**/.git"
+    - "**/.git/**"
+
+rsync_filter:
+    - ".gitignore"
+
+initialization_commands: []
+setup_commands: []
+worker_setup_commands: []
+
+head_setup_commands:
+    - "source ~/.bashrc && conda activate circtissues"
+
+head_start_ray_commands:
+    - "source ~/.bashrc && conda activate circtissues && ray stop"
+    - "source ~/.bashrc && conda activate circtissues && ulimit -c unlimited && ray start --head --port=6379 --include-dashboard=True --dashboard-agent-listen-port=0"
+
+worker_start_ray_commands:
+    - ray stop
+    - ray start --address=$RAY_HEAD_IP:6379 --dashboard-agent-listen-port=0
