@@ -176,7 +176,8 @@ def test_export_renders_per_step_usage_and_result_summary():
     assert stream.index("[Response]") < stream.index("[Usage]")
     # ...and a closing summary carrying the run totals.
     assert stream.rstrip().endswith("[Result]\n" + json.dumps(meta))
-    assert meta == {"input_tokens": 3, "output_tokens": 6, "cache_read": 8280,
+    assert meta == {"input_tokens": 3, "output_tokens": 6, "reasoning_tokens": 0,
+                    "cache_read": 8280, "cache_write": 0,
                     "cost_usd": 0.0026, "num_turns": 1}
 
 
@@ -1117,3 +1118,42 @@ def test_live_remote_opencode_skip_permissions_and_block(remote_prompt):
     cli = remote_prompt(llm, "Reply with exactly: PONG", "opencode_creds")
     assert cli.success is True
     assert "PONG" in cli.result.upper()
+
+
+def test_export_sums_multiple_turns_and_preserves_zero_and_missing():
+    llm = OpenCodeLLM(model="amazon-bedrock/moonshotai.kimi-k2.5")
+    export = {"messages": [
+        {"info": {"role": "user", "tokens": {"input": 999}}, "parts": []},
+        {"info": {"role": "assistant", "tokens": {
+            "input": 10, "output": 4, "reasoning": 3,
+            "cache": {"read": 20, "write": 5}}, "cost": 0.01}, "parts": []},
+        {"info": {"role": "assistant", "tokens": {
+            "input": 7, "output": 2, "reasoning": 1,
+            "cache": {"read": 8, "write": 0}}, "cost": 0.02}, "parts": []},
+        {"info": {"role": "assistant"}, "parts": [{"type": "text", "text": "done"}]},
+    ]}
+    text, usage, _, _ = llm._extract_from_export(export)
+    assert text == "done"
+    assert usage == {"input_tokens": 17, "output_tokens": 6, "reasoning_tokens": 4,
+                     "cache_read": 28, "cache_write": 5, "cost_usd": 0.03, "num_turns": 3}
+    _, usage, _, _ = llm._extract_from_export({"messages": [
+        {"info": {"role": "assistant", "tokens": {"input": 0}, "cost": 0}, "parts": []}]})
+    assert usage == {"input_tokens": 0, "cost_usd": 0, "num_turns": 1}
+    assert llm._extract_from_export({})[1] == {}
+
+
+def test_bedrock_uses_inherited_aws_chain_and_reports_timing(monkeypatch):
+    monkeypatch.setenv("AWS_PROFILE", "benchmark")
+    monkeypatch.setenv("AWS_REGION", "us-west-2")
+    monkeypatch.delenv("GOOGLE_CLOUD_PROJECT", raising=False)
+    capture = {"calls": []}
+    _install_fake_subprocess(monkeypatch, run_stdout=_step_start(),
+                             export_obj=_export_obj(), capture=capture)
+    llm = OpenCodeLLM(model="amazon-bedrock/moonshotai.kimi-k2.5", config={"*": "deny"})
+    result = llm.prompt("hello", tools=[])
+    assert result.session_id == "ses_test123"
+    assert result.aws_region == "us-west-2"
+    assert result.start_timestamp <= result.end_timestamp
+    assert result.elapsed_seconds >= 0
+    assert "provider" not in capture["calls"][0]["config"]
+    assert capture["calls"][0]["config"]["permission"] == {"*": "deny"}

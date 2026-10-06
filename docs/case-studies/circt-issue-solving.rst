@@ -390,3 +390,28 @@ results, diff counts), the saved repro, and per-phase LLM transcripts
 Review-flow outputs land under ``review_logs/issue_<N>_pr_<M>/`` (the updated
 diff and the replies it would post). Re-running skips issues already recorded in
 ``issues.db``.
+
+Frozen local-corpus Bedrock benchmark
+------------------------------------
+
+The issue-solving example now also supports controlled experiments using the
+frozen ``examples/circt_issue_solver/issuestouse/issue_<N>/issue.md`` corpus.
+The driver reads only those Markdown inputs, in numeric issue order, with no
+GitHub API access or token requirement. ``--issues-dir`` selects another corpus;
+``--issue``, ``--assess-only``, and ``--max-issues`` select the workload.
+Outputs remain separate under ``issue_logs``. Historical reference artifacts
+beside the input Markdown are excluded.
+
+Use ``cluster_opencode_bedrock.yaml`` with ``--backend opencode`` and an
+``amazon-bedrock/<model-id>`` model. Workers use the normal AWS credential chain
+with the host's ``~/.aws`` mounted read-only. CIRCT resets to the locally available
+``5dc7f103`` revision, verifies HEAD, and then builds incrementally before solving.
+The existing prompts and pipeline are preserved.
+
+``verdict.json`` retains raw per-phase ``llm_usage`` and adds ``llm_usage_total``,
+``llm_phases`` reconciliation metadata, full ``circt_commit``, model, and backend.
+``cost_usd`` is OpenCode's reported session calculation, not an AWS invoice
+amount. Missing metrics remain unavailable rather than becoming zero.
+Assess-only saves accounting artifacts without marking the issue attempted in
+SQLite. See ``examples/circt_issue_solver/BENCHMARK.md`` for setup commands,
+accounting provenance, offline tests, and reconciliation limitations.

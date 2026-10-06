@@ -19,6 +19,7 @@ import os
 import re
 import subprocess
 import tempfile
+import time
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from types import SimpleNamespace
@@ -308,12 +309,18 @@ class OpenCodeQueryResult(QueryResult):
     ``usage`` holds the run's summed metrics from ``opencode export`` (the same
     dict pushed to the profiler as ``_last_metadata``): ``input_tokens``,
     ``output_tokens``, ``reasoning_tokens``, ``cache_read``, ``cache_write``,
-    ``cost_usd`` (from opencode's model price table) and ``num_turns``.
+    ``cost_usd`` (OpenCode's session cost calculation, not an AWS invoice
+    amount) and ``num_turns``. Missing metrics are omitted; reported zeroes are
+    retained. Summed fields may be partial if a turn lacks that metric.
     ``session_id`` is opencode's id for the session the run created.
     """
 
     usage: Optional[dict] = None
     session_id: Optional[str] = None
+    start_timestamp: Optional[str] = None
+    end_timestamp: Optional[str] = None
+    elapsed_seconds: Optional[float] = None
+    aws_region: Optional[str] = None
 
 
 class OpenCodeLLM(LLMCallBase):
@@ -644,6 +651,8 @@ class OpenCodeLLM(LLMCallBase):
         tools: Optional[List[ChiaTool]] = None,
     ) -> QueryResult:
         """Run ``opencode run`` then ``opencode export`` and assemble a QueryResult."""
+        started = datetime.now(timezone.utc).isoformat()
+        tick = time.monotonic()
         tools = tools or []
         cfg = self._build_config(tools)
 
@@ -696,6 +705,12 @@ class OpenCodeLLM(LLMCallBase):
                 returncode=run.returncode if run.returncode != 0 else -1,
                 stderr=run.stderr or "no session id in opencode output",
                 stream_result=run.stdout,
+                session_id=session_id,
+                start_timestamp=started,
+                end_timestamp=datetime.now(timezone.utc).isoformat(),
+                elapsed_seconds=time.monotonic() - tick,
+                aws_region=(os.environ.get("AWS_REGION") or os.environ.get("AWS_DEFAULT_REGION"))
+                           if (self.model or "").startswith("amazon-bedrock/") else None,
             )
 
         export = self._run_export(session_id, env)
@@ -734,6 +749,11 @@ class OpenCodeLLM(LLMCallBase):
             # and usage must stay the pure token/cost totals.
             usage=dict(meta) if meta else None,
             session_id=session_id,
+            start_timestamp=started,
+            end_timestamp=datetime.now(timezone.utc).isoformat(),
+            elapsed_seconds=time.monotonic() - tick,
+            aws_region=(os.environ.get("AWS_REGION") or os.environ.get("AWS_DEFAULT_REGION"))
+                       if (self.model or "").startswith("amazon-bedrock/") else None,
         )
 
     def _capture(self, cmd: list, env: dict) -> SimpleNamespace:
@@ -820,8 +840,14 @@ class OpenCodeLLM(LLMCallBase):
             — the structured error in the export is the reliable signal.
         """
         stream_parts: list[str] = []
-        meta = {"input_tokens": 0, "output_tokens": 0, "reasoning_tokens": 0,
-                "cache_read": 0, "cache_write": 0, "cost_usd": 0.0, "num_turns": 0}
+        # Missing metrics remain absent; explicitly reported zeroes survive.
+        # cost_usd is OpenCode's calculation, not an AWS invoice amount.
+        meta = {}
+
+        def accumulate(key, value):
+            if isinstance(value, (int, float)) and not isinstance(value, bool):
+                meta[key] = meta.get(key, 0) + value
+
         last_assistant_text = ""
         export_error = None
 
@@ -836,15 +862,15 @@ class OpenCodeLLM(LLMCallBase):
                     if isinstance(err, dict) and "name" in err:
                         export_error = err
 
-                meta["num_turns"] += 1
+                accumulate("num_turns", 1)
                 tok = info.get("tokens") or {}
-                meta["input_tokens"] += tok.get("input", 0) or 0
-                meta["output_tokens"] += tok.get("output", 0) or 0
-                meta["reasoning_tokens"] += tok.get("reasoning", 0) or 0
+                accumulate("input_tokens", tok.get("input"))
+                accumulate("output_tokens", tok.get("output"))
+                accumulate("reasoning_tokens", tok.get("reasoning"))
                 cache = tok.get("cache") or {}
-                meta["cache_read"] += cache.get("read", 0) or 0
-                meta["cache_write"] += cache.get("write", 0) or 0
-                meta["cost_usd"] += info.get("cost", 0) or 0
+                accumulate("cache_read", cache.get("read"))
+                accumulate("cache_write", cache.get("write"))
+                accumulate("cost_usd", info.get("cost"))
 
                 turn_text: list[str] = []
                 for p in parts:
@@ -883,7 +909,6 @@ class OpenCodeLLM(LLMCallBase):
                 if turn_text:
                     last_assistant_text = "".join(turn_text)
 
-        meta = {k: v for k, v in meta.items() if v}
         if meta:
             stream_parts.append(f"[Result]\n{json.dumps(meta)}\n\n")
         return last_assistant_text, meta, "".join(stream_parts), export_error
