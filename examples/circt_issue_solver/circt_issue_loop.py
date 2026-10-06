@@ -1,42 +1,23 @@
-"""Top-level driver for the CIRCT GitHub-issue solving flow (circt_issue_solver).
-
-  chia up cluster.yaml                            # 2 LLM + 2 CIRCT workers (1 host)
-  GITHUB_TOKEN=... ./fix_issues_submit.sh --max-issues 5
-  chia up cluster_antigravity.yaml                # same, but Gemini via Antigravity
-  GITHUB_TOKEN=... ./fix_issues_submit.sh --max-issues 5 --backend antigravity
-  chia up cluster_opencode_vertex.yaml            # same, but OpenCode + Gemini on Vertex
-  GITHUB_TOKEN=... ./fix_issues_submit.sh --max-issues 5 --backend opencode
-
-Triage open issues (from config.GITHUB_REPO) on the head, fan one
-run_issue_remote task per candidate across the CIRCT containers, prompt via
-chia.models.claude (or chia.models.antigravity / chia.models.opencode via
---backend; either way dispatched onto the llm workers), and persist the local diff
-+ the PR writeup it WOULD submit. No GitHub writes.
-"""
+"""Driver for the frozen local CIRCT issue benchmark. No GitHub API access."""
 from __future__ import annotations
 
 import argparse
 import json
 import logging
-import os
 from pathlib import Path
 
 import ray
 from chia.base.ChiaFunction import get, chia_wait, TrackedRef
 
 import db
-import triage
-from config import GITHUB_REPO
+from local_issues import load_issue, select_issues
 from issue_task import run_issue_remote
 
 # --------------------------------------------------------------------------- #
-# Parameters — globals, not env vars (project convention). GITHUB_TOKEN is the
-# one exception: a secret, read from the env by GithubIssuesNode.
+# Frozen benchmark configuration.
 # --------------------------------------------------------------------------- #
 FLOW_DIR = Path(__file__).resolve().parent
-
-GH_REPO   = GITHUB_REPO       # the repo to triage/fetch issues from (see config.py)
-CIRCT_TAG = "HEAD"            # the chia-circt checkout is pinned at firtool-1.148.0
+CIRCT_TAG = "5dc7f103"
 # circt-verilog is omitted: its ninja target doesn't exist in the SDK-based
 # build (no slang/ImportVerilog), so including it fails the whole `ninja` call.
 # The SDK ships a prebuilt circt-verilog at /opt/circt-sdk/bin for read-only
@@ -47,9 +28,6 @@ REPRO_DIR  = "/workspace/circt/.circtissues"
 REPRO_PATH = f"{REPRO_DIR}/repro.sh"
 
 MAX_ISSUES    = 20
-TRIAGE_POOL   = 2000  # cover the full open backlog (~857); listed w/o comments,
-                      # ~ceil(pool/100) requests, then triage samples RANDOMLY
-TRIAGE_LABELS = []   # no label gate — the assess phase decides bug-ness per issue
 REQUIRE_REPRO = True
 
 LLM_BACKEND = "claude"       # --backend: "claude" (default) | "antigravity" | "opencode"
@@ -61,16 +39,8 @@ LLM_MODEL  = "claude-opus-4-6"
 # is not supported in the selected location" (Flash models work everywhere).
 # Set "location": "global" there, or log out/in and pick global.
 ANTIGRAVITY_MODEL = "gemini-3.1-pro-high"
-# OpenCode (chia.models.opencode) with Gemini on Vertex AI: opencode's built-in
-# `google-vertex` provider, model given as provider/model. The project +
-# location are pinned in the opencode config we write (not just env) so Pro is
-# served from `global` regardless of the container env. Auth is Google ADC
-# mounted into the llm containers (see cluster_opencode_vertex.yaml). The GCP
-# project is site-specific, so like GITHUB_TOKEN it comes from the environment
-# (GOOGLE_CLOUD_PROJECT, also what the cluster yaml forwards) or --vertex-project.
-OPENCODE_MODEL           = "google-vertex/gemini-3.1-pro-preview"
-OPENCODE_VERTEX_PROJECT  = os.environ.get("GOOGLE_CLOUD_PROJECT")
-OPENCODE_VERTEX_LOCATION = "global"
+# Built-in Amazon Bedrock provider; authentication uses the AWS credential chain.
+OPENCODE_MODEL = "amazon-bedrock/moonshotai.kimi-k2.5"
 BACKEND_DEFAULT_MODEL = {"claude": LLM_MODEL, "antigravity": ANTIGRAVITY_MODEL,
                          "opencode": OPENCODE_MODEL}
 BUILD_JOBS = 16
@@ -85,7 +55,6 @@ CFG = {
     "tag": CIRCT_TAG, "tool_targets": TOOL_TARGETS, "repro_dir": REPRO_DIR,
     "repro_path": REPRO_PATH, "require_repro": REQUIRE_REPRO,
     "backend": LLM_BACKEND, "model": LLM_MODEL,
-    "vertex": {"project": OPENCODE_VERTEX_PROJECT, "location": OPENCODE_VERTEX_LOCATION},
     "build_jobs": BUILD_JOBS, "timeouts": TIMEOUTS,
     "system_prompt":  (_P / "system.md").read_text(),
     "assess_prompt":  (_P / "assess.md").read_text(),
@@ -117,7 +86,7 @@ logging.basicConfig(level=logging.INFO,
 logger = logging.getLogger("circtissues")
 
 
-def _persist(issue, res: dict) -> None:
+def _persist(issue, res: dict, *, record_db: bool = True) -> None:
     art = ARTIFACT_DIR / f"issue_{issue.number}"
     art.mkdir(parents=True, exist_ok=True)
     art.joinpath("issue.md").write_text(issue.to_markdown())
@@ -128,12 +97,30 @@ def _persist(issue, res: dict) -> None:
     verdict = {k: res.get(k) for k in ("status", "reproduced", "build_ok", "fixed",
                                        "lit_ok", "lit_passed", "lit_failed",
                                        "lit_failures", "added", "removed", "test_paths",
-                                       "notes")}
+                                       "notes", "model", "backend", "circt_commit")}
+    verdict["issue_number"] = issue.number
     # Per-phase token/cost usage for backends that report it (antigravity, opencode).
     usage = {phase: blob["usage"] for phase, blob in (res.get("logs") or {}).items()
              if blob.get("usage")}
     if usage:
         verdict["llm_usage"] = usage
+    verdict["llm_phases"] = {
+        phase: {k: blob.get(k) for k in (
+            "issue_number", "phase", "model", "backend", "session_id",
+            "start_timestamp", "end_timestamp", "elapsed_seconds", "aws_region")}
+        for phase, blob in (res.get("logs") or {}).items()
+    }
+    if res.get("backend") == "opencode":
+        metrics = ("input_tokens", "output_tokens", "reasoning_tokens", "cache_read",
+                   "cache_write", "cost_usd", "num_turns")
+        totals = {}
+        for key in metrics:
+            values = [u[key] for phase, u in usage.items()
+                      if res["logs"][phase].get("backend") == "opencode"
+                      and u.get(key) is not None]
+            totals[key] = sum(values) if values else None
+        verdict["llm_usage_total"] = totals
+        verdict["cost_provenance"] = "cost_usd is OpenCode-reported session cost, not an AWS invoice amount"
     art.joinpath("verdict.json").write_text(json.dumps(verdict, indent=2))
     for phase, blob in (res.get("logs") or {}).items():
         art.joinpath(f"llm_{phase}.md").write_text(blob.get("stream") or blob.get("result") or "")
@@ -158,7 +145,8 @@ def _persist(issue, res: dict) -> None:
         art.joinpath("verify_repro.log").write_text(res["repro_tail"])
     if res.get("lit_tail"):
         art.joinpath("verify_lit.log").write_text(res["lit_tail"])
-    db.record(issue, res, CFG["model"], str(art))
+    if record_db:
+        db.record(issue, res, res.get("model", CFG["model"]), str(art))
     logger.info("issue #%d -> %s  (+%s/-%s, lit_ok=%s)", issue.number, res.get("status"),
                 res.get("added"), res.get("removed"), res.get("lit_ok"))
 
@@ -172,33 +160,30 @@ def main() -> None:
                          "regression-repair turn (skips repro+fix)")
     ap.add_argument("--assess-only", type=int, default=None, metavar="N",
                     help="run ONLY the assess turn for issue N; print the decision "
-                         "and exit. Writes nothing to issue_logs or the DB.")
+                         "and exit. Saves accounting in issue_logs; does not update the DB.")
     ap.add_argument("--backend", choices=sorted(BACKEND_DEFAULT_MODEL), default=None,
                     help="LLM backend: claude (default; cluster.yaml), antigravity "
                          "(Google Antigravity CLI / Gemini; cluster_antigravity.yaml) "
-                         "or opencode (OpenCode CLI with Gemini on Vertex AI; "
-                         "cluster_opencode_vertex.yaml)")
+                         "or opencode (OpenCode CLI with Amazon Bedrock; "
+                         "cluster_opencode_bedrock.yaml)")
     ap.add_argument("--antigravity", action="store_true", help="alias for --backend antigravity")
     ap.add_argument("--model", default=None,
                     help="override the model id for the chosen backend (defaults: "
                          + ", ".join(f"{k}={v}" for k, v in BACKEND_DEFAULT_MODEL.items()) + ")")
-    ap.add_argument("--vertex-project", default=None,
-                    help="opencode backend: GCP project for Vertex AI (default: $GOOGLE_CLOUD_PROJECT)")
-    ap.add_argument("--vertex-location", default=None,
-                    help=f"opencode backend: Vertex AI location (default {OPENCODE_VERTEX_LOCATION}; "
-                         "Gemini Pro is served from `global` only)")
+    ap.add_argument("--issues-dir", type=Path, default=FLOW_DIR / "issuestouse",
+                    help="frozen local corpus (only issue_<N>/issue.md is read)")
     args = ap.parse_args()
 
     backend = args.backend or ("antigravity" if args.antigravity else LLM_BACKEND)
     CFG["backend"], CFG["model"] = backend, BACKEND_DEFAULT_MODEL[backend]
     if args.model:
         CFG["model"] = args.model
-    if args.vertex_project:
-        CFG["vertex"]["project"] = args.vertex_project
-    if args.vertex_location:
-        CFG["vertex"]["location"] = args.vertex_location
-    if backend == "opencode" and not CFG["vertex"]["project"]:
-        ap.error("--backend opencode needs a GCP project: pass --vertex-project or set GOOGLE_CLOUD_PROJECT")
+    corpus = args.issues_dir.resolve()
+    artifacts = ARTIFACT_DIR.resolve()
+    if corpus == artifacts or corpus in artifacts.parents or artifacts in corpus.parents:
+        ap.error("--issues-dir and issue_logs must be separate, non-overlapping directories")
+    if args.max_issues < 0:
+        ap.error("--max-issues must be nonnegative")
     logger.info("LLM backend=%s model=%s", CFG["backend"], CFG["model"])
 
     ray.init(address="auto",
@@ -206,12 +191,12 @@ def main() -> None:
                           "excludes": _RUNTIME_ENV_EXCLUDES},
              logging_level=logging.WARNING)
 
-    # Spot-check path: assess one issue, print the verdict, persist NOTHING (no DB).
+    # Assess-only saves artifacts/accounting without marking the issue attempted.
     if args.assess_only is not None:
-        from chia.github.github_issues_node import GithubIssuesNode
-        issue = GithubIssuesNode(GH_REPO).get_issue(args.assess_only)
+        issue = load_issue(corpus, args.assess_only)
         res = get(run_issue_remote.chia_remote(issue.to_markdown(), issue.number,
                                                CFG, assess_only=True))
+        _persist(issue, res, record_db=False)
         print(f"\n===== assess-only #{issue.number}: {issue.title} =====")
         print(f"DECISION -> status={res.get('status')!r}")
         print(f"NOTE: {res.get('notes')}")
@@ -221,12 +206,11 @@ def main() -> None:
         return
 
     # SQLiteNode-backed store; pins to this (head) Ray node, so it must come
-    # after ray.init(). Skipped on the assess-only path above (it persists nothing).
+    # after ray.init(). Assess-only saves artifacts but does not mark attempts.
     db.init_db(DB_PATH)
 
     resume_by_num: dict = {}
     if args.replay_regression is not None:
-        from chia.github.github_issues_node import GithubIssuesNode
         n = args.replay_regression
         art = ARTIFACT_DIR / f"issue_{n}"
         diff_text = (art / "fix.diff").read_text()
@@ -234,17 +218,16 @@ def main() -> None:
         repro_files = ({str(p.relative_to(rdir)): p.read_text()
                         for p in rdir.rglob("*") if p.is_file()} if rdir.is_dir() else {})
         resume_by_num[n] = {"diff": diff_text, "repro_files": repro_files}
-        candidates = [GithubIssuesNode(GH_REPO).get_issue(n)]
+        candidates = [load_issue(corpus, n)]
         logger.info("replay-regression #%d: %d-line diff, %d repro file(s)",
                     n, diff_text.count("\n") + 1, len(repro_files))
     elif args.issue is not None:
-        from chia.github.github_issues_node import GithubIssuesNode
-        candidates = [GithubIssuesNode(GH_REPO).get_issue(args.issue)]
+        candidates = [load_issue(corpus, args.issue)]
     else:
-        candidates = triage.select(GH_REPO, TRIAGE_POOL, TRIAGE_LABELS,
-                                   args.max_issues, db.attempted_numbers())
-    logger.info("triage selected %d: %s", len(candidates), [c.number for c in candidates])
+        candidates = select_issues(corpus, args.max_issues, db.attempted_numbers())
+    logger.info("local corpus selected %d: %s", len(candidates), [c.number for c in candidates])
     if not candidates:
+        db.close_db()
         return
 
     # Fan out — Ray spreads these across the circt slots; each task in turn

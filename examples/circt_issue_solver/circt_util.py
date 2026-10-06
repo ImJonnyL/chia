@@ -57,14 +57,18 @@ def circt_git_reset(ref: str = "HEAD", timeout_seconds: int = 300) -> dict:
 
     Runs ``git reset --hard <ref>`` then ``git clean -fd`` (NOT ``-x``, so the
     gitignored ``build/`` tree — the warm incremental build — survives). For the
-    chia-circt image, ``HEAD`` is the firtool-1.148.0 tag the source is pinned to.
+    benchmark, *ref* must already exist locally; no fetch is performed.
+    Resolves the requested commit and verifies HEAD after reset/clean.
 
-    Returns ``{success: bool, log: str}``.
+    Returns ``{success: bool, log: str, circt_commit: str}`` on success.
     """
     if not os.path.isdir(_CIRCT_SOURCE_TREE):
         return {"success": False, "log": f"no CIRCT source tree at {_CIRCT_SOURCE_TREE}"}
     log: list[str] = []
-    for args in (["reset", "--hard", ref], ["clean", "-fd"]):
+    expected = None
+    commit = None
+    for args in (["rev-parse", "--verify", f"{ref}^{{commit}}"],
+                 ["reset", "--hard", ref], ["clean", "-fd"], ["rev-parse", "HEAD"]):
         cmd = ["git", "-c", f"safe.directory={_CIRCT_SOURCE_TREE}", "-C", _CIRCT_SOURCE_TREE, *args]
         logger.info(f"[git] {' '.join(cmd)}")
         try:
@@ -74,7 +78,15 @@ def circt_git_reset(ref: str = "HEAD", timeout_seconds: int = 300) -> dict:
         log.append(f"$ {' '.join(cmd)}\n{r.stdout}{r.stderr}".rstrip())
         if r.returncode != 0:
             return {"success": False, "log": "\n".join(log)}
-    return {"success": True, "log": "\n".join(log)}
+        if args[0] == "rev-parse":
+            if expected is None:
+                expected = r.stdout.strip()
+            else:
+                commit = r.stdout.strip()
+    if commit != expected:
+        return {"success": False, "circt_commit": commit,
+                "log": "\n".join(log) + f"\nHEAD {commit} does not match {expected}"}
+    return {"success": True, "log": "\n".join(log), "circt_commit": commit}
 
 
 @ChiaFunction(resources={"circt": 1})

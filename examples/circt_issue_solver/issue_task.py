@@ -12,6 +12,8 @@ import json
 import os
 import re
 from string import Template
+from datetime import datetime, timezone
+import time
 
 from chia.base.ChiaFunction import ChiaFunction, get
 
@@ -93,26 +95,14 @@ def run_issue_remote(issue_md: str, number: int, cfg: dict,
                 timeout_seconds=cfg["timeouts"][phase], resume_session=True,
             )
         elif backend == "opencode":
-            # chia.models.opencode: `opencode run` with its built-in google-vertex
-            # provider (model = "google-vertex/<gemini id>"). We (re)declare the
-            # provider block to pin project/location and to register the model
-            # id even if opencode's catalog lags Vertex. opencode's own
-            # write/edit/bash tools would act on the llm container's FS, not this
-            # circt worker, so deny everything except our MCP tools (cf.
-            # examples/memcpy).
-            from chia.models.opencode import OpenCodeLLM, AdditionalModelProvider
-            vertex = cfg["vertex"]
-            provider_id, _, model_id = cfg["model"].partition("/")
-            gemini = AdditionalModelProvider(
-                id=provider_id or "google-vertex", npm="@ai-sdk/google-vertex",
-                name="Google Vertex AI", models=[model_id],
-                options={"project": vertex["project"], "location": vertex["location"]},
-            )
+            # Built-in provider and inherited AWS credential chain. Only CHIA
+            # MCP tools may operate on the CIRCT worker; deny local CLI tools.
+            from chia.models.opencode import OpenCodeLLM
             perms = {"*": "deny", **{f"{t.name}_*": "allow" for t in tools}}
             llm = OpenCodeLLM(
                 model=cfg["model"], system_message=cfg["system_prompt"],
                 timeout_seconds=cfg["timeouts"][phase],
-                additional_providers=[gemini], config=perms,
+                config=perms,
             )
         else:
             llm = ClaudeCodeLLM(
@@ -121,9 +111,28 @@ def run_issue_remote(issue_md: str, number: int, cfg: dict,
                 extra_cli_args=["--effort", "max"],
                 resume_session=True, projects_cwd=None,
             )
-        cli = get(llm.prompt.options(resources={"llm": 1.0}).chia_remote(llm, prompt, tools))
+        started = datetime.now(timezone.utc).isoformat()
+        tick = time.monotonic()
+        # Preserve a phase window even if the backend raises before returning
+        # an export (session/usage are then unavailable, not fabricated).
+        logs[phase] = {
+            "issue_number": number, "phase": phase, "model": cfg["model"],
+            "backend": backend, "session_id": None, "usage": None,
+            "start_timestamp": started, "success": False,
+        }
+        try:
+            cli = get(llm.prompt.options(resources={"llm": 1.0}).chia_remote(llm, prompt, tools))
+        finally:
+            ended = datetime.now(timezone.utc).isoformat()
+            logs[phase].update(end_timestamp=ended, elapsed_seconds=time.monotonic() - tick)
         transcript = getattr(cli, "session_transcript", None) or b""
         logs[phase] = {
+            "issue_number": number, "phase": phase, "model": cfg["model"],
+            "backend": backend, "session_id": getattr(cli, "session_id", None),
+            "start_timestamp": getattr(cli, "start_timestamp", None) or started,
+            "end_timestamp": getattr(cli, "end_timestamp", None) or ended,
+            "elapsed_seconds": getattr(cli, "elapsed_seconds", None) or (time.monotonic() - tick),
+            "aws_region": getattr(cli, "aws_region", None),
             "result": cli.result, "stream": cli.stream_result,
             "stderr": cli.stderr, "success": bool(getattr(cli, "success", False)),
             "transcript": transcript if isinstance(transcript, (bytes, bytearray)) else b"",
@@ -140,16 +149,29 @@ def run_issue_remote(issue_md: str, number: int, cfg: dict,
         # prompts and issue body don't blow up substitution.
         return Template(cfg[key]).safe_substitute(**kw)
 
-    # 0) Trust the checkout (git safe.directory) + idempotent warm-up (lit + tool
-    #    targets) + clean source back to the tag. assess_only reads source only,
-    #    so it skips the (slow) warm build.
-    circt_util.circt_trust_source()
-    if not assess_only:
-        circt_util.circt_warm_build(cfg["tool_targets"], num_cpus=cfg["build_jobs"])
+    # Reset and verify BEFORE building. Every run rebuilds incrementally:
+    # a container-wide warm sentinel alone cannot prove the binary revision.
+    identity = {"model": cfg["model"], "backend": cfg.get("backend", "claude"),
+                "circt_commit": None}
+    trust = circt_util.circt_trust_source()
+    if not trust["success"]:
+        return {**identity, "status": "error", "logs": logs,
+                "notes": "git trust failed: " + trust["log"]}
     reset = circt_util.circt_git_reset(cfg["tag"])
+    identity["circt_commit"] = reset.get("circt_commit")
     if not reset["success"]:
-        return {"status": "error", "reproduced": False, "logs": logs,
-                "notes": "git reset failed:\n" + reset["log"]}
+        return {**identity, "status": "error", "reproduced": False, "logs": logs,
+                "notes": "git reset/verification failed (revision must exist locally; no fetch):\n" + reset["log"]}
+    if not assess_only:
+        warm = circt_util.circt_warm_build(cfg["tool_targets"], num_cpus=cfg["build_jobs"])
+        if not warm["success"]:
+            return {**identity, "status": "error", "logs": logs,
+                    "notes": "warm build failed: " + warm["log_tail"]}
+        if not warm.get("warmed"):
+            build_result = circt_util.circt_ninja_build(cfg["tool_targets"], num_cpus=cfg["build_jobs"])
+            if not build_result["success"]:
+                return {**identity, "status": "error", "logs": logs,
+                        "notes": "pinned revision build failed: " + build_result["log_tail"]}
 
     bash = build = lit = None
     try:
@@ -165,7 +187,7 @@ def run_issue_remote(issue_md: str, number: int, cfg: dict,
         if assess_only:
             assess = _turn("assess", _render("assess_prompt", issue=issue_md), [bash])
             decision = _assess_decision(assess.result)
-            return {"status": "clear" if decision["proceed"] else decision["status"],
+            return {**identity, "status": "clear" if decision["proceed"] else decision["status"],
                     "assess_only": True, "reproduced": False,
                     "notes": decision["note"], "logs": logs}
 
@@ -180,7 +202,7 @@ def run_issue_remote(issue_md: str, number: int, cfg: dict,
             circt_util.circt_write_files(resume.get("repro_files") or {}, cfg["repro_dir"])
             ap = circt_util.circt_apply_diff(resume.get("diff") or "")
             if not ap["success"]:
-                return {"status": "error", "reproduced": False, "logs": logs,
+                return {**identity, "status": "error", "reproduced": False, "logs": logs,
                         "notes": "git apply (replay) failed:\n" + ap["log"]}
             try:
                 repro_text = open(cfg["repro_path"]).read()
@@ -195,14 +217,14 @@ def run_issue_remote(issue_md: str, number: int, cfg: dict,
             assess = _turn("assess", _render("assess_prompt", issue=issue_md), [bash])
             decision = _assess_decision(assess.result)
             if not decision["proceed"]:
-                return {"status": decision["status"], "reproduced": False,
+                return {**identity, "status": decision["status"], "reproduced": False,
                         "logs": logs, "notes": decision["note"]}
 
             # 1) REPRODUCE — the LLM writes <repro_path> (exit 0 iff fixed).
             _turn("repro", _render("repro_prompt", issue=issue_md), agent_tools)
             clean = circt_util.circt_run_script(cfg["repro_path"])
             if cfg["require_repro"] and clean["exit_code"] == 0:
-                return {"status": "no_repro", "reproduced": False, "logs": logs,
+                return {**identity, "status": "no_repro", "reproduced": False, "logs": logs,
                         "repro_tail": clean["log_tail"]}
 
             # 2) FIX — fresh session; inline the repro.sh the previous turn wrote
@@ -273,12 +295,17 @@ def run_issue_remote(issue_md: str, number: int, cfg: dict,
 
         status = "fixed" if (repro_fixed and lit_res["success"]) else "attempted"
         return {
-            "status": status, **verdict,
+            **identity, "status": status, **verdict,
             "diff": diff["diff"], "added": diff["added"], "removed": diff["removed"],
             "rebuild_tail": rebuild["log_tail"], "repro_tail": repro_after["log_tail"],
             "lit_tail": lit_res.get("log_tail", ""),
             "writeup": wr.result, "repro_files": repro_files, "logs": logs,
         }
+    except Exception as exc:
+        # Return earlier phase accounting and the failed phase's time window to
+        # the head rather than losing the whole attempt to a remote exception.
+        return {**identity, "status": "error", "logs": logs,
+                "notes": f"pipeline failed during {next(reversed(logs), 'setup')}: {type(exc).__name__}"}
     finally:
         for t in (lit, build, bash):
             if t is not None:
