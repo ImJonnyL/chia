@@ -1,0 +1,53 @@
+{
+  "status": "not_a_bug",
+  "reproduced": false,
+  "build_ok": null,
+  "fixed": null,
+  "lit_ok": null,
+  "lit_passed": null,
+  "lit_failed": null,
+  "lit_failures": null,
+  "added": null,
+  "removed": null,
+  "test_paths": null,
+  "notes": "The missing verifier this issue requests was already implemented before the firtool-1.148.0 checkout: the InnerSymbolTable trait verifier calls hw::verifyPortInnerSymsIfPortList, which checks each port's InnerSymAttr against the port type via hw::verifyInnerSymAttr. The issue's exact reproducer is now rejected with a clear diagnostic (\"field id 5 is greater than the maximum field id 0\") rather than crashing, and lit tests in test/Dialect/FIRRTL/errors.mlir cover this. The requested behavior is already working as intended \u2014 there is no remaining defect.",
+  "model": "amazon-bedrock/us.moonshotai.kimi-k3",
+  "backend": "opencode",
+  "circt_commit": "5dc7f103d714aa40e13cae4fcf7ab98a1912f845",
+  "issue_number": 5789,
+  "llm_usage": {
+    "assess": {
+      "num_turns": 12,
+      "input_tokens": 84,
+      "output_tokens": 3058,
+      "reasoning_tokens": 0,
+      "cache_read": 64782,
+      "cache_write": 9044,
+      "cost_usd": 0.10941876
+    }
+  },
+  "llm_phases": {
+    "assess": {
+      "issue_number": 5789,
+      "phase": "assess",
+      "model": "amazon-bedrock/us.moonshotai.kimi-k3",
+      "backend": "opencode",
+      "session_id": "ses_eb46481cfffeRxPzV2EOdTZf1y",
+      "start_timestamp": "2026-10-17T20:44:03.031376+00:00",
+      "end_timestamp": "2026-10-17T20:45:53.167968+00:00",
+      "elapsed_seconds": 110.13659496299988,
+      "aws_region": "us-east-1",
+      "success": true
+    }
+  },
+  "llm_usage_total": {
+    "input_tokens": 84,
+    "output_tokens": 3058,
+    "reasoning_tokens": 0,
+    "cache_read": 64782,
+    "cache_write": 9044,
+    "cost_usd": 0.10941876,
+    "num_turns": 12
+  },
+  "cost_provenance": "cost_usd is OpenCode-reported session cost, not an AWS invoice amount"
+}

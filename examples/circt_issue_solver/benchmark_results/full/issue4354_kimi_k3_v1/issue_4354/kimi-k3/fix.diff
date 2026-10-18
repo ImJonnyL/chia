@@ -1,0 +1,86 @@
+diff --git a/lib/Conversion/FIRRTLToHW/LowerToHW.cpp b/lib/Conversion/FIRRTLToHW/LowerToHW.cpp
+index 024c7d0..4d8e547 100644
+--- a/lib/Conversion/FIRRTLToHW/LowerToHW.cpp
++++ b/lib/Conversion/FIRRTLToHW/LowerToHW.cpp
+@@ -435,6 +435,11 @@ private:
+   /// applicable).
+   DenseMap<std::pair<Attribute, Attribute>, Attribute> instanceForceNames;
+ 
++  /// A per-module mapping of a forced instantiation name to the inner symbol
++  /// of the instance which is being forced to that name.  This is used to
++  /// detect two instances in the same module being forced to the same name.
++  DenseMap<Attribute, DenseMap<Attribute, Attribute>> forcedNamesInModule;
++
+   /// The set of guard macros to emit declarations for.
+   SetVector<StringAttr> macroDeclNames;
+   std::mutex macroDeclMutex;
+@@ -1085,6 +1090,8 @@ bool FIRRTLModuleLowering::handleForceNameAnnos(
+     // be applied.
+     auto inst =
+         cast<hw::InnerRefAttr>(nla.getNamepath().getValue().take_back(2)[0]);
++    loweringState.forcedNamesInModule[inst.getModule()][inst.getName()] =
++        anno.getMember("name");
+     auto inserted = loweringState.instanceForceNames.insert(
+         {{inst.getModule(), inst.getName()}, anno.getMember("name")});
+     if (!inserted.second &&
+@@ -4055,11 +4062,27 @@ LogicalResult FIRRTLLowering::visitDecl(InstanceOp oldInstance) {
+   if (oldInstance.getLowerToBind() || oldInstance.getDoNotPrint())
+     newInstance.setDoNotPrintAttr(builder.getUnitAttr());
+ 
+-  if (newInstance.getInnerSymAttr())
++  // Apply a ForceNameAnnotation targeting this instance, if one exists.  Two
++  // instances in the same module forced to the same name would silently lose
++  // their forced names to later name uniquing, so reject that here.
++  if (newInstance.getInnerSymAttr()) {
++    auto parentModule = newInstance->getParentOfType<hw::HWModuleOp>();
+     if (auto forceName = circuitState.instanceForceNames.lookup(
+-            {newInstance->getParentOfType<hw::HWModuleOp>().getNameAttr(),
+-             newInstance.getInnerNameAttr()}))
++            {parentModule.getNameAttr(), newInstance.getInnerNameAttr()})) {
++      for (auto &[otherSym, otherName] :
++           circuitState.forcedNamesInModule[parentModule.getNameAttr()])
++        if (otherName == forceName &&
++            otherSym != newInstance.getInnerNameAttr())
++          return newInstance.emitOpError()
++                 << "has a '" << forceNameAnnoClass
++                 << "' which would not have a unique Verilog name in module '"
++                 << parentModule.getName() << "'; instance '"
++                 << cast<StringAttr>(otherSym).getValue()
++                 << "' is forced to the same name '"
++                 << cast<StringAttr>(forceName).getValue() << "'";
+       newInstance->setAttr("hw.verilogName", forceName);
++    }
++  }
+ 
+   // Now that we have the new hw.instance, we need to remap all of the users
+   // of the outputs/results to the values returned by the instance.
+diff --git a/test/Conversion/FIRRTLToHW/lower-to-hw-errors.mlir b/test/Conversion/FIRRTLToHW/lower-to-hw-errors.mlir
+index 106dd5c..3d5960f 100644
+--- a/test/Conversion/FIRRTLToHW/lower-to-hw-errors.mlir
++++ b/test/Conversion/FIRRTLToHW/lower-to-hw-errors.mlir
+@@ -278,3 +278,25 @@ firrtl.circuit "InstanceChoiceWithoutInstanceMacro" {
+     firrtl.instance_choice inst @Foo alternatives @Opt { @FPGA -> @Foo } ()
+   }
+ }
++
++// -----
++
++// Two ForceNameAnnotations force two different instances in the same module
++// to the same Verilog name.  This must be an error rather than silently
++// producing instances whose forced names will lose to later name uniquing.
++firrtl.circuit "ForceNameNotUnique" {
++  hw.hierpath private @nla_1 [@ForceNameNotUnique::@sym_foo, @ForceNameSubmodule]
++  hw.hierpath private @nla_2 [@ForceNameNotUnique::@sym_bar, @ForceNameSubmodule]
++  firrtl.module private @ForceNameSubmodule() attributes {annotations = [
++    {circt.nonlocal = @nla_1,
++     class = "chisel3.util.experimental.ForceNameAnnotation", name = "Foo"},
++    {circt.nonlocal = @nla_2,
++     class = "chisel3.util.experimental.ForceNameAnnotation", name = "Foo"}
++  ]} {}
++  firrtl.module @ForceNameNotUnique() {
++    // expected-error @below {{'hw.instance' op has a 'chisel3.util.experimental.ForceNameAnnotation' which would not have a unique Verilog name in module 'ForceNameNotUnique'; instance 'sym_bar' is forced to the same name 'Foo'}}
++    // expected-error @below {{'firrtl.instance' op LowerToHW couldn't handle this operation}}
++    firrtl.instance foo sym @sym_foo @ForceNameSubmodule()
++    firrtl.instance bar sym @sym_bar @ForceNameSubmodule()
++  }
++}

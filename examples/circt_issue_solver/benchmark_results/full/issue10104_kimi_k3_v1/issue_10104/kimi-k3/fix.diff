@@ -1,0 +1,114 @@
+diff --git a/lib/Dialect/FIRRTL/Transforms/ExpandWhens.cpp b/lib/Dialect/FIRRTL/Transforms/ExpandWhens.cpp
+index c3fe48f..05b842d 100644
+--- a/lib/Dialect/FIRRTL/Transforms/ExpandWhens.cpp
++++ b/lib/Dialect/FIRRTL/Transforms/ExpandWhens.cpp
+@@ -40,6 +40,16 @@ static void mergeBlock(Block &destination, Block::iterator insertPoint,
+   destination.getOperations().splice(insertPoint, source.getOperations());
+ }
+ 
++/// Move the operation defining `value` to directly before `insertBefore`.
++/// Operations that are shared between different parts of the IR (e.g. cached
++/// LTL operations reused across layerblock boundaries) may be located at a
++/// point that does not dominate all of their uses; moving them to just before
++/// the current operation restores dominance.
++static void moveBefore(Value value, Block::iterator insertBefore) {
++  if (auto *op = value.getDefiningOp())
++    op->moveBefore(insertBefore->getBlock(), insertBefore);
++}
++
+ /// This is a stack of hashtables, if lookup fails in the top-most hashtable,
+ /// it will attempt to lookup in lower hashtables.  This class is used instead
+ /// of a ScopedHashTable so we can manually pop off a scope and keep it around.
+@@ -581,6 +591,9 @@ private:
+       if (!newClockOp) {
+         newClockOp = OpBuilder(op).cloneWithoutRegions(clockOp);
+         newClockOp.getInputMutable().assign(input);
++      } else {
++        moveBefore(input, op->getIterator());
++        moveBefore(newClockOp, op->getIterator());
+       }
+       return newClockOp;
+     }
+@@ -590,6 +603,8 @@ private:
+     if (!newOp)
+       newOp = OpBuilder(op).createOrFold<LTLAndIntrinsicOp>(
+           condition.getLoc(), property.getType(), condition, property);
++    else
++      moveBefore(newOp, op->getIterator());
+     return newOp;
+   }
+ 
+@@ -608,6 +623,9 @@ private:
+       if (!newClockOp) {
+         newClockOp = OpBuilder(op).cloneWithoutRegions(clockOp);
+         newClockOp.getInputMutable().assign(input);
++      } else {
++        moveBefore(input, op->getIterator());
++        moveBefore(newClockOp, op->getIterator());
+       }
+       return newClockOp;
+     }
+@@ -620,6 +638,9 @@ private:
+         auto clonedOp = OpBuilder(op).cloneWithoutRegions(implOp);
+         clonedOp.getLhsMutable().assign(lhs);
+         newImplOp = clonedOp;
++      } else {
++        moveBefore(lhs, op->getIterator());
++        moveBefore(newImplOp, op->getIterator());
+       }
+       return newImplOp;
+     }
+@@ -629,6 +650,8 @@ private:
+     if (!newImplOp)
+       newImplOp = OpBuilder(op).createOrFold<LTLImplicationIntrinsicOp>(
+           condition.getLoc(), property.getType(), condition, property);
++    else
++      moveBefore(newImplOp, op->getIterator());
+     return newImplOp;
+   }
+ 
+@@ -671,17 +694,39 @@ void WhenOpVisitor::visitStmt(StopOp op) {
+ }
+ 
+ void WhenOpVisitor::visitStmt(VerifAssertIntrinsicOp op) {
+-  op.getPropertyMutable().assign(
+-      ltlImplicationWithCondition(op, op.getProperty()));
++  llvm::errs() << "VISIT assert, op=" << op << "\n";
++  auto property = ltlImplicationWithCondition(op, op.getProperty());
++  llvm::errs() << "  property=" << property
++               << " defOp=" << property.getDefiningOp() << "\n";
++  // The property may be an operation shared with another part of the IR
++  // (e.g. another layerblock), in which case it was kept where it dominates
++  // all of its uses. Move this op right after the property so it is dominated
++  // by the property.
++  if (auto *propertyOp = property.getDefiningOp())
++    op->moveAfter(propertyOp);
++  op.getPropertyMutable().assign(property);
+ }
+ 
+ void WhenOpVisitor::visitStmt(VerifAssumeIntrinsicOp op) {
+-  op.getPropertyMutable().assign(
+-      ltlImplicationWithCondition(op, op.getProperty()));
++  auto property = ltlImplicationWithCondition(op, op.getProperty());
++  // The property may be an operation shared with another part of the IR
++  // (e.g. another layerblock), in which case it was kept where it dominates
++  // all of its uses. Move this op right after the property so it is dominated
++  // by the property.
++  if (auto *propertyOp = property.getDefiningOp())
++    op->moveAfter(propertyOp);
++  op.getPropertyMutable().assign(property);
+ }
+ 
+ void WhenOpVisitor::visitStmt(VerifCoverIntrinsicOp op) {
+-  op.getPropertyMutable().assign(ltlAndWithCondition(op, op.getProperty()));
++  auto property = ltlAndWithCondition(op, op.getProperty());
++  // The property may be an operation shared with another part of the IR
++  // (e.g. another layerblock), in which case it was kept where it dominates
++  // all of its uses. Move this op right after the property so it is dominated
++  // by the property.
++  if (auto *propertyOp = property.getDefiningOp())
++    op->moveAfter(propertyOp);
++  op.getPropertyMutable().assign(property);
+ }
+ 
+ void WhenOpVisitor::visitStmt(AssertOp op) {

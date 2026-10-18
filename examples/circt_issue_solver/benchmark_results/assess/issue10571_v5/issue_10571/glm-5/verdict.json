@@ -1,0 +1,53 @@
+{
+  "status": "clear",
+  "reproduced": false,
+  "build_ok": null,
+  "fixed": null,
+  "lit_ok": null,
+  "lit_passed": null,
+  "lit_failed": null,
+  "lit_failures": null,
+  "added": null,
+  "removed": null,
+  "test_paths": null,
+  "notes": null,
+  "model": "amazon-bedrock/zai.glm-5",
+  "backend": "opencode",
+  "circt_commit": "5dc7f103d714aa40e13cae4fcf7ab98a1912f845",
+  "issue_number": 10571,
+  "llm_usage": {
+    "assess": {
+      "num_turns": 48,
+      "input_tokens": 642066,
+      "output_tokens": 4700,
+      "reasoning_tokens": 0,
+      "cache_read": 0,
+      "cache_write": 0,
+      "cost_usd": 0.657106
+    }
+  },
+  "llm_phases": {
+    "assess": {
+      "issue_number": 10571,
+      "phase": "assess",
+      "model": "amazon-bedrock/zai.glm-5",
+      "backend": "opencode",
+      "session_id": "ses_ee0ce83efffeVkxEJdSB8ZhQbd",
+      "start_timestamp": "2026-10-09T05:44:57.967967+00:00",
+      "end_timestamp": "2026-10-09T05:47:17.283740+00:00",
+      "elapsed_seconds": 139.31577660100083,
+      "aws_region": "us-east-1",
+      "success": true
+    }
+  },
+  "llm_usage_total": {
+    "input_tokens": 642066,
+    "output_tokens": 4700,
+    "reasoning_tokens": 0,
+    "cache_read": 0,
+    "cache_write": 0,
+    "cost_usd": 0.657106,
+    "num_turns": 48
+  },
+  "cost_provenance": "cost_usd is OpenCode-reported session cost, not an AWS invoice amount"
+}

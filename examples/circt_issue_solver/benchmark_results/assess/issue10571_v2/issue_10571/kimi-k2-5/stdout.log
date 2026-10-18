@@ -1,0 +1,15 @@
+[37mJob submission server address[39m: [1mhttp://localhost:8265[22m
+
+[32m-------------------------------------------------------[39m
+[32mJob 'raysubmit_4MKs3Sk8JSnpfZsm' submitted successfully[39m
+[32m-------------------------------------------------------[39m
+
+[36mNext steps[39m
+  Query the logs of the job:
+    [1mray job logs raysubmit_4MKs3Sk8JSnpfZsm[22m
+  Query the status of the job:
+    [1mray job status raysubmit_4MKs3Sk8JSnpfZsm[22m
+  Request the job to be stopped:
+    [1mray job stop raysubmit_4MKs3Sk8JSnpfZsm[22m
+
+Tailing logs until the job exits (disable with --no-wait):

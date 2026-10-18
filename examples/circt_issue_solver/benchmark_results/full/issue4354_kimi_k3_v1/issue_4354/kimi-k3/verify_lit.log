@@ -1,0 +1,8 @@
+lit: /home/ray/anaconda3/envs/py_worker/lib/python3.10/site-packages/lit/TestingConfig.py:164: fatal: unable to parse config file '/workspace/circt/test/lit.cfg.py', traceback: Traceback (most recent call last):
+  File "/home/ray/anaconda3/envs/py_worker/lib/python3.10/site-packages/lit/TestingConfig.py", line 153, in load_from_path
+    exec(compile(data, path, "exec"), cfg_globals, None)
+  File "/workspace/circt/test/lit.cfg.py", line 22, in <module>
+    config.test_format = lit.formats.ShTest(not llvm_config.use_lit_shell)
+  File "/home/ray/anaconda3/envs/py_worker/lib/python3.10/site-packages/lit/formats/shtest.py", line 27, in __init__
+    raise ValueError(
+ValueError: execute_external=True is deprected as of LLVM-23 and the option will be removed in LLVM-24. Please move to using the internal shell (execute_external=False). If you still need to force external execution to allow time for migration, set force_execute_external=True

@@ -1,0 +1,187 @@
+diff --git a/lib/Dialect/FIRRTL/Transforms/InjectDUTHierarchy.cpp b/lib/Dialect/FIRRTL/Transforms/InjectDUTHierarchy.cpp
+index 5c0e5fd..caa179d 100644
+--- a/lib/Dialect/FIRRTL/Transforms/InjectDUTHierarchy.cpp
++++ b/lib/Dialect/FIRRTL/Transforms/InjectDUTHierarchy.cpp
+@@ -104,7 +104,8 @@ struct InjectDUTHierarchy
+ /// `moveDut=false` and `moveDut=true` cases.  In the `moveDut=false` case the
+ /// `dut` and `oldDutNameAttr` refer to the same module.
+ static void addHierarchy(hw::HierPathOp path, FModuleOp dut,
+-                         InstanceOp wrapperInst, StringAttr oldDutNameAttr) {
++                         FModuleLike wrapper, StringAttr wrapperInstName,
++                         StringAttr oldDutNameAttr) {
+ 
+   auto namepath = path.getNamepath().getValue();
+ 
+@@ -113,16 +114,15 @@ static void addHierarchy(hw::HierPathOp path, FModuleOp dut,
+   newNamepath.reserve(namepath.size() + 1);
+   while (path.modPart(nlaIdx) != oldDutNameAttr)
+     newNamepath.push_back(namepath[nlaIdx++]);
+-  newNamepath.push_back(hw::InnerRefAttr::get(dut.getModuleNameAttr(),
+-                                              getInnerSymName(wrapperInst)));
++  newNamepath.push_back(
++      hw::InnerRefAttr::get(dut.getModuleNameAttr(), wrapperInstName));
+ 
+   // Add the extra level of hierarchy.
+   if (auto dutRef = dyn_cast<hw::InnerRefAttr>(namepath[nlaIdx]))
+-    newNamepath.push_back(hw::InnerRefAttr::get(
+-        wrapperInst.getModuleNameAttr().getAttr(), dutRef.getName()));
++    newNamepath.push_back(hw::InnerRefAttr::get(wrapper.getModuleNameAttr(),
++                                                dutRef.getName()));
+   else
+-    newNamepath.push_back(
+-        FlatSymbolRefAttr::get(wrapperInst.getModuleNameAttr().getAttr()));
++    newNamepath.push_back(FlatSymbolRefAttr::get(wrapper.getModuleNameAttr()));
+ 
+   // Add anything left over.
+   auto back = namepath.drop_front(nlaIdx + 1);
+@@ -136,7 +136,9 @@ void InjectDUTHierarchy::runOnOperation() {
+   CircuitOp circuit = getOperation();
+ 
+   /// The wrapper module that is created inside the DUT to house all its logic.
+-  FModuleOp wrapper;
++  /// This keeps the module-like kind of the DUT, i.e., if the DUT is an
++  /// external module, then the wrapper will be an external module.
++  FModuleLike wrapper;
+ 
+   /// The name of the new module to create under the DUT.
+   StringAttr wrapperName;
+@@ -197,8 +199,9 @@ void InjectDUTHierarchy::runOnOperation() {
+   }
+ 
+   /// The design-under-test (DUT).  This is kept up-to-date by the pass as the
+-  /// DUT changes due to internal logic.
+-  FModuleOp dut = cast<FModuleOp>(instanceInfo.getDut());
++  /// DUT changes due to internal logic.  The DUT may be any module-like
++  /// operation, e.g., it may be an external module.
++  FModuleLike dutLike = cast<FModuleLike>(instanceInfo.getDut());
+ 
+   // Create a module that will become the new DUT.  The original DUT is renamed
+   // to become the wrapper.  This is done to save copying into the wrapper.
+@@ -209,14 +212,22 @@ void InjectDUTHierarchy::runOnOperation() {
+   // dut and wrapper do not match the logical definition.
+   OpBuilder b(circuit.getContext());
+   CircuitNamespace circuitNS(circuit);
+-  b.setInsertionPointAfter(dut);
++  b.setInsertionPointAfter(dutLike);
++  llvm::errs() << "DBG dutLike op: " << *dutLike << "\n";
++  llvm::errs() << "DBG ports: " << dutLike.getPorts().size() << "\n";
++  for (auto &p : dutLike.getPorts())
++    llvm::errs() << "  port " << p.name << " type attr present: "
++                 << (bool)p.type << "\n";
+ 
+   // After this, he original DUT module is now the "wrapper".  The new module we
+   // just created becomes the "DUT".
+-  auto oldDutNameAttr = dut.getNameAttr();
+-  wrapper = dut;
+-  dut = FModuleOp::create(b, dut.getLoc(), oldDutNameAttr,
+-                          dut.getConventionAttr(), dut.getPorts());
++  auto oldDutNameAttr =
++      cast<igraph::ModuleOpInterface>(*dutLike).getModuleNameAttr();
++  llvm::errs() << "DBG: after getNameAttr\n";
++  wrapper = dutLike;
++  FModuleOp dut = FModuleOp::create(b, dutLike.getLoc(), oldDutNameAttr,
++                                    dutLike.getConventionAttr(),
++                                    dutLike.getPorts());
+ 
+   // Finish setting up the DUT and the Wrapper.  This depends on if we are in
+   // `moveDut` mode or not.  If `moveDut=false` (the normal, legacy behavior),
+@@ -238,9 +249,11 @@ void InjectDUTHierarchy::runOnOperation() {
+   // debt that it creates.
+   auto emptyArray = b.getArrayAttr({});
+   auto name = circuitNS.newName(wrapperName.getValue());
++  StringAttr wrapperNameAttr = b.getStringAttr(name);
++  StringAttr wrapperDefnameAttr;
+   if (moveDut) {
+     dut.setPortAnnotationsAttr(emptyArray);
+-    dut.setName(b.getStringAttr(name));
++    dut.setName(wrapperNameAttr);
+     // If the wrapper is the circuit's main module, then we need to rename the
+     // circuit.  This mandates that the wrapper is now public.
+     if (circuit.getNameAttr() == wrapper.getNameAttr()) {
+@@ -251,7 +264,8 @@ void InjectDUTHierarchy::runOnOperation() {
+     }
+     // The DUT name has changed.  Rewrite instances to use the new DUT name.
+     InstanceGraph &instanceGraph = getAnalysis<InstanceGraph>();
+-    for (auto *use : instanceGraph.lookup(wrapper.getNameAttr())->uses()) {
++    for (auto *use : instanceGraph.lookup(wrapper.getModuleNameAttr())
++                         ->uses()) {
+       auto instanceOp = use->getInstance<InstanceOp>();
+       if (!instanceOp) {
+         use->getInstance().emitOpError()
+@@ -263,24 +277,56 @@ void InjectDUTHierarchy::runOnOperation() {
+     }
+   } else {
+     dut.setVisibility(wrapper.getVisibility());
+-    dut.setAnnotationsAttr(wrapper.getAnnotationsAttr());
++    dut.setAnnotationsAttr(AnnotationSet(wrapper.getOperation()).getArrayAttr());
+     dut.setPortAnnotationsAttr(wrapper.getPortAnnotationsAttr());
+     wrapper.setPrivate();
+-    wrapper.setAnnotationsAttr(emptyArray);
++    AnnotationSet::removeAnnotations(wrapper.getOperation(),
++                                     [](Annotation) { return true; });
+     wrapper.setPortAnnotationsAttr(emptyArray);
+-    wrapper.setName(name);
++    wrapper.setName(wrapperNameAttr);
+   }
+ 
+-  // Instantiate the wrapper inside the DUT and wire it up.
++  // If the wrapper is an external module whose 'defname' is the original DUT
++  // name (the default when no explicit 'defname' is provided), then update the
++  // 'defname' to match the wrapper's new name.  Otherwise, the 'defname' would
++  // conflict with the name of the newly created DUT module, which is illegal.
++  // An explicit 'defname' that differs from the original DUT name is left
++  // alone.
++  if (auto extWrapper = dyn_cast<FExtModuleOp>(*wrapper)) {
++    auto defname = extWrapper.getDefnameAttr();
++    if (defname && defname.getValue() == oldDutNameAttr.getValue()) {
++      if (!wrapperDefnameAttr)
++        wrapperDefnameAttr =
++            b.getStringAttr(circuitNS.newName(wrapperNameAttr.getValue()));
++      extWrapper.setDefnameAttr(wrapperDefnameAttr);
++    }
++  }
++
++  // Instantiate the wrapper inside the DUT and wire it up.  An external
++  // module cannot be instantiated with a 'firrtl.instance' as instance
++  // expressions must be composed of passive types and an external module may
++  // have non-passive ports.  Instantiate such a wrapper with a
++  // 'firrtl.instance_choice' with no cases, which is the idiom used to
++  // instantiate an external module that has non-passive ports.
+   b.setInsertionPointToStart(dut.getBodyBlock());
+   hw::InnerSymbolNamespace dutNS(dut);
+-  auto wrapperInst =
+-      InstanceOp::create(b, b.getUnknownLoc(), wrapper, wrapper.getModuleName(),
+-                         NameKindEnum::DroppableName, ArrayRef<Attribute>{},
+-                         ArrayRef<Attribute>{}, false, false,
+-                         hw::InnerSymAttr::get(b.getStringAttr(
+-                             dutNS.newName(wrapper.getModuleName()))));
+-  for (const auto &pair : llvm::enumerate(wrapperInst.getResults())) {
++  auto wrapperInstName =
++      b.getStringAttr(dutNS.newName(wrapper.getModuleName()));
++  FInstanceLike wrapperInst;
++  if (isa<FExtModuleOp>(*wrapper))
++    wrapperInst = InstanceChoiceOp::create(
++        b, b.getUnknownLoc(), wrapper,
++        ArrayRef<std::pair<OptionCaseOp, FModuleLike>>{},
++        wrapper.getModuleName(), NameKindEnum::DroppableName,
++        ArrayRef<Attribute>{}, ArrayRef<Attribute>{}, wrapperInstName);
++  else
++    wrapperInst = InstanceOp::create(b, b.getUnknownLoc(), wrapper,
++                                     wrapper.getModuleName(),
++                                     NameKindEnum::DroppableName,
++                                     ArrayRef<Attribute>{},
++                                     ArrayRef<Attribute>{}, false, false,
++                                     hw::InnerSymAttr::get(wrapperInstName));
++  for (const auto &pair : llvm::enumerate(wrapperInst->getResults())) {
+     Value lhs = dut.getArgument(pair.index());
+     Value rhs = pair.value();
+     if (dut.getPortDirection(pair.index()) == Direction::In)
+@@ -386,7 +432,7 @@ void InjectDUTHierarchy::runOnOperation() {
+       // Cases (2), (3), and (4): fallthrough to add hierarchy to original path.
+     }
+ 
+-    addHierarchy(nla, dut, wrapperInst, oldDutNameAttr);
++    addHierarchy(nla, dut, wrapper, wrapperInstName, oldDutNameAttr);
+   }
+ 
+   SmallVector<Annotation> newAnnotations;

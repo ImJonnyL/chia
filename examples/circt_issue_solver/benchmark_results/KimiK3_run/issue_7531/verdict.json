@@ -1,0 +1,53 @@
+{
+  "status": "unclear",
+  "reproduced": false,
+  "build_ok": null,
+  "fixed": null,
+  "lit_ok": null,
+  "lit_passed": null,
+  "lit_failed": null,
+  "lit_failures": null,
+  "added": null,
+  "removed": null,
+  "test_paths": null,
+  "notes": "The reported assertion no longer reproduces at the pinned firtool-1.148.0 checkout (assertions enabled; the exact issue command exits 0 and canonicalize cleanly removes the offending IR), so there is no demonstrable defect or root cause left to fix in CIRCT's tree \u2014 the fix evidently landed upstream in MLIR. What remains open in the issue (whether the Moore verifier should reject comb cycles in unreachable blocks, and which unidentified pass emits predecessor-less blocks) are unsettled design/investigative questions with multiple defensible resolutions and no identified concrete bug.",
+  "model": "amazon-bedrock/us.moonshotai.kimi-k3",
+  "backend": "opencode",
+  "circt_commit": "5dc7f103d714aa40e13cae4fcf7ab98a1912f845",
+  "issue_number": 7531,
+  "llm_usage": {
+    "assess": {
+      "num_turns": 3,
+      "input_tokens": 21,
+      "output_tokens": 6563,
+      "reasoning_tokens": 0,
+      "cache_read": 9959,
+      "cache_write": 5678,
+      "cost_usd": 0.13506701999999998
+    }
+  },
+  "llm_phases": {
+    "assess": {
+      "issue_number": 7531,
+      "phase": "assess",
+      "model": "amazon-bedrock/us.moonshotai.kimi-k3",
+      "backend": "opencode",
+      "session_id": "ses_eb44801c1ffeCi09REBa7PUzVo",
+      "start_timestamp": "2026-10-17T21:15:10.778298+00:00",
+      "end_timestamp": "2026-10-17T21:16:29.769891+00:00",
+      "elapsed_seconds": 78.99159819299894,
+      "aws_region": "us-east-1",
+      "success": true
+    }
+  },
+  "llm_usage_total": {
+    "input_tokens": 21,
+    "output_tokens": 6563,
+    "reasoning_tokens": 0,
+    "cache_read": 9959,
+    "cache_write": 5678,
+    "cost_usd": 0.13506701999999998,
+    "num_turns": 3
+  },
+  "cost_provenance": "cost_usd is OpenCode-reported session cost, not an AWS invoice amount"
+}

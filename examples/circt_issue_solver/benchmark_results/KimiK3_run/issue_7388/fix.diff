@@ -1,0 +1,69 @@
+diff --git a/lib/Conversion/FIRRTLToHW/LowerToHW.cpp b/lib/Conversion/FIRRTLToHW/LowerToHW.cpp
+index 024c7d0..db67826 100644
+--- a/lib/Conversion/FIRRTLToHW/LowerToHW.cpp
++++ b/lib/Conversion/FIRRTLToHW/LowerToHW.cpp
+@@ -3567,6 +3567,13 @@ LogicalResult FIRRTLLowering::visitExpr(FEnumCreateOp op) {
+   auto element = *oldType.getElement(op.getFieldNameAttr());
+ 
+   if (auto structType = dyn_cast<hw::StructType>(newType)) {
++    // If the input is zero-width, getLoweredValue returns a null Value.
++    // We still need a valid operand for the union body; create an i0 constant.
++    if (!input) {
++      if (!isZeroBitFIRRTLType(op.getInput().getType()))
++        return failure();
++      input = getOrCreateIntConstant(0, 0);
++    }
+     auto tagType = structType.getFieldType("tag");
+     auto tagValue = IntegerAttr::get(tagType, element.value.getValue());
+     auto tag = sv::LocalParamOp::create(builder, op.getLoc(), tagType, tagValue,
+@@ -3590,6 +3597,10 @@ LogicalResult FIRRTLLowering::visitExpr(AggregateConstantOp op) {
+ }
+ 
+ LogicalResult FIRRTLLowering::visitExpr(IsTagOp op) {
++  // A zero-width enum has exactly one variant, so the tag check is trivially
++  // true.
++  if (isZeroBitFIRRTLType(op.getInput().getType()))
++    return setLowering(op, getOrCreateIntConstant(1, 1));
+ 
+   auto tagName = op.getFieldNameAttr();
+   auto lhs = getLoweredValue(op.getInput());
+diff --git a/test/Conversion/FIRRTLToHW/lower-to-hw.mlir b/test/Conversion/FIRRTLToHW/lower-to-hw.mlir
+index 22a3955..a53b9c2 100644
+--- a/test/Conversion/FIRRTLToHW/lower-to-hw.mlir
++++ b/test/Conversion/FIRRTLToHW/lower-to-hw.mlir
+@@ -927,6 +927,35 @@ firrtl.circuit "Simple"   attributes {annotations = [{class =
+     firrtl.matchingconnect %sink, %0 : !firrtl.enum<a: uint<2>, b: uint<1>, c: uint<32>>
+   }
+ 
++  // Test for https://github.com/llvm/circt/issues/7388
++  // enumcreate with a zero-width input on a data enum should not crash.
++  // CHECK-LABEL: hw.module private @DataEnumCreateZeroWidth(out sink : !hw.struct<tag: i1, body: !hw.union<Some: i8, None: i0>>) {
++  // CHECK-NEXT:   %c0_i0 = hw.constant 0 : i0
++  // CHECK-NEXT:   %None = sv.localparam {value = true} : i1
++  // CHECK-NEXT:   %0 = hw.union_create "None", %c0_i0 : !hw.union<Some: i8, None: i0>
++  // CHECK-NEXT:   %1 = hw.struct_create (%None, %0) : !hw.struct<tag: i1, body: !hw.union<Some: i8, None: i0>>
++  // CHECK-NEXT:   hw.output %1 : !hw.struct<tag: i1, body: !hw.union<Some: i8, None: i0>>
++  // CHECK-NEXT: }
++  firrtl.module private @DataEnumCreateZeroWidth(
++      out %sink: !firrtl.enum<Some: uint<8>, None: uint<0>>) {
++    %c0_ui0 = firrtl.constant 0 : !firrtl.uint<0>
++    %0 = firrtl.enumcreate None(%c0_ui0) : (!firrtl.uint<0>) -> !firrtl.enum<Some: uint<8>, None: uint<0>>
++    firrtl.matchingconnect %sink, %0 : !firrtl.enum<Some: uint<8>, None: uint<0>>
++  }
++
++  // Test for https://github.com/llvm/circt/issues/7388
++  // istag on a zero-width enum (single variant, zero-width data) should not
++  // crash. The tag check is trivially true.
++  // CHECK-LABEL: hw.module private @IsTagZeroWidthEnum(out o : i1) {
++  // CHECK-NEXT:   %true = hw.constant true
++  // CHECK-NEXT:   hw.output %true : i1
++  // CHECK-NEXT: }
++  firrtl.module private @IsTagZeroWidthEnum(
++      in %e: !firrtl.enum<A: uint<0>>, out %o: !firrtl.uint<1>) {
++    %0 = firrtl.istag %e A : !firrtl.enum<A: uint<0>>
++    firrtl.matchingconnect %o, %0 : !firrtl.uint<1>
++  }
++
+   // CHECK-LABEL: IsInvalidIssue572
+   // https://github.com/llvm/circt/issues/572
+   firrtl.module private @IsInvalidIssue572(in %a: !firrtl.analog<1>) {

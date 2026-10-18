@@ -1,0 +1,1 @@
+{"type":"error","timestamp":1791522459931,"sessionID":"ses_ee0f0b3bfffeI7O5gfVTRLNmWZ","error":{"name":"UnknownError","data":{"message":"AWS credential provider failed: Could not load credentials from any providers. Please ensure your credential provider returns valid AWS credentials with accessKeyId and secretAccessKey properties."}}}

@@ -1,0 +1,11 @@
+VISIT assert, op=firrtl.int.verif.assert %0, %c0_ui1 : !firrtl.uint<1>, !firrtl.uint<1>
+  property=%2 = firrtl.int.ltl.implication %1, %c0_ui1 : (!firrtl.uint<1>, !firrtl.uint<1>) -> !firrtl.uint<1> defOp=0x56463e3f34c0
+VISIT assert, op=firrtl.int.verif.assert %0, %c0_ui1 : !firrtl.uint<1>, !firrtl.uint<1>
+  property=%3 = "firrtl.int.ltl.implication"(%2, %0) : (!firrtl.uint<1>, !firrtl.uint<1>) -> !firrtl.uint<1> defOp=0x56463e3f34c0
+/workspace/circt/.circtissues/repro.mlir:9:9: error: operand #0 does not dominate this use
+        firrtl.int.verif.assert %0, %c0_ui1 : !firrtl.uint<1>, !firrtl.uint<1>
+        ^
+/workspace/circt/.circtissues/repro.mlir:9:9: note: see current operation: "firrtl.int.verif.assert"(%3, %0) : (!firrtl.uint<1>, !firrtl.uint<1>) -> ()
+/workspace/circt/.circtissues/repro.mlir:8:14: note: operand defined here (op is neither in a parent nor in a child region)
+        %0 = firrtl.int.ltl.implication %c0_ui1, %c0_ui1 : (!firrtl.uint<1>, !firrtl.uint<1>) -> !firrtl.uint<1>
+             ^

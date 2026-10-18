@@ -1,0 +1,53 @@
+{
+  "status": "not_a_bug",
+  "reproduced": false,
+  "build_ok": null,
+  "fixed": null,
+  "lit_ok": null,
+  "lit_passed": null,
+  "lit_failed": null,
+  "lit_failures": null,
+  "added": null,
+  "removed": null,
+  "test_paths": null,
+  "notes": "This is an enhancement/behavior-improvement request, not a defect: `firtool` emits valid, semantically correct Verilog and DropConst performs its documented function of stripping `const` from all types. Preserving the alias name when its aliased type is mutated is an unsettled design choice \u2014 the reporter himself says the name arguably *shouldn't* be preserved in that case and files it as low-priority FYI \u2014 so there is no spec violation or incorrect behavior to fix, and the desired behavior is explicitly ambiguous.",
+  "model": "amazon-bedrock/us.moonshotai.kimi-k3",
+  "backend": "opencode",
+  "circt_commit": "5dc7f103d714aa40e13cae4fcf7ab98a1912f845",
+  "issue_number": 7127,
+  "llm_usage": {
+    "assess": {
+      "num_turns": 6,
+      "input_tokens": 42,
+      "output_tokens": 3963,
+      "reasoning_tokens": 0,
+      "cache_read": 21112,
+      "cache_write": 6132,
+      "cost_usd": 0.09778956
+    }
+  },
+  "llm_phases": {
+    "assess": {
+      "issue_number": 7127,
+      "phase": "assess",
+      "model": "amazon-bedrock/us.moonshotai.kimi-k3",
+      "backend": "opencode",
+      "session_id": "ses_eb455d2b7ffeWLv1xuSnGA0mVN",
+      "start_timestamp": "2026-10-17T21:00:05.333898+00:00",
+      "end_timestamp": "2026-10-17T21:01:00.843831+00:00",
+      "elapsed_seconds": 55.50993786299841,
+      "aws_region": "us-east-1",
+      "success": true
+    }
+  },
+  "llm_usage_total": {
+    "input_tokens": 42,
+    "output_tokens": 3963,
+    "reasoning_tokens": 0,
+    "cache_read": 21112,
+    "cache_write": 6132,
+    "cost_usd": 0.09778956,
+    "num_turns": 6
+  },
+  "cost_provenance": "cost_usd is OpenCode-reported session cost, not an AWS invoice amount"
+}

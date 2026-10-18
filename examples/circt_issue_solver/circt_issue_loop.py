@@ -48,7 +48,7 @@ TIMEOUTS   = {"assess": 1800, "repro": 1800, "fix": 7200, "regression": 3600, "w
 PENDING_TIMEOUT_S = 1800      # chia_wait stuck-task detection / retry threshold
 
 DB_PATH      = str(FLOW_DIR / "issues.db")
-ARTIFACT_DIR = FLOW_DIR / "issue_logs"
+ARTIFACT_DIR = FLOW_DIR / "benchmark_results" / "full" / "manual"
 
 _P = FLOW_DIR / "prompts"
 CFG = {
@@ -86,8 +86,8 @@ logging.basicConfig(level=logging.INFO,
 logger = logging.getLogger("circtissues")
 
 
-def _persist(issue, res: dict, *, record_db: bool = True) -> None:
-    art = ARTIFACT_DIR / f"issue_{issue.number}"
+def _persist(issue, res: dict, *, record_db: bool = True, output_dir: Path | None = None) -> None:
+    art = output_dir if output_dir is not None else ARTIFACT_DIR / f"issue_{issue.number}"
     art.mkdir(parents=True, exist_ok=True)
     art.joinpath("issue.md").write_text(issue.to_markdown())
     if res.get("diff"):
@@ -107,7 +107,7 @@ def _persist(issue, res: dict, *, record_db: bool = True) -> None:
     verdict["llm_phases"] = {
         phase: {k: blob.get(k) for k in (
             "issue_number", "phase", "model", "backend", "session_id",
-            "start_timestamp", "end_timestamp", "elapsed_seconds", "aws_region")}
+            "start_timestamp", "end_timestamp", "elapsed_seconds", "aws_region", "success")}
         for phase, blob in (res.get("logs") or {}).items()
     }
     if res.get("backend") == "opencode":
@@ -160,7 +160,7 @@ def main() -> None:
                          "regression-repair turn (skips repro+fix)")
     ap.add_argument("--assess-only", type=int, default=None, metavar="N",
                     help="run ONLY the assess turn for issue N; print the decision "
-                         "and exit. Saves accounting in issue_logs; does not update the DB.")
+                         "and exit. Saves accounting under benchmark_results/assess/manual; does not update the DB.")
     ap.add_argument("--backend", choices=sorted(BACKEND_DEFAULT_MODEL), default=None,
                     help="LLM backend: claude (default; cluster.yaml), antigravity "
                          "(Google Antigravity CLI / Gemini; cluster_antigravity.yaml) "
@@ -172,16 +172,23 @@ def main() -> None:
                          + ", ".join(f"{k}={v}" for k, v in BACKEND_DEFAULT_MODEL.items()) + ")")
     ap.add_argument("--issues-dir", type=Path, default=FLOW_DIR / "issuestouse",
                     help="frozen local corpus (only issue_<N>/issue.md is read)")
+    ap.add_argument("--output-dir", type=Path, default=None,
+                    help="exact issue artifact directory (default: benchmark_results/<assess|full>/manual/issue_<N>); single issue only")
     args = ap.parse_args()
+    if args.output_dir is not None and not any(
+            n is not None for n in (args.issue, args.assess_only, args.replay_regression)):
+        ap.error("--output-dir requires a single issue mode")
+    if args.assess_only is not None and args.output_dir is None:
+        args.output_dir = FLOW_DIR / "benchmark_results" / "assess" / "manual" / f"issue_{args.assess_only}"
 
     backend = args.backend or ("antigravity" if args.antigravity else LLM_BACKEND)
     CFG["backend"], CFG["model"] = backend, BACKEND_DEFAULT_MODEL[backend]
     if args.model:
         CFG["model"] = args.model
     corpus = args.issues_dir.resolve()
-    artifacts = ARTIFACT_DIR.resolve()
+    artifacts = (args.output_dir or ARTIFACT_DIR).resolve()
     if corpus == artifacts or corpus in artifacts.parents or artifacts in corpus.parents:
-        ap.error("--issues-dir and issue_logs must be separate, non-overlapping directories")
+        ap.error("--issues-dir and output directory must be separate, non-overlapping directories")
     if args.max_issues < 0:
         ap.error("--max-issues must be nonnegative")
     logger.info("LLM backend=%s model=%s", CFG["backend"], CFG["model"])
@@ -196,7 +203,7 @@ def main() -> None:
         issue = load_issue(corpus, args.assess_only)
         res = get(run_issue_remote.chia_remote(issue.to_markdown(), issue.number,
                                                CFG, assess_only=True))
-        _persist(issue, res, record_db=False)
+        _persist(issue, res, record_db=False, output_dir=args.output_dir)
         print(f"\n===== assess-only #{issue.number}: {issue.title} =====")
         print(f"DECISION -> status={res.get('status')!r}")
         print(f"NOTE: {res.get('notes')}")
@@ -212,7 +219,7 @@ def main() -> None:
     resume_by_num: dict = {}
     if args.replay_regression is not None:
         n = args.replay_regression
-        art = ARTIFACT_DIR / f"issue_{n}"
+        art = args.output_dir or ARTIFACT_DIR / f"issue_{n}"
         diff_text = (art / "fix.diff").read_text()
         rdir = art / "repro"
         repro_files = ({str(p.relative_to(rdir)): p.read_text()
@@ -251,7 +258,7 @@ def main() -> None:
             for tr in done:
                 issue = tr_issue[id(tr)]
                 try:
-                    _persist(issue, get(tr.ref))
+                    _persist(issue, get(tr.ref), output_dir=args.output_dir)
                 except Exception:
                     logger.exception("issue #%d failed", issue.number)
     finally:

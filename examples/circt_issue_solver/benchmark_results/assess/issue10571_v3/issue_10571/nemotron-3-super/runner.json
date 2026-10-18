@@ -1,0 +1,24 @@
+{
+  "issue_number": 10571,
+  "model_name": "nemotron-3-super",
+  "model": "amazon-bedrock/nvidia.nemotron-super-3-120b",
+  "stage": "assess",
+  "command": [
+    "/home/ubuntu/chia/examples/circt_issue_solver/fix_issues_submit.sh",
+    "--backend",
+    "opencode",
+    "--model",
+    "amazon-bedrock/nvidia.nemotron-super-3-120b",
+    "--issues-dir",
+    "/home/ubuntu/chia/examples/circt_issue_solver/issuestouse",
+    "--output-dir",
+    "/home/ubuntu/chia/examples/circt_issue_solver/benchmark_results/issue10571_v3/issue_10571/nemotron-3-super/assess",
+    "--assess-only",
+    "10571"
+  ],
+  "start_timestamp": "2026-10-09T04:27:52.226562+00:00",
+  "status": "completed",
+  "return_code": 0,
+  "finish_timestamp": "2026-10-09T04:28:31.135585+00:00",
+  "elapsed_seconds": 38.90893536200019
+}

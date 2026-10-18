@@ -1,0 +1,48 @@
+ 5 |     Both AWS_PROFILE and the pair AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY static credentials are set.
+ 6 |     This SDK will proceed with the AWS_PROFILE value.
+ 7 | 
+ 8 |     However, a future version may change this behavior to prefer the ENV static credentials.
+ 9 |     Please ensure that your environment only sets either the AWS_PROFILE or the
+10 | `),Y=!0}throw new p.CredentialsProviderError("AWS_PROFILE is set, skipping fromEnv provider.",{logger:e.logger,tryNextLink:!0})}return e.logger?.debug("@aws-sdk/credential-provider-node - defaultProvider::fromEnv"),v(e)()},async(o)=>{e.logger?.debug("@aws-sdk/credential-provider-node - defaultProvider::fromSSO");let{ssoStartUrl:r,ssoAccountId:t,ssoRegion:n,ssoRoleName:c,ssoSession:a}=e;if(!r&&!t&&!n&&!c&&!a)throw new p.CredentialsProviderError("Skipping SSO provider in default chain (inputs do not include SSO fields).",{logger:e.logger});let{fromSSO:l}=await import("/$bunfs/root/chunk-ww7rqhkv.js");return l(e)(o)},async(o)=>{e.logger?.debug("@aws-sdk/credential-provider-node - defaultProvider::fromIni");let{fromIni:r}=await import("/$bunfs/root/chunk-g129e1dg.js");return r(e)(o)},async(o)=>{e.logger?.debug("@aws-sdk/credential-provider-node - defaultProvider::fromProcess");let{fromProcess:r}=await import("/$bunfs/root/chunk-ybfwawea.js");return r(e)(o)},async(o)=>{e.logger?.debug("@aws-sdk/credential-provider
+
+CredentialsProviderError: Could not load credentials from any providers
+ tryNextLink: false,
+
+      at <anonymous> (/$bunfs/root/chunk-e4m6p2d3.js:10:1286)
+      at <anonymous> (/$bunfs/root/chunk-e4m6p2d3.js:2:6658)
+ 5 |     Both AWS_PROFILE and the pair AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY static credentials are set.
+ 6 |     This SDK will proceed with the AWS_PROFILE value.
+ 7 | 
+ 8 |     However, a future version may change this behavior to prefer the ENV static credentials.
+ 9 |     Please ensure that your environment only sets either the AWS_PROFILE or the
+10 | `),Y=!0}throw new p.CredentialsProviderError("AWS_PROFILE is set, skipping fromEnv provider.",{logger:e.logger,tryNextLink:!0})}return e.logger?.debug("@aws-sdk/credential-provider-node - defaultProvider::fromEnv"),v(e)()},async(o)=>{e.logger?.debug("@aws-sdk/credential-provider-node - defaultProvider::fromSSO");let{ssoStartUrl:r,ssoAccountId:t,ssoRegion:n,ssoRoleName:c,ssoSession:a}=e;if(!r&&!t&&!n&&!c&&!a)throw new p.CredentialsProviderError("Skipping SSO provider in default chain (inputs do not include SSO fields).",{logger:e.logger});let{fromSSO:l}=await import("/$bunfs/root/chunk-ww7rqhkv.js");return l(e)(o)},async(o)=>{e.logger?.debug("@aws-sdk/credential-provider-node - defaultProvider::fromIni");let{fromIni:r}=await import("/$bunfs/root/chunk-g129e1dg.js");return r(e)(o)},async(o)=>{e.logger?.debug("@aws-sdk/credential-provider-node - defaultProvider::fromProcess");let{fromProcess:r}=await import("/$bunfs/root/chunk-ybfwawea.js");return r(e)(o)},async(o)=>{e.logger?.debug("@aws-sdk/credential-provider
+
+CredentialsProviderError: Could not load credentials from any providers
+ tryNextLink: false,
+
+      at <anonymous> (/$bunfs/root/chunk-e4m6p2d3.js:10:1286)
+      at <anonymous> (/$bunfs/root/chunk-e4m6p2d3.js:2:6658)
+ 5 |     Both AWS_PROFILE and the pair AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY static credentials are set.
+ 6 |     This SDK will proceed with the AWS_PROFILE value.
+ 7 | 
+ 8 |     However, a future version may change this behavior to prefer the ENV static credentials.
+ 9 |     Please ensure that your environment only sets either the AWS_PROFILE or the
+10 | `),Y=!0}throw new p.CredentialsProviderError("AWS_PROFILE is set, skipping fromEnv provider.",{logger:e.logger,tryNextLink:!0})}return e.logger?.debug("@aws-sdk/credential-provider-node - defaultProvider::fromEnv"),v(e)()},async(o)=>{e.logger?.debug("@aws-sdk/credential-provider-node - defaultProvider::fromSSO");let{ssoStartUrl:r,ssoAccountId:t,ssoRegion:n,ssoRoleName:c,ssoSession:a}=e;if(!r&&!t&&!n&&!c&&!a)throw new p.CredentialsProviderError("Skipping SSO provider in default chain (inputs do not include SSO fields).",{logger:e.logger});let{fromSSO:l}=await import("/$bunfs/root/chunk-ww7rqhkv.js");return l(e)(o)},async(o)=>{e.logger?.debug("@aws-sdk/credential-provider-node - defaultProvider::fromIni");let{fromIni:r}=await import("/$bunfs/root/chunk-g129e1dg.js");return r(e)(o)},async(o)=>{e.logger?.debug("@aws-sdk/credential-provider-node - defaultProvider::fromProcess");let{fromProcess:r}=await import("/$bunfs/root/chunk-ybfwawea.js");return r(e)(o)},async(o)=>{e.logger?.debug("@aws-sdk/credential-provider
+
+CredentialsProviderError: Could not load credentials from any providers
+ tryNextLink: false,
+
+      at <anonymous> (/$bunfs/root/chunk-e4m6p2d3.js:10:1286)
+      at <anonymous> (/$bunfs/root/chunk-e4m6p2d3.js:2:6658)
+ 5 |     Both AWS_PROFILE and the pair AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY static credentials are set.
+ 6 |     This SDK will proceed with the AWS_PROFILE value.
+ 7 | 
+ 8 |     However, a future version may change this behavior to prefer the ENV static credentials.
+ 9 |     Please ensure that your environment only sets either the AWS_PROFILE or the
+10 | `),Y=!0}throw new p.CredentialsProviderError("AWS_PROFILE is set, skipping fromEnv provider.",{logger:e.logger,tryNextLink:!0})}return e.logger?.debug("@aws-sdk/credential-provider-node - defaultProvider::fromEnv"),v(e)()},async(o)=>{e.logger?.debug("@aws-sdk/credential-provider-node - defaultProvider::fromSSO");let{ssoStartUrl:r,ssoAccountId:t,ssoRegion:n,ssoRoleName:c,ssoSession:a}=e;if(!r&&!t&&!n&&!c&&!a)throw new p.CredentialsProviderError("Skipping SSO provider in default chain (inputs do not include SSO fields).",{logger:e.logger});let{fromSSO:l}=await import("/$bunfs/root/chunk-ww7rqhkv.js");return l(e)(o)},async(o)=>{e.logger?.debug("@aws-sdk/credential-provider-node - defaultProvider::fromIni");let{fromIni:r}=await import("/$bunfs/root/chunk-g129e1dg.js");return r(e)(o)},async(o)=>{e.logger?.debug("@aws-sdk/credential-provider-node - defaultProvider::fromProcess");let{fromProcess:r}=await import("/$bunfs/root/chunk-ybfwawea.js");return r(e)(o)},async(o)=>{e.logger?.debug("@aws-sdk/credential-provider
+
+CredentialsProviderError: Could not load credentials from any providers
+ tryNextLink: false,
+
+      at <anonymous> (/$bunfs/root/chunk-e4m6p2d3.js:10:1286)
+      at <anonymous> (/$bunfs/root/chunk-e4m6p2d3.js:2:6658)

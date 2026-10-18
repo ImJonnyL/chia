@@ -1,0 +1,24 @@
+{
+  "issue_number": 7531,
+  "model_name": "kimi-k2-5",
+  "model": "amazon-bedrock/moonshotai.kimi-k2.5",
+  "stage": "assess",
+  "command": [
+    "/home/ubuntu/chia/examples/circt_issue_solver/fix_issues_submit.sh",
+    "--backend",
+    "opencode",
+    "--model",
+    "amazon-bedrock/moonshotai.kimi-k2.5",
+    "--issues-dir",
+    "/home/ubuntu/chia/examples/circt_issue_solver/issuestouse",
+    "--output-dir",
+    "/home/ubuntu/chia/examples/circt_issue_solver/benchmark_results/issue7531_v1/issue_7531/kimi-k2-5/assess",
+    "--assess-only",
+    "7531"
+  ],
+  "start_timestamp": "2026-10-09T06:24:11.447020+00:00",
+  "status": "completed",
+  "return_code": 0,
+  "finish_timestamp": "2026-10-09T06:26:20.989549+00:00",
+  "elapsed_seconds": 129.5423746669985
+}

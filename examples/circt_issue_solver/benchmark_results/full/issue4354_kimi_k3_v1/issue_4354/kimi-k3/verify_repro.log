@@ -1,0 +1,9 @@
+/workspace/circt/.circtissues/force-name-collision.mlir:15:5: error: 'hw.instance' op has a 'chisel3.util.experimental.ForceNameAnnotation' which would not have a unique Verilog name in module 'ForceNameTop'; instance 'sym_bar' is forced to the same name 'Foo'
+    firrtl.instance foo sym @sym_foo @ForceNameSubmodule()
+    ^
+/workspace/circt/.circtissues/force-name-collision.mlir:15:5: note: see current operation: "hw.instance"() <{argNames = [], inner_sym = #hw<innerSym@sym_foo>, instanceName = "foo", moduleName = @ForceNameSubmodule, parameters = [], resultNames = []}> : () -> ()
+/workspace/circt/.circtissues/force-name-collision.mlir:15:5: error: 'firrtl.instance' op LowerToHW couldn't handle this operation
+    firrtl.instance foo sym @sym_foo @ForceNameSubmodule()
+    ^
+/workspace/circt/.circtissues/force-name-collision.mlir:15:5: note: see current operation: "firrtl.instance"() <{annotations = [], domainInfo = [], inner_sym = #hw<innerSym@sym_foo>, layers = [], moduleName = @ForceNameSubmodule, name = "foo", nameKind = #firrtl<name_kind droppable_name>, portAnnotations = [], portDirections = array<i1>, portNames = []}> : () -> ()
+PASS: LowerToHW errors on non-unique ForceNameAnnotation names.

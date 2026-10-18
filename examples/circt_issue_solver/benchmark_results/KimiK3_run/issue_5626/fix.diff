@@ -1,0 +1,129 @@
+diff --git a/include/circt/Dialect/HW/InnerSymbolNamespace.h b/include/circt/Dialect/HW/InnerSymbolNamespace.h
+index 4acb868..857861a 100644
+--- a/include/circt/Dialect/HW/InnerSymbolNamespace.h
++++ b/include/circt/Dialect/HW/InnerSymbolNamespace.h
+@@ -22,11 +22,11 @@ namespace hw {
+ 
+ struct InnerSymbolNamespace : Namespace {
+   InnerSymbolNamespace() = default;
+-  InnerSymbolNamespace(Operation *module) { add(module); }
++  InnerSymbolNamespace(Operation *module) { addModule(module); }
+ 
+   /// Populate the namespace from a module-like operation. This namespace will
+   /// be composed of the `inner_sym`s of the module's ports and declarations.
+-  void add(Operation *module) {
++  void addModule(Operation *module) {
+     hw::InnerSymbolTable::walkSymbols(
+         module, [&](StringAttr name, const InnerSymTarget &target) {
+           nextIndex.insert({name.getValue(), 0});
+diff --git a/include/circt/Support/Namespace.h b/include/circt/Support/Namespace.h
+index bebc595..1f83ba7 100644
+--- a/include/circt/Support/Namespace.h
++++ b/include/circt/Support/Namespace.h
+@@ -63,6 +63,18 @@ public:
+ 
+   void add(StringRef name) { nextIndex.insert({name, 0}); }
+ 
++  /// Return true if the specified name is already present in the namespace.
++  bool isNameTaken(StringRef name) const {
++    bool r = nextIndex.contains(name);
++    if (r) {
++      llvm::errs() << "DEBUG isNameTaken(" << name << ") = true; contents:";
++      for (auto &e : nextIndex)
++        llvm::errs() << " [" << e.getKey() << "]";
++      llvm::errs() << "\n";
++    }
++    return r;
++  }
++
+   /// Removes a symbol from the namespace. Returns true if the symbol was
+   /// removed, false if the symbol was not found.
+   /// This is only allowed to be called _before_ any call to newName.
+diff --git a/lib/Conversion/FIRRTLToHW/LowerToHW.cpp b/lib/Conversion/FIRRTLToHW/LowerToHW.cpp
+index 024c7d0..559e6b5 100644
+--- a/lib/Conversion/FIRRTLToHW/LowerToHW.cpp
++++ b/lib/Conversion/FIRRTLToHW/LowerToHW.cpp
+@@ -1727,7 +1727,14 @@ struct FIRRTLLowering : public FIRRTLVisitor<FIRRTLLowering, LogicalResult> {
+   FIRRTLLowering(hw::HWModuleOp module, CircuitLoweringState &circuitState)
+       : theModule(module), circuitState(circuitState),
+         builder(module.getLoc(), module.getContext()), moduleNamespace(module),
+-        backedgeBuilder(builder, module.getLoc()) {}
++        backedgeBuilder(builder, module.getLoc()) {
++    // The new HW module only tracks the port symbols so far.  Seed the
++    // namespace with the inner symbols of the old FIRRTL module's operations
++    // as well, since new symbols must not collide with the symbols of
++    // operations that are still being lowered (and erased).
++    if (auto *oldModule = circuitState.getOldModule(module))
++      moduleNamespace.addModule(oldModule);
++  }
+ 
+   LogicalResult run();
+ 
+@@ -1776,10 +1783,33 @@ struct FIRRTLLowering : public FIRRTLVisitor<FIRRTLLowering, LogicalResult> {
+     // TODO: we should be checking for symbol collisions here and renaming as
+     // neccessary. As well, we should record the renamings in a map so that we
+     // can update any InnerRefAttrs that we find.
+-    if (requiresInnerSymbol(op))
++    if (requiresInnerSymbol(op)) {
+       std::tie(attr, std::ignore) = getOrAddInnerSym(
+           op.getContext(), attr, 0,
+           [&]() -> hw::InnerSymbolNamespace & { return moduleNamespace; });
++    } else if (attr) {
++      // The symbol of the erased FIRRTL operation must not occupy a name in
++      // the new module.  Rename any symbol that collides with an inner symbol
++      // of the new module (e.g. a port symbol, or a symbol created earlier
++      // during lowering).
++      SmallVector<hw::InnerSymPropertiesAttr> props;
++      bool renamed = false;
++      for (auto prop : attr) {
++        if (moduleNamespace.isNameTaken(prop.getName().getValue())) {
++          prop = hw::InnerSymPropertiesAttr::get(
++              prop.getContext(),
++              builder.getStringAttr(
++                  moduleNamespace.newName(prop.getName().getValue())),
++              prop.getFieldID(), prop.getSymVisibility());
++          renamed = true;
++        } else {
++          moduleNamespace.add(prop.getName().getValue());
++        }
++        props.push_back(prop);
++      }
++      if (renamed)
++        attr = hw::InnerSymAttr::get(op.getContext(), props);
++    }
+     return attr;
+   }
+ 
+@@ -3836,7 +3866,7 @@ LogicalResult FIRRTLLowering::visitDecl(MemOp op) {
+   auto memDecl = seq::FirMemOp::create(
+       builder, memType, memSummary.readLatency, memSummary.writeLatency,
+       memSummary.readUnderWrite, memSummary.writeUnderWrite, op.getNameAttr(),
+-      op.getInnerSymAttr(), memInit, op.getPrefixAttr(), Attribute{});
++      lowerInnerSymbol(op), memInit, op.getPrefixAttr(), Attribute{});
+ 
+   if (auto parent = op->getParentOfType<hw::HWModuleOp>()) {
+     if (auto file = parent->getAttrOfType<hw::OutputFileAttr>("output_file")) {
+@@ -4030,6 +4060,23 @@ LogicalResult FIRRTLLowering::visitDecl(InstanceOp oldInstance) {
+   // CircuitLoweringState so that this can be moved outside of module once
+   // we're guaranteed to not be a parallel context.
+   auto innerSym = oldInstance.getInnerSymAttr();
++  if (innerSym) {
++    // As with any other operation symbol, the instance's symbol must not
++    // occupy a name already used in the new module.  Symbols may be referenced
++    // by `firrtl.bind` operations that are lowered independently of this
++    // module body, so they cannot be renamed.  Bail out if renaming would be
++    // required to avoid a collision.
++    auto name = innerSym.getSymName().getValue();
++    if (!moduleNamespace.isNameTaken(name))
++      moduleNamespace.add(name);
++    else if (!oldInstance->use_empty())
++      return oldInstance.emitOpError(
++          "inner symbol cannot be renamed to avoid a collision with another "
++          "inner symbol in the module; give the instance a unique symbol");
++    else
++      innerSym = hw::InnerSymAttr::get(
++          builder.getStringAttr(moduleNamespace.newName(name)));
++  }
+   if (oldInstance.getLowerToBind()) {
+     if (!innerSym)
+       std::tie(innerSym, std::ignore) = getOrAddInnerSym(

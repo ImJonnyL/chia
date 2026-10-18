@@ -1,0 +1,53 @@
+{
+  "status": "clear",
+  "reproduced": false,
+  "build_ok": null,
+  "fixed": null,
+  "lit_ok": null,
+  "lit_passed": null,
+  "lit_failed": null,
+  "lit_failures": null,
+  "added": null,
+  "removed": null,
+  "test_paths": null,
+  "notes": null,
+  "model": "amazon-bedrock/us.moonshotai.kimi-k3",
+  "backend": "opencode",
+  "circt_commit": "5dc7f103d714aa40e13cae4fcf7ab98a1912f845",
+  "issue_number": 10571,
+  "llm_usage": {
+    "assess": {
+      "num_turns": 9,
+      "input_tokens": 63,
+      "output_tokens": 13350,
+      "reasoning_tokens": 0,
+      "cache_read": 54267,
+      "cache_write": 11957,
+      "cost_usd": 0.287713635
+    }
+  },
+  "llm_phases": {
+    "assess": {
+      "issue_number": 10571,
+      "phase": "assess",
+      "model": "amazon-bedrock/us.moonshotai.kimi-k3",
+      "backend": "opencode",
+      "session_id": "ses_ee118a884ffe4OxQ4JOnv588gr",
+      "start_timestamp": "2026-10-09T04:23:59.086636+00:00",
+      "end_timestamp": "2026-10-09T04:25:32.372184+00:00",
+      "elapsed_seconds": 93.2855522460004,
+      "aws_region": "us-east-1",
+      "success": true
+    }
+  },
+  "llm_usage_total": {
+    "input_tokens": 63,
+    "output_tokens": 13350,
+    "reasoning_tokens": 0,
+    "cache_read": 54267,
+    "cache_write": 11957,
+    "cost_usd": 0.287713635,
+    "num_turns": 9
+  },
+  "cost_provenance": "cost_usd is OpenCode-reported session cost, not an AWS invoice amount"
+}

@@ -1,0 +1,24 @@
+Chia: forwarding to Ray's CLI
+
+
+Aborted!
+Traceback (most recent call last):
+  File "/home/ubuntu/miniconda3/envs/circtissues/bin/chia", line 6, in <module>
+    sys.exit(main())
+  File "/home/ubuntu/chia/chia/cli/main.py", line 92, in main
+    _dispatch_ray(ray_argv, cluster, apply_overrides=True)
+  File "/home/ubuntu/chia/chia/cli/main.py", line 75, in _dispatch_ray
+    cmd_ray_passthrough(ray_argv, cluster=cluster)
+  File "/home/ubuntu/chia/chia/cli/ray_passthrough.py", line 53, in cmd_ray_passthrough
+    result = subprocess.run(["ray", *ray_argv], env=env)
+  File "/home/ubuntu/miniconda3/envs/circtissues/lib/python3.10/subprocess.py", line 505, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+  File "/home/ubuntu/miniconda3/envs/circtissues/lib/python3.10/subprocess.py", line 1146, in communicate
+    self.wait()
+  File "/home/ubuntu/miniconda3/envs/circtissues/lib/python3.10/subprocess.py", line 1209, in wait
+    return self._wait(timeout=timeout)
+  File "/home/ubuntu/miniconda3/envs/circtissues/lib/python3.10/subprocess.py", line 1959, in _wait
+    (pid, sts) = self._try_wait(0)
+  File "/home/ubuntu/miniconda3/envs/circtissues/lib/python3.10/subprocess.py", line 1917, in _try_wait
+    (pid, sts) = os.waitpid(self.pid, wait_flags)
+KeyboardInterrupt

@@ -1,0 +1,102 @@
+diff --git a/lib/Conversion/FIRRTLToHW/LowerToHW.cpp b/lib/Conversion/FIRRTLToHW/LowerToHW.cpp
+index 024c7d0..0c9b4e9 100644
+--- a/lib/Conversion/FIRRTLToHW/LowerToHW.cpp
++++ b/lib/Conversion/FIRRTLToHW/LowerToHW.cpp
+@@ -1733,6 +1733,7 @@ struct FIRRTLLowering : public FIRRTLVisitor<FIRRTLLowering, LogicalResult> {
+ 
+   // Helpers.
+   Value getOrCreateClockConstant(seq::ClockConst clock);
++  Attribute getOrCreateAggregateClockConstantAttribute(FIRRTLBaseType type);
+   Value getOrCreateIntConstant(const APInt &value);
+   Value getOrCreateIntConstant(unsigned numBits, uint64_t val,
+                                bool isSigned = false) {
+@@ -2351,6 +2352,33 @@ Value FIRRTLLowering::getOrCreateClockConstant(seq::ClockConst clock) {
+   return entry;
+ }
+ 
++/// Return the attribute of a lowered constant zero of the given FIRRTL type,
++/// where every clock-typed field is a `seq.const_clock` low.
++Attribute FIRRTLLowering::getOrCreateAggregateClockConstantAttribute(
++    FIRRTLBaseType type) {
++  if (isa<ClockType>(type))
++    return seq::ClockConstAttr::get(builder.getContext(),
++                                    seq::ClockConst::Low);
++  if (auto intType = dyn_cast<IntType>(type))
++    if (auto width = intType.getWidth())
++      return builder.getIntegerAttr(lowerType(intType), APInt(*width, 0));
++
++  // Recursively construct elements.
++  SmallVector<Attribute> values;
++  if (auto vectorType = dyn_cast<FVectorType>(type)) {
++    values.append(vectorType.getNumElements(),
++                  getOrCreateAggregateClockConstantAttribute(
++                      vectorType.getElementType()));
++    // FIRRTL and HW have a different operand ordering for arrays.
++    std::reverse(values.begin(), values.end());
++  } else {
++    for (auto element : cast<BundleType>(type))
++      values.push_back(
++          getOrCreateAggregateClockConstantAttribute(element.type));
++  }
++  return builder.getArrayAttr(values);
++}
++
+ /// Check to see if we've already lowered the specified constant.  If so,
+ /// return it.  Otherwise create it and put it in the entry block for reuse.
+ Value FIRRTLLowering::getOrCreateIntConstant(const APInt &value) {
+@@ -4840,11 +4868,23 @@ LogicalResult FIRRTLLowering::visitExpr(InvalidValueOp op) {
+   // We lower invalid to 0.  TODO: the FIRRTL spec mentions something about
+   // lowering it to a random value, we should see if this is what we need to
+   // do.
+-  if (auto bitwidth =
+-          firrtl::getBitWidth(type_cast<FIRRTLBaseType>(op.getType()))) {
++  auto baseType = type_cast<FIRRTLBaseType>(op.getType());
++  if (auto bitwidth = firrtl::getBitWidth(baseType)) {
+     if (*bitwidth == 0) // Let the caller handle zero width values.
+       return failure();
+ 
++    // Clocks have no known hardware bitwidth and cannot be bitcast from an
++    // integer constant, so emit a constant with `seq.const_clock` for every
++    // clock-typed field instead.
++    if (hw::getBitWidth(resultTy) < 0) {
++      if (isa<ClockType>(baseType))
++        return setLowering(op, getOrCreateClockConstant(seq::ClockConst::Low));
++      return setLoweringTo<hw::AggregateConstantOp>(
++          op, resultTy,
++          cast<ArrayAttr>(
++              getOrCreateAggregateClockConstantAttribute(baseType)));
++    }
++
+     auto constant = getOrCreateIntConstant(*bitwidth, 0);
+     // If the result is an aggregate value, we have to bitcast the constant.
+     if (!type_isa<IntegerType>(resultTy))
+diff --git a/test/Conversion/FIRRTLToHW/lower-to-hw.mlir b/test/Conversion/FIRRTLToHW/lower-to-hw.mlir
+index 22a3955..ce1055c 100644
+--- a/test/Conversion/FIRRTLToHW/lower-to-hw.mlir
++++ b/test/Conversion/FIRRTLToHW/lower-to-hw.mlir
+@@ -1206,6 +1206,25 @@ firrtl.circuit "Simple"   attributes {annotations = [{class =
+     // CHECK-NEXT: %reg = seq.firreg %reg clock %clock reset sync %reset, %0 : !hw.struct<a: i1, b: !hw.array<10xi10>>
+   }
+ 
++  // https://github.com/llvm/circt/issues/6740
++  // CHECK-LABEL: hw.module private @InvalidClockValue
++  firrtl.module private @InvalidClockValue() {
++    // CHECK-NEXT: [[CLOCK:%.+]] = seq.const_clock low
++    // CHECK-NEXT: hw.wire [[CLOCK]] : !seq.clock
++    %a = firrtl.wire : !firrtl.clock
++    %b = firrtl.invalidvalue : !firrtl.clock
++    firrtl.connect %a, %b : !firrtl.clock, !firrtl.clock
++  }
++
++  // CHECK-LABEL: hw.module private @InvalidClockAggregateValue
++  firrtl.module private @InvalidClockAggregateValue() {
++    // CHECK-NEXT: hw.wire [[AGG:%.+]] : !hw.struct<a: i2, b: !seq.clock>
++    // CHECK-NEXT: [[AGG]] = hw.aggregate_constant [0 : i2, #seq<clock_constant low> : !seq.clock] : !hw.struct<a: i2, b: !seq.clock>
++    %a = firrtl.wire : !firrtl.bundle<a: uint<2>, b: clock>
++    %b = firrtl.invalidvalue : !firrtl.bundle<a: uint<2>, b: clock>
++    firrtl.connect %a, %b : !firrtl.bundle<a: uint<2>, b: clock>, !firrtl.bundle<a: uint<2>, b: clock>
++  }
++
+   // CHECK-LABEL: hw.module private @ForceNameSubmodule
+   hw.hierpath private @nla_1 [@ForceNameTop::@sym_foo, @ForceNameSubmodule]
+   hw.hierpath private @nla_2 [@ForceNameTop::@sym_bar, @ForceNameSubmodule]

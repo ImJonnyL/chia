@@ -1,0 +1,20 @@
+ninja: Entering directory `/workspace/circt/build'
+[1/19] Building CXX object lib/Target/DebugInfo/CMakeFiles/obj.CIRCTTargetDebugInfo.dir/EmitHGLDD.cpp.o
+[2/19] Linking CXX static library lib/libCIRCTTargetDebugInfo.a
+[3/19] Building CXX object lib/Dialect/FIRRTL/Export/CMakeFiles/obj.CIRCTExportFIRRTL.dir/FIREmitter.cpp.o
+[4/19] Linking CXX static library lib/libCIRCTExportFIRRTL.a
+[5/19] Building CXX object lib/Tools/arcilator/CMakeFiles/obj.CIRCTArcilator.dir/pipelines.cpp.o
+[6/19] Linking CXX static library lib/libCIRCTArcilator.a
+[7/19] Building CXX object tools/circt-lec/CMakeFiles/circt-lec.dir/circt-lec.cpp.o
+[8/19] Linking CXX executable bin/circt-lec
+[9/19] Building CXX object lib/Dialect/FIRRTL/Import/CMakeFiles/obj.CIRCTImportFIRFile.dir/FIRParser.cpp.o
+[10/19] Linking CXX static library lib/libCIRCTImportFIRFile.a
+[11/19] Linking CXX executable bin/circt-translate
+[12/19] Building CXX object tools/circt-bmc/CMakeFiles/circt-bmc.dir/circt-bmc.cpp.o
+[13/19] Linking CXX executable bin/circt-bmc
+[14/19] Building CXX object lib/Firtool/CMakeFiles/obj.CIRCTFirtool.dir/Firtool.cpp.o
+[15/19] Linking CXX static library lib/libCIRCTFirtool.a
+[16/19] Building CXX object tools/arcilator/CMakeFiles/arcilator.dir/arcilator.cpp.o
+[17/19] Linking CXX executable bin/arcilator
+[18/19] Building CXX object tools/firtool/CMakeFiles/firtool.dir/firtool.cpp.o
+[19/19] Linking CXX executable bin/firtool

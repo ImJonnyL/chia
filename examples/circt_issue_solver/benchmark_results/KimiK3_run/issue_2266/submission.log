@@ -1,0 +1,129 @@
+Chia: forwarding to Ray's CLI
+
+[37mJob submission server address[39m: [1mhttp://localhost:8265[22m
+
+[32m-------------------------------------------------------[39m
+[32mJob 'raysubmit_iJKWeKvvPHGz664y' submitted successfully[39m
+[32m-------------------------------------------------------[39m
+
+[36mNext steps[39m
+  Query the logs of the job:
+    [1mray job logs raysubmit_iJKWeKvvPHGz664y[22m
+  Query the status of the job:
+    [1mray job status raysubmit_iJKWeKvvPHGz664y[22m
+  Request the job to be stopped:
+    [1mray job stop raysubmit_iJKWeKvvPHGz664y[22m
+
+Tailing logs until the job exits (disable with --no-wait):
+2026-10-17 18:39:37,309	INFO job_manager.py:587 -- Runtime env is setting up.
+Running entrypoint for job raysubmit_iJKWeKvvPHGz664y: python /home/ubuntu/chia/examples/circt_issue_solver/circt_issue_loop.py --backend opencode --model amazon-bedrock/us.moonshotai.kimi-k3 --issues-dir /home/ubuntu/chia/examples/circt_issue_solver/issuestouse --issue 2266 --output-dir /home/ubuntu/chia/examples/circt_issue_solver/benchmark_results/KimiK3_run/issue_2266
+2026-10-17 18:39:38,746 INFO circtissues: LLM backend=opencode model=amazon-bedrock/us.moonshotai.kimi-k3
+/home/ubuntu/miniconda3/envs/circtissues/lib/python3.10/site-packages/ray/_private/worker.py:2052: FutureWarning: Tip: In future versions of Ray, Ray will no longer override accelerator visible devices env var if num_gpus=0 or num_gpus=None (default). To enable this behavior and turn off this error message, set RAY_ACCEL_ENV_VAR_OVERRIDE_ON_ZERO=0
+  warnings.warn(
+2026-10-17 18:39:39,923 INFO circtissues: local corpus selected 1: [2266]
+[36m(run_issue_remote pid=198)[0m /home/ray/anaconda3/envs/py_worker/lib/python3.10/site-packages/pydantic_settings/sources/utils.py:47: IncompleteFieldDefinitionWarning: Field 'lifespan' has an incomplete definition: its annotation contains an unresolved forward reference, so settings sources may fail to correctly resolve its value. Call `model_rebuild()` on the model where the field is defined, once all the referenced types are defined.
+[36m(run_issue_remote pid=198)[0m   warnings.warn(
+[36m(_ToolServerActor pid=199)[0m INFO:     Started server process [199]
+[36m(_ToolServerActor pid=199)[0m INFO:     Waiting for application startup.
+[36m(_ToolServerActor pid=199)[0m INFO:     Application startup complete.
+[36m(_ToolServerActor pid=199)[0m INFO:     Uvicorn running on http://172.31.38.160:8000 (Press CTRL+C to quit)
+[36m(run_issue_remote pid=198)[0m bash_2266 started at 172.31.38.160:8000 on node 191b8de0f7612a3d87dff78a86d7ba3580ed6d0ab63dfac666fbc069
+[36m(_ToolServerActor pid=4684)[0m ERROR:    [Errno 98] error while attempting to bind on address ('172.31.38.160', 8000): address already in use
+[36m(_ToolServerActor pid=4684)[0m INFO:     Waiting for application shutdown.
+[36m(_ToolServerActor pid=4684)[0m INFO:     Application shutdown complete.
+[36m(_ToolServerActor pid=4684)[0m INFO:     Started server process [4684][32m [repeated 2x across cluster] (Ray deduplicates logs by default. Set RAY_DEDUP_LOGS=0 to disable log deduplication, or see https://docs.ray.io/en/master/ray-observability/user-guides/configure-logging.html#log-deduplication for more options.)[0m
+[36m(_ToolServerActor pid=4684)[0m INFO:     Waiting for application startup.[32m [repeated 2x across cluster][0m
+[36m(_ToolServerActor pid=4684)[0m INFO:     Application startup complete.[32m [repeated 2x across cluster][0m
+[36m(_ToolServerActor pid=4684)[0m INFO:     Uvicorn running on http://172.31.38.160:8001 (Press CTRL+C to quit)
+[36m(run_issue_remote pid=198)[0m build_2266 started at 172.31.38.160:8001 on node 191b8de0f7612a3d87dff78a86d7ba3580ed6d0ab63dfac666fbc069
+[36m(_ToolServerActor pid=4722)[0m ERROR:    [Errno 98] error while attempting to bind on address ('172.31.38.160', 8000): address already in use
+[36m(_ToolServerActor pid=4722)[0m INFO:     Waiting for application shutdown.
+[36m(_ToolServerActor pid=4722)[0m INFO:     Application shutdown complete.
+[36m(_ToolServerActor pid=4722)[0m ERROR:    [Errno 98] error while attempting to bind on address ('172.31.38.160', 8001): address already in use
+[36m(_ToolServerActor pid=4722)[0m INFO:     Waiting for application shutdown.
+[36m(_ToolServerActor pid=4722)[0m INFO:     Application shutdown complete.
+[36m(_ToolServerActor pid=4722)[0m INFO:     Started server process [4722][32m [repeated 2x across cluster][0m
+[36m(_ToolServerActor pid=4722)[0m INFO:     Waiting for application startup.[32m [repeated 2x across cluster][0m
+[36m(_ToolServerActor pid=4722)[0m INFO:     Application startup complete.[32m [repeated 2x across cluster][0m
+[36m(_ToolServerActor pid=4722)[0m INFO:     Uvicorn running on http://172.31.38.160:8002 (Press CTRL+C to quit)
+[36m(_ToolServerActor pid=4722)[0m INFO:     Started server process [4722]
+[36m(_ToolServerActor pid=4722)[0m INFO:     Waiting for application startup.
+[36m(_ToolServerActor pid=4722)[0m INFO:     Application startup complete.
+[36m(run_issue_remote pid=198)[0m lit_2266 started at 172.31.38.160:8002 on node 191b8de0f7612a3d87dff78a86d7ba3580ed6d0ab63dfac666fbc069
+[36m(run_issue_remote pid=198)[0m OpenCodeLLM is experimental: only exercised by unit tests so far, not validated in production.
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:52340 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:52340 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:52340 - "GET /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:52344 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:58586 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:58586 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:58590 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:58594 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:58586 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:58586 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:58586 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:58586 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:48388 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:48388 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:48402 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:48388 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:48388 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:48388 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:44544 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:44544 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:44544 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:44544 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:42168 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:42168 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:42168 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:42168 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:42168 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:42168 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:42168 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:42168 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:42168 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:42168 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:42168 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:42168 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:42168 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:42168 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:42168 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:42168 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:42168 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:42168 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:42168 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:42168 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:42168 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:42168 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:42168 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:42168 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:42168 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:42168 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:42168 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:42168 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:42168 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:42168 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:42168 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:42168 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:45380 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:45380 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:45380 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:45380 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:39092 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:39092 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:39092 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=199)[0m INFO:     172.31.38.160:39092 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=4722)[0m INFO:     Shutting down
+[36m(_ToolServerActor pid=4722)[0m INFO:     Waiting for application shutdown.
+[36m(_ToolServerActor pid=4722)[0m INFO:     Application shutdown complete.
+[36m(_ToolServerActor pid=4722)[0m INFO:     Finished server process [4722]
+2026-10-17 19:15:59,829 INFO circtissues: issue #2266 -> not_a_bug  (+None/-None, lit_ok=None)
+[36m(_ToolServerActor pid=199)[0m INFO:     Shutting down[32m [repeated 2x across cluster][0m
+[36m(_ToolServerActor pid=199)[0m INFO:     Waiting for application shutdown.[32m [repeated 2x across cluster][0m
+[36m(_ToolServerActor pid=199)[0m INFO:     Application shutdown complete.[32m [repeated 2x across cluster][0m
+[36m(_ToolServerActor pid=199)[0m INFO:     Finished server process [199][32m [repeated 2x across cluster][0m
+
+[32m------------------------------------------[39m
+[32mJob 'raysubmit_iJKWeKvvPHGz664y' succeeded[39m
+[32m------------------------------------------[39m
+

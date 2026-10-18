@@ -1,0 +1,53 @@
+{
+  "status": "not_a_bug",
+  "reproduced": false,
+  "build_ok": null,
+  "fixed": null,
+  "lit_ok": null,
+  "lit_passed": null,
+  "lit_failed": null,
+  "lit_failures": null,
+  "added": null,
+  "removed": null,
+  "test_paths": null,
+  "notes": "This is a missed-canonicalization/enhancement request: the input is valid, nothing crashes or miscompiles, and the reporter's own end-to-end output is shown to be correct. The issue asks for additional zero-width folding rules (with the reporter floating a broader design approach in the final comment), which is a feature/optimization request rather than a defect.",
+  "model": "amazon-bedrock/us.moonshotai.kimi-k3",
+  "backend": "opencode",
+  "circt_commit": "5dc7f103d714aa40e13cae4fcf7ab98a1912f845",
+  "issue_number": 4396,
+  "llm_usage": {
+    "assess": {
+      "num_turns": 5,
+      "input_tokens": 35,
+      "output_tokens": 1654,
+      "reasoning_tokens": 0,
+      "cache_read": 34942,
+      "cache_write": 10012,
+      "cost_usd": 0.08023686000000001
+    }
+  },
+  "llm_phases": {
+    "assess": {
+      "issue_number": 4396,
+      "phase": "assess",
+      "model": "amazon-bedrock/us.moonshotai.kimi-k3",
+      "backend": "opencode",
+      "session_id": "ses_eb490d999fferqaMQ1tPR6U4eQ",
+      "start_timestamp": "2026-10-17T19:55:36.938663+00:00",
+      "end_timestamp": "2026-10-17T19:56:18.590657+00:00",
+      "elapsed_seconds": 41.65199713900074,
+      "aws_region": "us-east-1",
+      "success": true
+    }
+  },
+  "llm_usage_total": {
+    "input_tokens": 35,
+    "output_tokens": 1654,
+    "reasoning_tokens": 0,
+    "cache_read": 34942,
+    "cache_write": 10012,
+    "cost_usd": 0.08023686000000001,
+    "num_turns": 5
+  },
+  "cost_provenance": "cost_usd is OpenCode-reported session cost, not an AWS invoice amount"
+}

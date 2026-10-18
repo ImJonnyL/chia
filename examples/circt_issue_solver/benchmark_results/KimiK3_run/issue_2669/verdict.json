@@ -1,0 +1,53 @@
+{
+  "status": "not_a_bug",
+  "reproduced": false,
+  "build_ok": null,
+  "fixed": null,
+  "lit_ok": null,
+  "lit_passed": null,
+  "lit_failed": null,
+  "lit_failures": null,
+  "added": null,
+  "removed": null,
+  "test_paths": null,
+  "notes": "The reporter explicitly states the output is semantically correct; the issue is a Verilog output-prettiness/enhancement request, not a defect. Extending binop operands to the destination width is the documented, intentional convention of the FIRRTL-to-HW lowering (HW dialect ops require uniform operand/result types), so the behavior is working as intended.",
+  "model": "amazon-bedrock/us.moonshotai.kimi-k3",
+  "backend": "opencode",
+  "circt_commit": "5dc7f103d714aa40e13cae4fcf7ab98a1912f845",
+  "issue_number": 2669,
+  "llm_usage": {
+    "assess": {
+      "num_turns": 8,
+      "input_tokens": 56,
+      "output_tokens": 2487,
+      "reasoning_tokens": 0,
+      "cache_read": 33350,
+      "cache_write": 6104,
+      "cost_usd": 0.0774048
+    }
+  },
+  "llm_phases": {
+    "assess": {
+      "issue_number": 2669,
+      "phase": "assess",
+      "model": "amazon-bedrock/us.moonshotai.kimi-k3",
+      "backend": "opencode",
+      "session_id": "ses_eb4b4a964ffe9JSUR5JXQ89UqH",
+      "start_timestamp": "2026-10-17T19:16:29.681451+00:00",
+      "end_timestamp": "2026-10-17T19:17:30.940053+00:00",
+      "elapsed_seconds": 61.258613464999144,
+      "aws_region": "us-east-1",
+      "success": true
+    }
+  },
+  "llm_usage_total": {
+    "input_tokens": 56,
+    "output_tokens": 2487,
+    "reasoning_tokens": 0,
+    "cache_read": 33350,
+    "cache_write": 6104,
+    "cost_usd": 0.0774048,
+    "num_turns": 8
+  },
+  "cost_provenance": "cost_usd is OpenCode-reported session cost, not an AWS invoice amount"
+}

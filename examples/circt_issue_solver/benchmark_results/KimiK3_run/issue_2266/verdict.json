@@ -1,0 +1,53 @@
+{
+  "status": "not_a_bug",
+  "reproduced": false,
+  "build_ok": null,
+  "fixed": null,
+  "lit_ok": null,
+  "lit_passed": null,
+  "lit_failed": null,
+  "lit_failures": null,
+  "added": null,
+  "removed": null,
+  "test_paths": null,
+  "notes": "The `8<` file-list/file concatenation in single-file `-verilog` is the deliberate, in-tree-tested design of the unified ExportVerilog emitter (a debug/convenience \"all files in one stream\" view), with `-split-verilog` as the intended production path; the maintainer explicitly stated `-verilog` \"will not in general produce valid verilog\" and is only for compiler test cases. The exact `firrtl_black_box_resource_files.f` mechanism reported no longer exists at this release (clean Verilog is emitted for blackbox designs). Whether/how to change the intended behavior (filter `.f` files vs. hide/deprecate `--verilog` vs. status quo) is an unsettled design decision, not a defect.",
+  "model": "amazon-bedrock/us.moonshotai.kimi-k3",
+  "backend": "opencode",
+  "circt_commit": "5dc7f103d714aa40e13cae4fcf7ab98a1912f845",
+  "issue_number": 2266,
+  "llm_usage": {
+    "assess": {
+      "num_turns": 15,
+      "input_tokens": 105,
+      "output_tokens": 11495,
+      "reasoning_tokens": 0,
+      "cache_read": 112705,
+      "cache_write": 12040,
+      "cost_usd": 0.27687164999999997
+    }
+  },
+  "llm_phases": {
+    "assess": {
+      "issue_number": 2266,
+      "phase": "assess",
+      "model": "amazon-bedrock/us.moonshotai.kimi-k3",
+      "backend": "opencode",
+      "session_id": "ses_eb4b78d92ffeB8rsq41MXeYUu5",
+      "start_timestamp": "2026-10-17T19:13:20.206110+00:00",
+      "end_timestamp": "2026-10-17T19:15:59.237509+00:00",
+      "elapsed_seconds": 159.03140524900118,
+      "aws_region": "us-east-1",
+      "success": true
+    }
+  },
+  "llm_usage_total": {
+    "input_tokens": 105,
+    "output_tokens": 11495,
+    "reasoning_tokens": 0,
+    "cache_read": 112705,
+    "cache_write": 12040,
+    "cost_usd": 0.27687164999999997,
+    "num_turns": 15
+  },
+  "cost_provenance": "cost_usd is OpenCode-reported session cost, not an AWS invoice amount"
+}

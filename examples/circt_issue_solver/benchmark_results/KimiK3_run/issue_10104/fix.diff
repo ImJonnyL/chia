@@ -1,0 +1,191 @@
+diff --git a/lib/Dialect/FIRRTL/Transforms/ExpandWhens.cpp b/lib/Dialect/FIRRTL/Transforms/ExpandWhens.cpp
+index c3fe48f..b1919d3 100644
+--- a/lib/Dialect/FIRRTL/Transforms/ExpandWhens.cpp
++++ b/lib/Dialect/FIRRTL/Transforms/ExpandWhens.cpp
+@@ -526,8 +526,10 @@ namespace {
+ class WhenOpVisitor : public LastConnectResolver<WhenOpVisitor> {
+ 
+ public:
+-  WhenOpVisitor(ScopedDriverMap &driverMap, Value condition)
+-      : LastConnectResolver<WhenOpVisitor>(driverMap), condition(condition) {}
++  WhenOpVisitor(ScopedDriverMap &driverMap, Value condition,
++                Operation *insertionPoint)
++      : LastConnectResolver<WhenOpVisitor>(driverMap), condition(condition),
++        insertionPoint(insertionPoint) {}
+ 
+   using LastConnectResolver<WhenOpVisitor>::visitExpr;
+   using LastConnectResolver<WhenOpVisitor>::visitDecl;
+@@ -567,6 +569,15 @@ private:
+         condition.getLoc(), condition.getType(), condition, value);
+   }
+ 
++  /// Return a builder which inserts before the WhenOp being expanded. New
++  /// `ltl.and`, `ltl.implication`, and `ltl.clock` operations created for
++  /// simulation constructs must be inserted outside of any enclosing
++  /// LayerBlockOp: the operations are cached and may be reused by simulation
++  /// constructs in other layer blocks, but the layer block regions are
++  /// isolated from above, so an operation created inside one layer block
++  /// would not dominate its uses in a sibling layer block.
++  OpBuilder getLTLBuilder() { return OpBuilder(insertionPoint); }
++
+   /// Concurrent and of a property with the current condition.  If we are in
+   /// the outer scope, i.e. not in a WhenOp region, then there is no condition.
+   Value ltlAndWithCondition(Operation *op, Value property) {
+@@ -579,7 +590,7 @@ private:
+       auto input = ltlAndWithCondition(op, clockOp.getInput());
+       auto &newClockOp = createdLTLClockOps[{clockOp, input}];
+       if (!newClockOp) {
+-        newClockOp = OpBuilder(op).cloneWithoutRegions(clockOp);
++        newClockOp = getLTLBuilder().cloneWithoutRegions(clockOp);
+         newClockOp.getInputMutable().assign(input);
+       }
+       return newClockOp;
+@@ -588,7 +599,7 @@ private:
+     // Otherwise create a new `ltl.and` with the condition.
+     auto &newOp = createdLTLAndOps[{condition, property}];
+     if (!newOp)
+-      newOp = OpBuilder(op).createOrFold<LTLAndIntrinsicOp>(
++      newOp = getLTLBuilder().createOrFold<LTLAndIntrinsicOp>(
+           condition.getLoc(), property.getType(), condition, property);
+     return newOp;
+   }
+@@ -606,7 +617,7 @@ private:
+       auto input = ltlImplicationWithCondition(op, clockOp.getInput());
+       auto &newClockOp = createdLTLClockOps[{clockOp, input}];
+       if (!newClockOp) {
+-        newClockOp = OpBuilder(op).cloneWithoutRegions(clockOp);
++        newClockOp = getLTLBuilder().cloneWithoutRegions(clockOp);
+         newClockOp.getInputMutable().assign(input);
+       }
+       return newClockOp;
+@@ -617,7 +628,7 @@ private:
+       auto lhs = ltlAndWithCondition(op, implOp.getLhs());
+       auto &newImplOp = createdLTLImplicationOps[{lhs, implOp.getRhs()}];
+       if (!newImplOp) {
+-        auto clonedOp = OpBuilder(op).cloneWithoutRegions(implOp);
++        auto clonedOp = getLTLBuilder().cloneWithoutRegions(implOp);
+         clonedOp.getLhsMutable().assign(lhs);
+         newImplOp = clonedOp;
+       }
+@@ -627,7 +638,7 @@ private:
+     // Otherwise create a new `ltl.implication` with the condition on the LHS.
+     auto &newImplOp = createdLTLImplicationOps[{condition, property}];
+     if (!newImplOp)
+-      newImplOp = OpBuilder(op).createOrFold<LTLImplicationIntrinsicOp>(
++      newImplOp = getLTLBuilder().createOrFold<LTLImplicationIntrinsicOp>(
+           condition.getLoc(), property.getType(), condition, property);
+     return newImplOp;
+   }
+@@ -636,6 +647,10 @@ private:
+   /// The current wrapping condition. If null, we are in the outer scope.
+   Value condition;
+ 
++  /// The operation before which the `ltl.and`, `ltl.implication`, and
++  /// `ltl.clock` operations created by this visitor are inserted.
++  Operation *insertionPoint;
++
+   /// The `ltl.and` operations that have been created.
+   SmallDenseMap<std::pair<Value, Value>, Value> createdLTLAndOps;
+ 
+@@ -759,7 +774,7 @@ void LastConnectResolver<ConcreteT>::processWhenOp(WhenOp whenOp,
+ 
+   auto &thenBlock = whenOp.getThenBlock();
+   driverMap.pushScope();
+-  WhenOpVisitor(driverMap, thenCondition).process(thenBlock);
++  WhenOpVisitor(driverMap, thenCondition, whenOp).process(thenBlock);
+   mergeBlock(*parentBlock, Block::iterator(whenOp), thenBlock);
+   auto thenScope = driverMap.popScope();
+ 
+@@ -775,7 +790,7 @@ void LastConnectResolver<ConcreteT>::processWhenOp(WhenOp whenOp,
+                                                 elseCondition);
+     auto &elseBlock = whenOp.getElseBlock();
+     driverMap.pushScope();
+-    WhenOpVisitor(driverMap, elseCondition).process(elseBlock);
++    WhenOpVisitor(driverMap, elseCondition, whenOp).process(elseBlock);
+     mergeBlock(*parentBlock, Block::iterator(whenOp), elseBlock);
+     elseScope = driverMap.popScope();
+   }
+diff --git a/test/Dialect/FIRRTL/expand-whens.mlir b/test/Dialect/FIRRTL/expand-whens.mlir
+index 03c4148..a29878e 100644
+--- a/test/Dialect/FIRRTL/expand-whens.mlir
++++ b/test/Dialect/FIRRTL/expand-whens.mlir
+@@ -696,6 +696,8 @@ firrtl.module @WhenAroundPropertyAssertAssumeCover(
+     // CHECK: [[TMP1:%.+]] = firrtl.int.ltl.and %a, %b
+     // CHECK: [[TMP2:%.+]] = firrtl.int.ltl.implication [[TMP1]], %c
+     // CHECK: [[TMP3:%.+]] = firrtl.int.ltl.clock [[TMP2]], %clock
++    // CHECK: [[TMP4:%.+]] = firrtl.int.ltl.and %a, [[P0]]
++    // CHECK: [[TMP5:%.+]] = firrtl.int.ltl.clock [[TMP4]], %clock
+     // CHECK: firrtl.int.verif.assert [[TMP3]], %d :
+     // CHECK: firrtl.int.verif.assert [[TMP3]] :
+     // CHECK: firrtl.int.verif.assume [[TMP3]], %d :
+@@ -704,10 +706,8 @@ firrtl.module @WhenAroundPropertyAssertAssumeCover(
+     firrtl.int.verif.assert %p1 : !firrtl.uint<1>
+     firrtl.int.verif.assume %p1, %d : !firrtl.uint<1>, !firrtl.uint<1>
+     firrtl.int.verif.assume %p1 : !firrtl.uint<1>
+-    // CHECK: [[TMP1:%.+]] = firrtl.int.ltl.and %a, [[P0]]
+-    // CHECK: [[TMP2:%.+]] = firrtl.int.ltl.clock [[TMP1]], %clock
+-    // CHECK: firrtl.int.verif.cover [[TMP2]], %d :
+-    // CHECK: firrtl.int.verif.cover [[TMP2]] :
++    // CHECK: firrtl.int.verif.cover [[TMP5]], %d :
++    // CHECK: firrtl.int.verif.cover [[TMP5]] :
+     firrtl.int.verif.cover %p1, %d : !firrtl.uint<1>, !firrtl.uint<1>
+     firrtl.int.verif.cover %p1 : !firrtl.uint<1>
+   } else {
+@@ -715,6 +715,8 @@ firrtl.module @WhenAroundPropertyAssertAssumeCover(
+     // CHECK: [[TMP1:%.+]] = firrtl.int.ltl.and [[NOTA]], %b
+     // CHECK: [[TMP2:%.+]] = firrtl.int.ltl.implication [[TMP1]], %c
+     // CHECK: [[TMP3:%.+]] = firrtl.int.ltl.clock [[TMP2]], %clock
++    // CHECK: [[TMP4:%.+]] = firrtl.int.ltl.and [[NOTA]], [[P0]]
++    // CHECK: [[TMP5:%.+]] = firrtl.int.ltl.clock [[TMP4]], %clock
+     // CHECK: firrtl.int.verif.assert [[TMP3]], %d :
+     // CHECK: firrtl.int.verif.assert [[TMP3]] :
+     // CHECK: firrtl.int.verif.assume [[TMP3]], %d :
+@@ -723,10 +725,8 @@ firrtl.module @WhenAroundPropertyAssertAssumeCover(
+     firrtl.int.verif.assert %p1 : !firrtl.uint<1>
+     firrtl.int.verif.assume %p1, %d : !firrtl.uint<1>, !firrtl.uint<1>
+     firrtl.int.verif.assume %p1 : !firrtl.uint<1>
+-    // CHECK: [[TMP1:%.+]] = firrtl.int.ltl.and [[NOTA]], [[P0]]
+-    // CHECK: [[TMP2:%.+]] = firrtl.int.ltl.clock [[TMP1]], %clock
+-    // CHECK: firrtl.int.verif.cover [[TMP2]], %d :
+-    // CHECK: firrtl.int.verif.cover [[TMP2]] :
++    // CHECK: firrtl.int.verif.cover [[TMP5]], %d :
++    // CHECK: firrtl.int.verif.cover [[TMP5]] :
+     firrtl.int.verif.cover %p1, %d : !firrtl.uint<1>, !firrtl.uint<1>
+     firrtl.int.verif.cover %p1 : !firrtl.uint<1>
+   }
+@@ -752,6 +752,35 @@ firrtl.module @dpi(
+   }
+ }
+ 
++// The cached `ltl.and`, `ltl.implication`, and `ltl.clock` operations created
++// for simulation constructs inside a layer block must be placed outside of
++// the layer block, since they may be shared with simulation constructs in
++// sibling layer blocks. See https://github.com/llvm/circt/issues/10104.
++firrtl.layer @LayerWithVerifOps bind {}
++// CHECK-LABEL: firrtl.module @LayerBlocksWithSharedImplications
++firrtl.module @LayerBlocksWithSharedImplications(in %cond : !firrtl.uint<1>) {
++  // CHECK: [[AND:%.+]] = firrtl.int.ltl.and %cond, %cond :
++  // CHECK-NEXT: [[IMPL:%.+]] = firrtl.int.ltl.implication [[AND]], %cond :
++  // CHECK-NEXT: firrtl.layerblock @LayerWithVerifOps {
++  // CHECK-NEXT:   [[IMPL0:%.+]] = firrtl.int.ltl.implication %cond, %cond :
++  // CHECK-NEXT:   firrtl.int.verif.assert [[IMPL]], %cond :
++  // CHECK-NEXT: }
++  // CHECK-NEXT: firrtl.layerblock @LayerWithVerifOps {
++  // CHECK-NEXT:   [[IMPL1:%.+]] = firrtl.int.ltl.implication %cond, %cond :
++  // CHECK-NEXT:   firrtl.int.verif.assert [[IMPL]], %cond :
++  // CHECK-NEXT: }
++  firrtl.when %cond : !firrtl.uint<1> {
++    firrtl.layerblock @LayerWithVerifOps {
++      %0 = firrtl.int.ltl.implication %cond, %cond : (!firrtl.uint<1>, !firrtl.uint<1>) -> !firrtl.uint<1>
++      firrtl.int.verif.assert %0, %cond : !firrtl.uint<1>, !firrtl.uint<1>
++    }
++    firrtl.layerblock @LayerWithVerifOps {
++      %1 = firrtl.int.ltl.implication %cond, %cond : (!firrtl.uint<1>, !firrtl.uint<1>) -> !firrtl.uint<1>
++      firrtl.int.verif.assert %1, %cond : !firrtl.uint<1>, !firrtl.uint<1>
++    }
++  }
++}
++
+ // Test that instance_choice works with expand-whens initialization coverage.
+ firrtl.option @Platform {
+   firrtl.option_case @FPGA

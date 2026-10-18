@@ -10,6 +10,74 @@ flows only read.**
 
 ## Setup
 
+### Bedrock: full run from a fresh terminal
+
+For the frozen local corpus, no GitHub token is needed. On the host, activate
+the existing environment, export AWS settings before creating workers, log in,
+and start the Bedrock cluster:
+
+```bash
+conda activate circtissues
+cd /home/ubuntu/chia/examples/circt_issue_solver
+
+export CHIA_HEAD="$(hostname)"
+export AWS_PROFILE=default
+export AWS_REGION=us-east-1
+export AWS_DEFAULT_REGION="$AWS_REGION"
+export AWS_SDK_LOAD_CONFIG=1
+
+aws login --profile default --remote
+aws sts get-caller-identity --profile default --no-cli-pager
+chia up cluster_opencode_bedrock.yaml
+```
+
+Complete browser login when prompted and answer `y` to cluster startup. The
+cluster keeps AWS configuration read-only and mounts the login cache writable
+so the SDK can refresh credentials. Existing containers retain their mount
+settings; after a configuration change, stop active jobs and recreate workers
+with `chia down cluster_opencode_bedrock.yaml` then `chia up`.
+
+Before the full run, test the selected model on both workers (two paid calls):
+
+```bash
+for worker in \
+  circt_issue_solver_opencode_llm_ubuntu-0 \
+  circt_issue_solver_opencode_llm_ubuntu-1
+do
+  echo "$worker"
+  docker exec "$worker" opencode run --format json \
+    --model amazon-bedrock/us.moonshotai.kimi-k3 \
+    'Reply with exactly PONG. Do not use tools.'
+done
+```
+
+Require PONG and a `step_finish` event from both workers with no errors. Then
+run issue 4354 through assess, reproduce, fix, verify, and writeup (paid calls
+and builds). The assessment can stop the pipeline early if it declines a fix.
+Use a fresh output directory to preserve earlier results:
+
+```bash
+OUTPUT_DIR="$PWD/benchmark_results/full/issue4354_kimi_k3_v1/issue_4354/kimi-k3"
+if [ -e "$OUTPUT_DIR" ]; then
+  echo "Output already exists; change v1 to a new run name."
+else
+  ./fix_issues_submit.sh \
+    --backend opencode \
+    --model amazon-bedrock/us.moonshotai.kimi-k3 \
+    --issues-dir "$PWD/issuestouse" \
+    --issue 4354 \
+    --output-dir "$OUTPUT_DIR"
+fi
+```
+
+Results include `verdict.json`, phase transcripts, verification logs, and any
+generated diff/writeup. See [Bedrock_benchmarking.md](Bedrock_benchmarking.md)
+for model selection, assessment batches, and troubleshooting. To check jobs,
+run `chia job list --address http://localhost:8265`; to stop one, use
+`chia job stop JOB_ID`. Leaving the terminal does not stop submitted Ray jobs.
+
+### Original GitHub and Claude setup
+
 `config.py` pins the repo (both flows read it):
 
 ```python

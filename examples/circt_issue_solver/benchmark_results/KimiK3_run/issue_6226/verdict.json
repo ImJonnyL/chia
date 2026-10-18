@@ -1,0 +1,53 @@
+{
+  "status": "not_a_bug",
+  "reproduced": false,
+  "build_ok": null,
+  "fixed": null,
+  "lit_ok": null,
+  "lit_passed": null,
+  "lit_failed": null,
+  "lit_failures": null,
+  "added": null,
+  "removed": null,
+  "test_paths": null,
+  "notes": "This is a stale bug report \u2014 the parse failure it describes no longer reproduces: at firtool-1.148.0 the issue's exact input (including `hw.module @Bar3(in %b \"space here\" : i1)`) parses, prints, and round-trips cleanly with the quoted true name preserved. The issue itself already carries a verified can't-reproduce report from current main, so there is no defect for the pipeline to fix.",
+  "model": "amazon-bedrock/us.moonshotai.kimi-k3",
+  "backend": "opencode",
+  "circt_commit": "5dc7f103d714aa40e13cae4fcf7ab98a1912f845",
+  "issue_number": 6226,
+  "llm_usage": {
+    "assess": {
+      "num_turns": 3,
+      "input_tokens": 21,
+      "output_tokens": 3768,
+      "reasoning_tokens": 0,
+      "cache_read": 7221,
+      "cache_write": 4649,
+      "cost_usd": 0.083801355
+    }
+  },
+  "llm_phases": {
+    "assess": {
+      "issue_number": 6226,
+      "phase": "assess",
+      "model": "amazon-bedrock/us.moonshotai.kimi-k3",
+      "backend": "opencode",
+      "session_id": "ses_eb4626759ffe4z6OR1dubrx12x",
+      "start_timestamp": "2026-10-17T20:46:20.856121+00:00",
+      "end_timestamp": "2026-10-17T20:47:09.638394+00:00",
+      "elapsed_seconds": 48.78227655400042,
+      "aws_region": "us-east-1",
+      "success": true
+    }
+  },
+  "llm_usage_total": {
+    "input_tokens": 21,
+    "output_tokens": 3768,
+    "reasoning_tokens": 0,
+    "cache_read": 7221,
+    "cache_write": 4649,
+    "cost_usd": 0.083801355,
+    "num_turns": 3
+  },
+  "cost_provenance": "cost_usd is OpenCode-reported session cost, not an AWS invoice amount"
+}

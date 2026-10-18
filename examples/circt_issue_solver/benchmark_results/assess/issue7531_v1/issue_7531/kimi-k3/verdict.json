@@ -1,0 +1,53 @@
+{
+  "status": "unclear",
+  "reproduced": false,
+  "build_ok": null,
+  "fixed": null,
+  "lit_ok": null,
+  "lit_passed": null,
+  "lit_failed": null,
+  "lit_failures": null,
+  "added": null,
+  "removed": null,
+  "test_paths": null,
+  "notes": "The reported assertion no longer reproduces on the pinned firtool-1.148.0 checkout \u2014 I ran the exact issue reproducer through `circt-opt -canonicalize` and it exits cleanly, correctly removing the offending procedure (consistent with the 2026-03-03 issue comments). The expected behavior for the remaining root cause is unsettled: the maintainers debated three-plus defensible fixes (reject comb cycles at the Moore verifier, fix the unidentified pipeline pass that emits predecessor-less blocks, or an upstream MLIR change) without reaching a conclusion, and the one concrete patch offered was rejected by project policy. With no reproducible failure and no agreed correct behavior, there is nothing well-specified for an automated fix to target.",
+  "model": "amazon-bedrock/us.moonshotai.kimi-k3",
+  "backend": "opencode",
+  "circt_commit": "5dc7f103d714aa40e13cae4fcf7ab98a1912f845",
+  "issue_number": 7531,
+  "llm_usage": {
+    "assess": {
+      "num_turns": 3,
+      "input_tokens": 21,
+      "output_tokens": 6185,
+      "reasoning_tokens": 0,
+      "cache_read": 9872,
+      "cache_write": 5890,
+      "cost_usd": 0.12967581
+    }
+  },
+  "llm_phases": {
+    "assess": {
+      "issue_number": 7531,
+      "phase": "assess",
+      "model": "amazon-bedrock/us.moonshotai.kimi-k3",
+      "backend": "opencode",
+      "session_id": "ses_ee0ad4fbaffeV0FT7Li4X0NZnE",
+      "start_timestamp": "2026-10-09T06:21:14.173727+00:00",
+      "end_timestamp": "2026-10-09T06:22:11.647703+00:00",
+      "elapsed_seconds": 57.47398208300001,
+      "aws_region": "us-east-1",
+      "success": true
+    }
+  },
+  "llm_usage_total": {
+    "input_tokens": 21,
+    "output_tokens": 6185,
+    "reasoning_tokens": 0,
+    "cache_read": 9872,
+    "cache_write": 5890,
+    "cost_usd": 0.12967581,
+    "num_turns": 3
+  },
+  "cost_provenance": "cost_usd is OpenCode-reported session cost, not an AWS invoice amount"
+}

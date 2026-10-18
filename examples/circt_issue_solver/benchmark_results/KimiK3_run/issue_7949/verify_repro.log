@@ -1,0 +1,11 @@
+/workspace/circt/.circtissues/dc7949.mlir:11:10: error: 'esi.wrap.vr' op channels must have at most one consumer
+  %0:2 = dc.fork [2] %token
+         ^
+/workspace/circt/.circtissues/dc7949.mlir:11:10: note: see current operation: %7:2 = "esi.wrap.vr"(%6, %21) : (i0, i1) -> (!esi.channel<i0>, i1)
+/workspace/circt/.circtissues/dc7949.mlir:15:3: note: channel used here
+  dc.sink %token_0
+  ^
+/workspace/circt/.circtissues/dc7949.mlir:13:8: note: channel used here
+  %2 = dc.pack %0#1, %output : i32
+       ^
+FAIL: --lower-dc-to-hw rejected the valid DC program (issue #7949)

@@ -1,0 +1,28 @@
+# Selected Bedrock models. Loading this file makes no model calls.
+models:
+  - name: kimi-k3
+    model: amazon-bedrock/us.moonshotai.kimi-k3
+
+  # - name: glm-4-7
+  #   model: amazon-bedrock/zai.glm-4.7
+
+  - name: glm-5
+    model: amazon-bedrock/zai.glm-5
+
+  - name: nemotron-3-super
+    model: amazon-bedrock/nvidia.nemotron-super-3-120b
+
+  - name: kimi-k2-5
+    model: amazon-bedrock/moonshotai.kimi-k2.5
+
+# Disabled after PONG tests on both workers, 2026-10-09 (us-east-1).
+# DeepSeek V3.2: OpenCode sends us.deepseek.v3.2; AWS rejects that ID.
+# Only us.deepseek.r1-v1:0 appeared in the inference-profile listing;
+# R1 is a different model and is not substituted for V3.2.
+#  - name: deepseek-v3-2
+#    model: amazon-bedrock/deepseek.v3.2
+# GLM 5.3 and Grok 4.7: runtime HTTP 403, not available for this account.
+#  - name: glm-5-3
+#    model: amazon-bedrock/us.zai.glm-5.3
+#  - name: grok-4-7
+#    model: amazon-bedrock/us.xai.grok-4.7

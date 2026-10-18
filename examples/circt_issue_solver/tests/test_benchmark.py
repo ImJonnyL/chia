@@ -169,7 +169,8 @@ def test_persist_missing_usage(flow, monkeypatch, tmp_path):
 
 
 @pytest.mark.parametrize("mode", ["--issue", "--assess-only", "batch"])
-def test_cli_uses_local_corpus_without_github_or_vertex(flow, monkeypatch, tmp_path, mode):
+@pytest.mark.parametrize("override", [False, True])
+def test_cli_uses_local_corpus_without_github_or_vertex(flow, monkeypatch, tmp_path, mode, override):
     import sys
     monkeypatch.delenv("GITHUB_TOKEN", raising=False)
     monkeypatch.delenv("GOOGLE_CLOUD_PROJECT", raising=False)
@@ -184,7 +185,8 @@ def test_cli_uses_local_corpus_without_github_or_vertex(flow, monkeypatch, tmp_p
     monkeypatch.setattr(flow.run_issue_remote, "chia_remote", remote)
     monkeypatch.setattr(flow, "get", lambda res: res)
     monkeypatch.setattr(flow, "chia_wait", lambda pending, **kw: (pending, []))
-    monkeypatch.setattr(flow, "_persist", lambda *a, **kw: None)
+    persisted = []
+    monkeypatch.setattr(flow, "_persist", lambda *a, **kw: persisted.append(kw))
     args = ["driver", "--backend", "opencode", "--model", "amazon-bedrock/mock"]
     corpus = tmp_path / "corpus"
     folder = corpus / "issue_10571"
@@ -194,8 +196,19 @@ def test_cli_uses_local_corpus_without_github_or_vertex(flow, monkeypatch, tmp_p
     (folder / "llm_fix.md").write_text("DO NOT READ")
     args += ["--issues-dir", str(corpus)]
     args += [mode, "10571"] if mode != "batch" else ["--max-issues", "1"]
+    if override:
+        args += ["--output-dir", str(tmp_path / "isolated")]
     monkeypatch.setattr(sys, "argv", args)
+    if override and mode == "batch":
+        with pytest.raises(SystemExit):
+            flow.main()
+        assert not received
+        return
     flow.main()
+    expected_output = (tmp_path / "isolated" if override else
+                       flow.FLOW_DIR / "benchmark_results/assess/manual/issue_10571"
+                       if mode == "--assess-only" else None)
+    assert persisted[0]["output_dir"] == expected_output
     assert len(received) == 1 and received[0][:2] == (markdown, 10571)
     assert received[0][2]["model"] == "amazon-bedrock/mock"
     assert "vertex" not in received[0][2]
@@ -245,3 +258,18 @@ def test_failed_phase_still_persists_accounting_window(flow, monkeypatch, tmp_pa
     verdict = json.loads((tmp_path / "issue_1/verdict.json").read_text())
     assert verdict["llm_phases"]["assess"]["end_timestamp"] == log["end_timestamp"]
     assert verdict["llm_usage_total"]["cost_usd"] is None
+
+
+def test_exact_output_directory_and_default(flow, tmp_path, monkeypatch):
+    from local_issues import LocalIssue
+    assert flow.ARTIFACT_DIR == FLOW_DIR / "benchmark_results/full/manual"
+    monkeypatch.setattr(flow, "ARTIFACT_DIR", tmp_path / "default")
+    issue = LocalIssue(7, "mock", None, "frozen")
+    result = {"status": "clear", "logs": {"assess": {"success": False}}}
+    flow._persist(issue, result, record_db=False)
+    assert (tmp_path / "default/issue_7/verdict.json").exists()
+    exact = tmp_path / "benchmark/model/assess"
+    flow._persist(issue, result, record_db=False, output_dir=exact)
+    verdict = json.loads((exact / "verdict.json").read_text())
+    assert verdict["llm_phases"]["assess"]["success"] is False
+    assert not (exact / "issue_7").exists()

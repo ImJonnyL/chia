@@ -1,0 +1,53 @@
+{
+  "status": "unclear",
+  "reproduced": false,
+  "build_ok": null,
+  "fixed": null,
+  "lit_ok": null,
+  "lit_passed": null,
+  "lit_failed": null,
+  "lit_failures": null,
+  "added": null,
+  "removed": null,
+  "test_paths": null,
+  "notes": "The expected behavior was never settled \u2014 the issue explicitly weighs changing ProbeOp to take only passive inputs vs. just emitting a nicer LowerTypes error for foreign ops, without picking one, and defers on what ProbeOp is even for. Compounding this, the op at the center of the report (`firrtl.probe` ProbeOp) no longer exists in this tree (replaced by ref-type probes that LowerTypes already handles), so the reproducer doesn't parse and the only residue is a vague \"nicer error\" enhancement with no specified, verifiable behavior.",
+  "model": "amazon-bedrock/us.moonshotai.kimi-k3",
+  "backend": "opencode",
+  "circt_commit": "5dc7f103d714aa40e13cae4fcf7ab98a1912f845",
+  "issue_number": 4649,
+  "llm_usage": {
+    "assess": {
+      "num_turns": 11,
+      "input_tokens": 77,
+      "output_tokens": 4750,
+      "reasoning_tokens": 0,
+      "cache_read": 53494,
+      "cache_write": 7677,
+      "cost_usd": 0.127949745
+    }
+  },
+  "llm_phases": {
+    "assess": {
+      "issue_number": 4649,
+      "phase": "assess",
+      "model": "amazon-bedrock/us.moonshotai.kimi-k3",
+      "backend": "opencode",
+      "session_id": "ses_eb48fca45ffe4FnDsK0y2PaAlI",
+      "start_timestamp": "2026-10-17T19:56:46.450018+00:00",
+      "end_timestamp": "2026-10-17T19:58:20.351881+00:00",
+      "elapsed_seconds": 93.9018648429992,
+      "aws_region": "us-east-1",
+      "success": true
+    }
+  },
+  "llm_usage_total": {
+    "input_tokens": 77,
+    "output_tokens": 4750,
+    "reasoning_tokens": 0,
+    "cache_read": 53494,
+    "cache_write": 7677,
+    "cost_usd": 0.127949745,
+    "num_turns": 11
+  },
+  "cost_provenance": "cost_usd is OpenCode-reported session cost, not an AWS invoice amount"
+}

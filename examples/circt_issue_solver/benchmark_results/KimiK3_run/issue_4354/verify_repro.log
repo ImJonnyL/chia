@@ -1,0 +1,13 @@
+PASS: LowerToHW rejected non-unique ForceNameAnnotations:
+/workspace/circt/.circtissues/forcename.mlir:12:5: error: instance 'sym_foo' is forced to a name, "Foo", which is not unique within module 'ForceNameTop'
+    firrtl.instance foo sym @sym_foo
+    ^
+/workspace/circt/.circtissues/forcename.mlir:11:5: note: the name is already used by another instance here
+    firrtl.instance Foo @ForceNameSubmodule()
+    ^
+/workspace/circt/.circtissues/forcename.mlir:15:5: error: instance 'sym_bar' is forced to a name, "Foo", which is not unique within module 'ForceNameTop'
+    firrtl.instance bar sym @sym_bar
+    ^
+/workspace/circt/.circtissues/forcename.mlir:11:5: note: the name is already used by another instance here
+    firrtl.instance Foo @ForceNameSubmodule()
+    ^

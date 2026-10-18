@@ -1,0 +1,24 @@
+{
+  "issue_number": 10104,
+  "model_name": "glm-5",
+  "model": "amazon-bedrock/zai.glm-5",
+  "stage": "assess",
+  "command": [
+    "/home/ubuntu/chia/examples/circt_issue_solver/fix_issues_submit.sh",
+    "--backend",
+    "opencode",
+    "--model",
+    "amazon-bedrock/zai.glm-5",
+    "--issues-dir",
+    "/home/ubuntu/chia/examples/circt_issue_solver/issuestouse",
+    "--output-dir",
+    "/home/ubuntu/chia/examples/circt_issue_solver/benchmark_results/issue10104_v1/issue_10104/glm-5/assess",
+    "--assess-only",
+    "10104"
+  ],
+  "start_timestamp": "2026-10-09T06:16:08.621589+00:00",
+  "status": "completed",
+  "return_code": 0,
+  "finish_timestamp": "2026-10-09T06:19:37.810800+00:00",
+  "elapsed_seconds": 209.1889796839987
+}

@@ -1,0 +1,197 @@
+[37mJob submission server address[39m: [1mhttp://localhost:8265[22m
+
+[32m-------------------------------------------------------[39m
+[32mJob 'raysubmit_eFuAZG3zn4bzKpZ3' submitted successfully[39m
+[32m-------------------------------------------------------[39m
+
+[36mNext steps[39m
+  Query the logs of the job:
+    [1mray job logs raysubmit_eFuAZG3zn4bzKpZ3[22m
+  Query the status of the job:
+    [1mray job status raysubmit_eFuAZG3zn4bzKpZ3[22m
+  Request the job to be stopped:
+    [1mray job stop raysubmit_eFuAZG3zn4bzKpZ3[22m
+
+Tailing logs until the job exits (disable with --no-wait):
+2026-10-09 03:48:16,078	INFO job_manager.py:587 -- Runtime env is setting up.
+Running entrypoint for job raysubmit_eFuAZG3zn4bzKpZ3: python /home/ubuntu/chia/examples/circt_issue_solver/circt_issue_loop.py --backend opencode --model amazon-bedrock/zai.glm-5 --issues-dir /home/ubuntu/chia/examples/circt_issue_solver/issuestouse --output-dir /home/ubuntu/chia/examples/circt_issue_solver/benchmark_results/issue10571_v1/issue_10571/glm-5/assess --assess-only 10571
+2026-10-09 03:48:17,191 INFO circtissues: LLM backend=opencode model=amazon-bedrock/zai.glm-5
+/home/ubuntu/miniconda3/envs/circtissues/lib/python3.10/site-packages/ray/_private/worker.py:2052: FutureWarning: Tip: In future versions of Ray, Ray will no longer override accelerator visible devices env var if num_gpus=0 or num_gpus=None (default). To enable this behavior and turn off this error message, set RAY_ACCEL_ENV_VAR_OVERRIDE_ON_ZERO=0
+  warnings.warn(
+[36m(run_issue_remote pid=443)[0m /home/ray/anaconda3/envs/py_worker/lib/python3.10/site-packages/pydantic_settings/sources/utils.py:47: IncompleteFieldDefinitionWarning: Field 'lifespan' has an incomplete definition: its annotation contains an unresolved forward reference, so settings sources may fail to correctly resolve its value. Call `model_rebuild()` on the model where the field is defined, once all the referenced types are defined.
+[36m(run_issue_remote pid=443)[0m   warnings.warn(
+[36m(_ToolServerActor pid=514)[0m INFO:     Started server process [514]
+[36m(_ToolServerActor pid=514)[0m INFO:     Waiting for application startup.
+[36m(_ToolServerActor pid=514)[0m INFO:     Application startup complete.
+[36m(_ToolServerActor pid=514)[0m INFO:     Uvicorn running on http://172.31.38.160:8000 (Press CTRL+C to quit)
+[36m(run_issue_remote pid=443)[0m bash_10571 started at 172.31.38.160:8000 on node 3359746b0191b0cddb52b7b799f566a6a7ae21dbacc3b698a630e638
+[36m(run_issue_remote pid=443)[0m OpenCodeLLM is experimental: only exercised by unit tests so far, not validated in production.
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:57236 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:57236 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:57236 - "GET /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:57246 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:57246 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:57246 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:57246 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:57246 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:57246 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:57246 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=514)[0m INFO:     172.31.38.160:49706 - "POST /bash_10571/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=514)[0m INFO:     Shutting down
+2026-10-09 03:50:09,746 INFO circtissues: issue #10571 -> clear  (+None/-None, lit_ok=None)
+
+===== assess-only #10571: [HWAggregateToComb] Mux of unions =====
+DECISION -> status='clear'
+NOTE: None
+
+----- assess transcript (tail) -----
+Converter` only converts `hw::ArrayType` and `hw::StructType`, but not `hw::UnionType`
+5. The pass marks `comb.mux` operations as illegal if they don't have an IntegerType result, which causes the failure for unions
+
+The error message confirms this: "failed to legalize operation 'comb.mux' that was explicitly marked illegal"
+
+**PART B — Is the correct behavior clear?**
+
+YES, the correct behavior is unambiguous:
+
+1. **The INPUT is clearly valid**: The IR `comb.mux %c, %a, %b : !hw.union<a: i1>` is legal MLIR and represents a valid hardware operation.
+
+2. **The EXPECTED behavior is well-defined by existing patterns**: The pass should handle `hw.union` types the same way it handles `hw.struct` types:
+   - Add a type conversion for `hw::UnionType` to `IntegerType` (using `hw::getBitWidth()`)
+   - The existing `MuxOpConversion` pattern will then handle the mux operation by bitcasting the operands, creating a mux on integers, and bitcasting the result back
+   
+3. **There's a clear template from struct handling**: The solution is to add one line to the `AggregateTypeConverter` constructor:
+   ```cpp
+   addConversion([](hw::UnionType t) -> Type {
+     return IntegerType::get(t.getContext(), hw::getBitWidth(t));
+   });
+   ```
+
+4. **No design ambiguity**: Unlike cases where "reject vs. extend" is debatable, this is clearly a valid hardware construct that should be supported. The reporter's comment "Muxes of `hw.struct` work fine" and the maintainer's response "It's not simply implemented 👍 Please feel free to implement" both confirm this is an unimplemented feature, not a design question.
+
+5. **The fix is mechanical**: Extending the type converter is the standard approach used for other aggregate types, and union operations can be bitcast like struct operations.
+
+BUG: The HWAggregateToComb pass fails to legalize comb.mux operations on hw.union types because UnionType is not added to the AggregateTypeConverter, causing the pass to reject valid IR.
+EXPECTED: The pass should handle hw.union types the same as hw.struct types by adding a UnionType conversion to the type converter, enabling mux operations on unions to be lowered via bitcasting to integers.
+DECISION: CLEAR
+
+[Usage]
+{"total": 21782, "input": 21094, "output": 688, "reasoning": 0, "cache": {"write": 0, "read": 0}, "cost_usd": 0.0232956, "reason": "stop"}
+
+[Result]
+{"num_turns": 59, "input_tokens": 791464, "output_tokens": 3829, "reasoning_tokens": 0, "cache_read": 0, "cache_write": 0, "cost_usd": 0.8037168}
+
+
+[36m(_ToolServerActor pid=514)[0m INFO:     Waiting for application shutdown.
+[36m(_ToolServerActor pid=514)[0m INFO:     Application shutdown complete.
+[36m(_ToolServerActor pid=514)[0m INFO:     Finished server process [514]
+
+[32m------------------------------------------[39m
+[32mJob 'raysubmit_eFuAZG3zn4bzKpZ3' succeeded[39m
+[32m------------------------------------------[39m
+

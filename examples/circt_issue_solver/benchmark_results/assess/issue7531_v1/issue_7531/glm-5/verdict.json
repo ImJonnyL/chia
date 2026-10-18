@@ -1,0 +1,53 @@
+{
+  "status": "not_a_bug",
+  "reproduced": false,
+  "build_ok": null,
+  "fixed": null,
+  "lit_ok": null,
+  "lit_passed": null,
+  "lit_failed": null,
+  "lit_failures": null,
+  "added": null,
+  "removed": null,
+  "test_paths": null,
+  "notes": "The assertion failure issue has been resolved; the input no longer triggers a crash on firtool-1.148.0. The underlying fix appears to be in MLIR upstream (PatternMatch.cpp assertion), not CIRCT code. Since the behavior is correct now and there are no code changes needed in CIRCT, this is not an active bug requiring a fix.",
+  "model": "amazon-bedrock/zai.glm-5",
+  "backend": "opencode",
+  "circt_commit": "5dc7f103d714aa40e13cae4fcf7ab98a1912f845",
+  "issue_number": 7531,
+  "llm_usage": {
+    "assess": {
+      "num_turns": 80,
+      "input_tokens": 1022576,
+      "output_tokens": 7489,
+      "reasoning_tokens": 0,
+      "cache_read": 0,
+      "cache_write": 0,
+      "cost_usd": 1.0465408
+    }
+  },
+  "llm_phases": {
+    "assess": {
+      "issue_number": 7531,
+      "phase": "assess",
+      "model": "amazon-bedrock/zai.glm-5",
+      "backend": "opencode",
+      "session_id": "ses_ee0ad39feffe6BZSNMhvJ5gxxc",
+      "start_timestamp": "2026-10-09T06:21:19.685307+00:00",
+      "end_timestamp": "2026-10-09T06:24:05.331331+00:00",
+      "elapsed_seconds": 165.646035881,
+      "aws_region": "us-east-1",
+      "success": true
+    }
+  },
+  "llm_usage_total": {
+    "input_tokens": 1022576,
+    "output_tokens": 7489,
+    "reasoning_tokens": 0,
+    "cache_read": 0,
+    "cache_write": 0,
+    "cost_usd": 1.0465408,
+    "num_turns": 80
+  },
+  "cost_provenance": "cost_usd is OpenCode-reported session cost, not an AWS invoice amount"
+}

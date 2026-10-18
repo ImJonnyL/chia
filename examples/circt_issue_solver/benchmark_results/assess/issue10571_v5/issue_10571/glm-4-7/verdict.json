@@ -1,0 +1,42 @@
+{
+  "status": "error",
+  "reproduced": null,
+  "build_ok": null,
+  "fixed": null,
+  "lit_ok": null,
+  "lit_passed": null,
+  "lit_failed": null,
+  "lit_failures": null,
+  "added": null,
+  "removed": null,
+  "test_paths": null,
+  "notes": "pipeline failed during assess: RayTaskError(InvalidRequestError)",
+  "model": "amazon-bedrock/zai.glm-4.7",
+  "backend": "opencode",
+  "circt_commit": "5dc7f103d714aa40e13cae4fcf7ab98a1912f845",
+  "issue_number": 10571,
+  "llm_phases": {
+    "assess": {
+      "issue_number": 10571,
+      "phase": "assess",
+      "model": "amazon-bedrock/zai.glm-4.7",
+      "backend": "opencode",
+      "session_id": null,
+      "start_timestamp": "2026-10-09T05:44:39.404862+00:00",
+      "end_timestamp": "2026-10-09T05:44:48.712122+00:00",
+      "elapsed_seconds": 9.307264277000286,
+      "aws_region": null,
+      "success": false
+    }
+  },
+  "llm_usage_total": {
+    "input_tokens": null,
+    "output_tokens": null,
+    "reasoning_tokens": null,
+    "cache_read": null,
+    "cache_write": null,
+    "cost_usd": null,
+    "num_turns": null
+  },
+  "cost_provenance": "cost_usd is OpenCode-reported session cost, not an AWS invoice amount"
+}

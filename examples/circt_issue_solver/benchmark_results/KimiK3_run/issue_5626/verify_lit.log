@@ -1,0 +1,120 @@
+PASS: CIRCT :: firtool/annotation-openaggs-error.fir (1020 of 1075)
+PASS: CIRCT :: firtool/annotation-error.fir (1021 of 1075)
+PASS: CIRCT :: firtool/connect-errors.fir (1022 of 1075)
+PASS: CIRCT :: om-linker/elaborate-error.mlir (1023 of 1075)
+PASS: CIRCT :: om-linker/link.mlir (1024 of 1075)
+PASS: CIRCT :: Dialect/FIRRTL/SFCTests/async-reset-errors.mlir (1025 of 1075)
+PASS: CIRCT :: om-linker/commandline.mlir (1026 of 1075)
+UNSUPPORTED: CIRCT :: Conversion/ImportVerilog/basic.sv (1027 of 1075)
+UNSUPPORTED: CIRCT :: Dialect/ESI/manifest.mlir (1028 of 1075)
+UNSUPPORTED: CIRCT :: Conversion/ImportVerilog/builtins.sv (1029 of 1075)
+PASS: CIRCT :: circt-verilog/include/other.sv (1030 of 1075)
+PASS: CIRCT :: circt-verilog/include/library_module.sv (1031 of 1075)
+UNSUPPORTED: CIRCT :: Conversion/ImportVerilog/types.sv (1032 of 1075)
+UNSUPPORTED: CIRCT :: Conversion/ImportVerilog/classes.sv (1033 of 1075)
+UNSUPPORTED: CIRCT :: circt-verilog/roundtrip-register-enable.sv (1034 of 1075)
+UNSUPPORTED: CIRCT :: Conversion/ImportVerilog/primitives.sv (1035 of 1075)
+UNSUPPORTED: CIRCT :: Tools/circt-verilog-lsp-server/command-files.test (1036 of 1075)
+UNSUPPORTED: CIRCT :: circt-verilog/registers.sv (1037 of 1075)
+UNSUPPORTED: CIRCT :: Conversion/ImportVerilog/captures.sv (1038 of 1075)
+UNSUPPORTED: CIRCT :: Conversion/ImportVerilog/virtual-interface-resource-db.sv (1039 of 1075)
+UNSUPPORTED: CIRCT :: Conversion/ImportVerilog/hierarchical-names.sv (1040 of 1075)
+UNSUPPORTED: CIRCT :: Tools/circt-verilog-lsp-server/textdocument-didclose.test (1041 of 1075)
+UNSUPPORTED: CIRCT :: Conversion/ImportVerilog/virtual-interface-modport.sv (1042 of 1075)
+UNSUPPORTED: CIRCT :: Conversion/ImportVerilog/procedures.sv (1043 of 1075)
+UNSUPPORTED: CIRCT :: circt-verilog/dpi-extern-decl.sv (1044 of 1075)
+UNSUPPORTED: CIRCT :: Tools/circt-verilog-lsp-server/find-definition.test (1045 of 1075)
+UNSUPPORTED: CIRCT :: Tools/circt-verilog-lsp-server/include.test (1046 of 1075)
+UNSUPPORTED: CIRCT :: Tools/circt-verilog-lsp-server/find-package-import-def.test (1047 of 1075)
+UNSUPPORTED: CIRCT :: Conversion/ImportVerilog/monitor.sv (1048 of 1075)
+UNSUPPORTED: CIRCT :: circt-verilog/preprocess-errors.sv (1049 of 1075)
+UNSUPPORTED: CIRCT :: circt-verilog/preprocess-multiple-files.sv (1050 of 1075)
+UNSUPPORTED: CIRCT :: Conversion/ImportVerilog/interface-instance-expansion.sv (1051 of 1075)
+UNSUPPORTED: CIRCT :: Tools/circt-verilog-lsp-server/diagnostic.test (1052 of 1075)
+UNSUPPORTED: CIRCT :: Conversion/ImportVerilog/errors.sv (1053 of 1075)
+UNSUPPORTED: CIRCT :: Tools/circt-verilog-lsp-server/textdocument-didchange.test (1054 of 1075)
+UNSUPPORTED: CIRCT :: Conversion/ImportVerilog/unit-scope.sv (1055 of 1075)
+UNSUPPORTED: CIRCT :: Conversion/ImportVerilog/virtual-interface-package.sv (1056 of 1075)
+UNSUPPORTED: CIRCT :: circt-verilog/library-locations.sv (1057 of 1075)
+UNSUPPORTED: CIRCT :: Conversion/ImportVerilog/virtual-interface-typedef.sv (1058 of 1075)
+UNSUPPORTED: CIRCT :: Conversion/ImportVerilog/testbench-compat.sv (1059 of 1075)
+UNSUPPORTED: CIRCT :: circt-verilog/command-files.sv (1060 of 1075)
+UNSUPPORTED: CIRCT :: Conversion/ImportVerilog/interface-modport-body-access.sv (1061 of 1075)
+UNSUPPORTED: CIRCT :: circt-verilog/roundtrip-unions.sv (1062 of 1075)
+UNSUPPORTED: CIRCT :: circt-verilog/memories.sv (1063 of 1075)
+UNSUPPORTED: CIRCT :: circt-verilog/basic.mlir (1064 of 1075)
+UNSUPPORTED: CIRCT :: circt-verilog/redundant-files.sv (1065 of 1075)
+UNSUPPORTED: CIRCT :: Tools/circt-verilog-lsp-server/initialize-params.test (1066 of 1075)
+UNSUPPORTED: CIRCT :: Conversion/ImportVerilog/virtual-interface-array.sv (1067 of 1075)
+UNSUPPORTED: CIRCT :: Tools/circt-verilog-lsp-server/package-indexing.test (1068 of 1075)
+UNSUPPORTED: CIRCT :: circt-verilog/hierarchical-names.sv (1069 of 1075)
+UNSUPPORTED: CIRCT :: Conversion/ImportVerilog/virtual-interface-from-port.sv (1070 of 1075)
+UNSUPPORTED: CIRCT :: Conversion/ImportVerilog/range.sv (1071 of 1075)
+UNSUPPORTED: CIRCT :: Conversion/ImportVerilog/virtual-interface.sv (1072 of 1075)
+UNSUPPORTED: CIRCT :: circt-verilog/xslang.sv (1073 of 1075)
+UNSUPPORTED: CIRCT :: circt-verilog/commandline.sv (1074 of 1075)
+UNSUPPORTED: CIRCT :: circt-verilog/preprocess.sv (1075 of 1075)
+
+2 warning(s) in tests
+********************
+Failed Tests (50):
+  CIRCT :: Conversion/FIRRTLToHW/lower-to-hw.mlir
+  CIRCT :: Dialect/FIRRTL/SFCTests/ExtractSeqMems/Compose.fir
+  CIRCT :: Dialect/FIRRTL/SFCTests/ExtractSeqMems/Simple2.fir
+  CIRCT :: Dialect/FIRRTL/SFCTests/GrandCentralInterfaces/Wire.fir
+  CIRCT :: Dialect/FIRRTL/SFCTests/data-taps.fir
+  CIRCT :: Dialect/FIRRTL/SFCTests/directories.fir
+  CIRCT :: Dialect/FIRRTL/SFCTests/mem-taps-reg.fir
+  CIRCT :: Dialect/FIRRTL/SFCTests/mem-taps.fir
+  CIRCT :: Dialect/FIRRTL/SFCTests/trace-api.fir
+  CIRCT :: Dialect/FIRRTL/SFCTests/verbatim-inner-names.mlir
+  CIRCT :: Dialect/FIRRTL/ref.mlir
+  CIRCT :: firtool/blackbox-directories.fir
+  CIRCT :: firtool/blackbox.mlir
+  CIRCT :: firtool/classes-dedupe.fir
+  CIRCT :: firtool/cmem-under-layerblock.fir
+  CIRCT :: firtool/dedup-modules-with-output-dirs.fir
+  CIRCT :: firtool/export-ref.fir
+  CIRCT :: firtool/extract-instances.fir
+  CIRCT :: firtool/import-ref.fir
+  CIRCT :: firtool/input-only.fir
+  CIRCT :: firtool/layer-merge-across-inlined-submodule.fir
+  CIRCT :: firtool/layers-rwprobe.fir
+  CIRCT :: firtool/layers.fir
+  CIRCT :: firtool/lower-layers-clone-refs.fir
+  CIRCT :: firtool/lower-layers-directories.fir
+  CIRCT :: firtool/lower-layers-with-1dvec-preservation.fir
+  CIRCT :: firtool/lower-layers.fir
+  CIRCT :: firtool/mark-dut.fir
+  CIRCT :: firtool/memoryLowering.fir
+  CIRCT :: firtool/memoryMetadata.fir
+  CIRCT :: firtool/module-hier.fir
+  CIRCT :: firtool/no-views.fir
+  CIRCT :: firtool/prefixMemory.fir
+  CIRCT :: firtool/refs-in-aggs.fir
+  CIRCT :: firtool/reg-under-inline-layer.fir
+  CIRCT :: firtool/sink-probes-into-layers.fir
+  CIRCT :: firtool/spec/refs/define.fir
+  CIRCT :: firtool/spec/refs/force_and_release.fir
+  CIRCT :: firtool/spec/refs/force_initial.fir
+  CIRCT :: firtool/spec/refs/forwarding_refs_upwards.fir
+  CIRCT :: firtool/spec/refs/forwarding_refs_upwards_narrow.fir
+  CIRCT :: firtool/spec/refs/inference_works.fir
+  CIRCT :: firtool/spec/refs/nested_refproducer.fir
+  CIRCT :: firtool/spec/refs/nosubaccess.fir
+  CIRCT :: firtool/spec/refs/read.fir
+  CIRCT :: firtool/spec/refs/read_subelement.fir
+  CIRCT :: firtool/spec/refs/read_subelement_add.fir
+  CIRCT :: firtool/spec/refs/when_c_force_initial.fir
+  CIRCT :: firtool/specialize-layers.fir
+  CIRCT :: firtool/views-directories-yaml.fir
+
+
+Testing Time: 54.61s
+
+Total Discovered Tests: 1081
+  Excluded         :   6 (0.56%)
+  Unsupported      :  47 (4.35%)
+  Passed           : 972 (89.92%)
+  Expectedly Failed:   6 (0.56%)
+  Failed           :  50 (4.63%)

@@ -1,0 +1,24 @@
+{
+  "issue_number": 10571,
+  "model_name": "grok-4-7",
+  "model": "amazon-bedrock/us.xai.grok-4.7",
+  "stage": "assess",
+  "command": [
+    "/home/ubuntu/chia/examples/circt_issue_solver/fix_issues_submit.sh",
+    "--backend",
+    "opencode",
+    "--model",
+    "amazon-bedrock/us.xai.grok-4.7",
+    "--issues-dir",
+    "/home/ubuntu/chia/examples/circt_issue_solver/issuestouse",
+    "--output-dir",
+    "/home/ubuntu/chia/examples/circt_issue_solver/benchmark_results/issue10571_v3/issue_10571/grok-4-7/assess",
+    "--assess-only",
+    "10571"
+  ],
+  "start_timestamp": "2026-10-09T04:29:49.939383+00:00",
+  "status": "failed",
+  "return_code": 0,
+  "finish_timestamp": "2026-10-09T04:30:06.810417+00:00",
+  "elapsed_seconds": 16.87096201999975
+}

@@ -1,0 +1,7 @@
+FAIL: firtool rejected the circuit (bug #8508 still present)
+DBG dutLike op: firrtl.extmodule @Bar(out a: !firrtl.uint<1>) attributes {annotations = [{class = "sifive.enterprise.firrtl.MarkDUTAnnotation"}], convention = #firrtl<convention scalarized>, defname = "Bar"}
+DBG ports: PLEASE submit a bug report to https://github.com/llvm/circt and include the crash backtrace.
+Stack dump:
+0.	Program arguments: /workspace/circt/build/bin/firtool /workspace/circt/.circtissues/inject-dut-hierarchy-extmodule.fir
+ #0 0x0000724bccc04d38 llvm::sys::PrintStackTrace(llvm::raw_ostream&, int) (/opt/circt-sdk/lib/libLLVMSupport.so+0x210d38)
+/workspace/circt/.circtissues/repro.sh: line 31: 87801 Segmentation fault      (core dumped) "$FIRTOOL" "$INPUT" > /dev/null 2>&1

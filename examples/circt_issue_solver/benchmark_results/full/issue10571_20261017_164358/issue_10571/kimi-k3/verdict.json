@@ -1,0 +1,53 @@
+{
+  "status": "not_a_bug",
+  "reproduced": false,
+  "build_ok": null,
+  "fixed": null,
+  "lit_ok": null,
+  "lit_passed": null,
+  "lit_failed": null,
+  "lit_failures": null,
+  "added": null,
+  "removed": null,
+  "test_paths": null,
+  "notes": "This is a feature request to extend the HWAggregateToComb pass (which currently converts only hw.array/hw.struct types) to support hw.union-typed values, specifically comb.mux over unions. The maintainer explicitly confirmed \"It's not simply implemented\" and invited the reporter to implement it, providing design guidance (bitcast plus union_extract/union_create based on the bit layout). The pass fails with a clean dialect-conversion diagnostic on an op outside its designed scope \u2014 there is no crash, miscompile, or spec violation, so it is an enhancement, not a defect.",
+  "model": "amazon-bedrock/us.moonshotai.kimi-k3",
+  "backend": "opencode",
+  "circt_commit": "5dc7f103d714aa40e13cae4fcf7ab98a1912f845",
+  "issue_number": 10571,
+  "llm_usage": {
+    "assess": {
+      "num_turns": 6,
+      "input_tokens": 42,
+      "output_tokens": 8608,
+      "reasoning_tokens": 0,
+      "cache_read": 29855,
+      "cache_write": 9595,
+      "cost_usd": 0.191602125
+    }
+  },
+  "llm_phases": {
+    "assess": {
+      "issue_number": 10571,
+      "phase": "assess",
+      "model": "amazon-bedrock/us.moonshotai.kimi-k3",
+      "backend": "opencode",
+      "session_id": "ses_eb52a3ffcffecNYj5BMSPpTeRP",
+      "start_timestamp": "2026-10-17T17:08:03.736683+00:00",
+      "end_timestamp": "2026-10-17T17:09:14.895087+00:00",
+      "elapsed_seconds": 71.15840918000004,
+      "aws_region": "us-east-1",
+      "success": true
+    }
+  },
+  "llm_usage_total": {
+    "input_tokens": 42,
+    "output_tokens": 8608,
+    "reasoning_tokens": 0,
+    "cache_read": 29855,
+    "cache_write": 9595,
+    "cost_usd": 0.191602125,
+    "num_turns": 6
+  },
+  "cost_provenance": "cost_usd is OpenCode-reported session cost, not an AWS invoice amount"
+}

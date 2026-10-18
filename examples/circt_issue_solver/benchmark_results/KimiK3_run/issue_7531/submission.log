@@ -1,0 +1,77 @@
+Chia: forwarding to Ray's CLI
+
+[37mJob submission server address[39m: [1mhttp://localhost:8265[22m
+
+[32m-------------------------------------------------------[39m
+[32mJob 'raysubmit_xfSvXiUdyAk4Vw1Z' submitted successfully[39m
+[32m-------------------------------------------------------[39m
+
+[36mNext steps[39m
+  Query the logs of the job:
+    [1mray job logs raysubmit_xfSvXiUdyAk4Vw1Z[22m
+  Query the status of the job:
+    [1mray job status raysubmit_xfSvXiUdyAk4Vw1Z[22m
+  Request the job to be stopped:
+    [1mray job stop raysubmit_xfSvXiUdyAk4Vw1Z[22m
+
+Tailing logs until the job exits (disable with --no-wait):
+2026-10-17 21:14:48,733	INFO job_manager.py:587 -- Runtime env is setting up.
+Running entrypoint for job raysubmit_xfSvXiUdyAk4Vw1Z: python /home/ubuntu/chia/examples/circt_issue_solver/circt_issue_loop.py --backend opencode --model amazon-bedrock/us.moonshotai.kimi-k3 --issues-dir /home/ubuntu/chia/examples/circt_issue_solver/issuestouse --issue 7531 --output-dir /home/ubuntu/chia/examples/circt_issue_solver/benchmark_results/KimiK3_run/issue_7531
+2026-10-17 21:14:49,833 INFO circtissues: LLM backend=opencode model=amazon-bedrock/us.moonshotai.kimi-k3
+/home/ubuntu/miniconda3/envs/circtissues/lib/python3.10/site-packages/ray/_private/worker.py:2052: FutureWarning: Tip: In future versions of Ray, Ray will no longer override accelerator visible devices env var if num_gpus=0 or num_gpus=None (default). To enable this behavior and turn off this error message, set RAY_ACCEL_ENV_VAR_OVERRIDE_ON_ZERO=0
+  warnings.warn(
+2026-10-17 21:14:50,704 INFO circtissues: local corpus selected 1: [7531]
+[36m(run_issue_remote pid=76525)[0m /home/ray/anaconda3/envs/py_worker/lib/python3.10/site-packages/pydantic_settings/sources/utils.py:47: IncompleteFieldDefinitionWarning: Field 'lifespan' has an incomplete definition: its annotation contains an unresolved forward reference, so settings sources may fail to correctly resolve its value. Call `model_rebuild()` on the model where the field is defined, once all the referenced types are defined.
+[36m(run_issue_remote pid=76525)[0m   warnings.warn(
+[36m(_ToolServerActor pid=76526)[0m INFO:     Started server process [76526]
+[36m(_ToolServerActor pid=76526)[0m INFO:     Waiting for application startup.
+[36m(_ToolServerActor pid=76526)[0m INFO:     Application startup complete.
+[36m(_ToolServerActor pid=76526)[0m INFO:     Uvicorn running on http://172.31.38.160:8000 (Press CTRL+C to quit)
+[36m(run_issue_remote pid=76525)[0m bash_7531 started at 172.31.38.160:8000 on node 191b8de0f7612a3d87dff78a86d7ba3580ed6d0ab63dfac666fbc069
+[36m(_ToolServerActor pid=76621)[0m ERROR:    [Errno 98] error while attempting to bind on address ('172.31.38.160', 8000): address already in use
+[36m(_ToolServerActor pid=76621)[0m INFO:     Waiting for application shutdown.
+[36m(_ToolServerActor pid=76621)[0m INFO:     Application shutdown complete.
+[36m(_ToolServerActor pid=76621)[0m INFO:     Started server process [76621][32m [repeated 2x across cluster] (Ray deduplicates logs by default. Set RAY_DEDUP_LOGS=0 to disable log deduplication, or see https://docs.ray.io/en/master/ray-observability/user-guides/configure-logging.html#log-deduplication for more options.)[0m
+[36m(_ToolServerActor pid=76621)[0m INFO:     Waiting for application startup.[32m [repeated 2x across cluster][0m
+[36m(_ToolServerActor pid=76621)[0m INFO:     Application startup complete.[32m [repeated 2x across cluster][0m
+[36m(_ToolServerActor pid=76621)[0m INFO:     Uvicorn running on http://172.31.38.160:8001 (Press CTRL+C to quit)
+[36m(run_issue_remote pid=76525)[0m build_7531 started at 172.31.38.160:8001 on node 191b8de0f7612a3d87dff78a86d7ba3580ed6d0ab63dfac666fbc069
+[36m(_ToolServerActor pid=76662)[0m ERROR:    [Errno 98] error while attempting to bind on address ('172.31.38.160', 8000): address already in use
+[36m(_ToolServerActor pid=76662)[0m INFO:     Waiting for application shutdown.
+[36m(_ToolServerActor pid=76662)[0m INFO:     Application shutdown complete.
+[36m(_ToolServerActor pid=76662)[0m ERROR:    [Errno 98] error while attempting to bind on address ('172.31.38.160', 8001): address already in use
+[36m(_ToolServerActor pid=76662)[0m INFO:     Waiting for application shutdown.
+[36m(_ToolServerActor pid=76662)[0m INFO:     Application shutdown complete.
+[36m(_ToolServerActor pid=76662)[0m INFO:     Started server process [76662][32m [repeated 2x across cluster][0m
+[36m(_ToolServerActor pid=76662)[0m INFO:     Waiting for application startup.[32m [repeated 2x across cluster][0m
+[36m(_ToolServerActor pid=76662)[0m INFO:     Application startup complete.[32m [repeated 2x across cluster][0m
+[36m(_ToolServerActor pid=76662)[0m INFO:     Uvicorn running on http://172.31.38.160:8002 (Press CTRL+C to quit)
+[36m(_ToolServerActor pid=76662)[0m INFO:     Started server process [76662]
+[36m(_ToolServerActor pid=76662)[0m INFO:     Waiting for application startup.
+[36m(_ToolServerActor pid=76662)[0m INFO:     Application startup complete.
+[36m(run_issue_remote pid=76525)[0m lit_7531 started at 172.31.38.160:8002 on node 191b8de0f7612a3d87dff78a86d7ba3580ed6d0ab63dfac666fbc069
+[36m(run_issue_remote pid=76525)[0m OpenCodeLLM is experimental: only exercised by unit tests so far, not validated in production.
+[36m(_ToolServerActor pid=76526)[0m INFO:     172.31.38.160:53428 - "POST /bash_7531/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=76526)[0m INFO:     172.31.38.160:53428 - "POST /bash_7531/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=76526)[0m INFO:     172.31.38.160:53428 - "GET /bash_7531/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=76526)[0m INFO:     172.31.38.160:53440 - "POST /bash_7531/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=76526)[0m INFO:     172.31.38.160:35568 - "POST /bash_7531/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=76526)[0m INFO:     172.31.38.160:35568 - "POST /bash_7531/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=76526)[0m INFO:     172.31.38.160:35568 - "POST /bash_7531/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=76526)[0m INFO:     172.31.38.160:35568 - "POST /bash_7531/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=76526)[0m INFO:     172.31.38.160:53438 - "POST /bash_7531/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=76526)[0m INFO:     172.31.38.160:53438 - "POST /bash_7531/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=76662)[0m INFO:     Shutting down
+[36m(_ToolServerActor pid=76662)[0m INFO:     Waiting for application shutdown.
+[36m(_ToolServerActor pid=76662)[0m INFO:     Application shutdown complete.
+[36m(_ToolServerActor pid=76662)[0m INFO:     Finished server process [76662]
+2026-10-17 21:16:30,185 INFO circtissues: issue #7531 -> unclear  (+None/-None, lit_ok=None)
+[36m(_ToolServerActor pid=76526)[0m INFO:     Shutting down[32m [repeated 2x across cluster][0m
+[36m(_ToolServerActor pid=76526)[0m INFO:     Waiting for application shutdown.[32m [repeated 2x across cluster][0m
+[36m(_ToolServerActor pid=76526)[0m INFO:     Application shutdown complete.[32m [repeated 2x across cluster][0m
+[36m(_ToolServerActor pid=76526)[0m INFO:     Finished server process [76526][32m [repeated 2x across cluster][0m
+
+[32m------------------------------------------[39m
+[32mJob 'raysubmit_xfSvXiUdyAk4Vw1Z' succeeded[39m
+[32m------------------------------------------[39m
+

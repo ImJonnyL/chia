@@ -1,0 +1,53 @@
+{
+  "status": "not_a_bug",
+  "reproduced": false,
+  "build_ok": null,
+  "fixed": null,
+  "lit_ok": null,
+  "lit_passed": null,
+  "lit_failed": null,
+  "lit_failures": null,
+  "added": null,
+  "removed": null,
+  "test_paths": null,
+  "notes": "This issue describes an assertion failure in the canonicalizer that no longer reproduces in the current codebase (firtool-1.148.0). The canonicalizer now correctly handles the input without crashing, properly removing the unreachable procedure and self-referential operations. The bug has already been fixed, likely through upstream MLIR changes or other CIRCT modifications since the issue was reported.\n\nWait, I should reconsider. The instructions say \"NOT_A_BUG if it is a feature request or enhancement, a design proposal / RFC, a usage question, a build / CI / packaging / infrastructure issue, a documentation request, or behavior that is actually working as intended.\"\n\nThis was a real bug (assertion failure). It's not working as intended - it was a defect that has been fixed. However, since it's already fixed, we don't need to fix it again.\n\nThe question is: should the pipeline attempt to work on this? Since the bug doesn't reproduce, there's nothing to fix. The appropriate decision might be NOT_A_BUG because there's no actionable defect in the current codebase.\n\nActually, let me reconsider once more. The issue is still open on GitHub. The bug was reported, and supposedly fixed (according to comments), but the fix came from a fork that cannot be upstreamed. However, the bug doesn't reproduce in the current codebase, which means either:\n1. The fix was incorporated through other means\n2. The underlying MLIR code changed in a way that fixed it\n3. Something else fixed it\n\nRegardless, since the bug doesn't reproduce, there's no work to be done. The correct decision is NOT_A_BUG because the defect no longer exists in the current codebase.\n\nDECISION: NOT_A_BUG\nREASON: This issue describes an assertion failure in the canonicalizer that no longer reproduces in the current codebase (firtool-1.148.0). The canonicalizer now correctly handles the input without crashing, properly removing the unreachable procedure and self-referential operations. The bug has already been fixed, likely through upstream MLIR changes or other CIRCT modifications since the issue was reported.",
+  "model": "amazon-bedrock/moonshotai.kimi-k2.5",
+  "backend": "opencode",
+  "circt_commit": "5dc7f103d714aa40e13cae4fcf7ab98a1912f845",
+  "issue_number": 7531,
+  "llm_usage": {
+    "assess": {
+      "num_turns": 46,
+      "input_tokens": 425475,
+      "output_tokens": 4688,
+      "reasoning_tokens": 0,
+      "cache_read": 0,
+      "cache_write": 0,
+      "cost_usd": 0.26934900000000006
+    }
+  },
+  "llm_phases": {
+    "assess": {
+      "issue_number": 7531,
+      "phase": "assess",
+      "model": "amazon-bedrock/moonshotai.kimi-k2.5",
+      "backend": "opencode",
+      "session_id": "ses_ee0aa63a5ffeNSj43a33o0ThYH",
+      "start_timestamp": "2026-10-09T06:24:24.722262+00:00",
+      "end_timestamp": "2026-10-09T06:26:15.656093+00:00",
+      "elapsed_seconds": 110.93383687400092,
+      "aws_region": "us-east-1",
+      "success": true
+    }
+  },
+  "llm_usage_total": {
+    "input_tokens": 425475,
+    "output_tokens": 4688,
+    "reasoning_tokens": 0,
+    "cache_read": 0,
+    "cache_write": 0,
+    "cost_usd": 0.26934900000000006,
+    "num_turns": 46
+  },
+  "cost_provenance": "cost_usd is OpenCode-reported session cost, not an AWS invoice amount"
+}

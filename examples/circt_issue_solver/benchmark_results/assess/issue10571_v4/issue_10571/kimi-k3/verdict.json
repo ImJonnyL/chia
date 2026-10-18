@@ -1,0 +1,53 @@
+{
+  "status": "not_a_bug",
+  "reproduced": false,
+  "build_ok": null,
+  "fixed": null,
+  "lit_ok": null,
+  "lit_passed": null,
+  "lit_failed": null,
+  "lit_failures": null,
+  "added": null,
+  "removed": null,
+  "test_paths": null,
+  "notes": "This is an enhancement request to extend the HWAggregateToComb pass to lower `hw.union`-typed operations (muxes, union_create/union_extract), which the pass was never designed to handle \u2014 its type converter only covers arrays and structs. The pass behaves correctly for unsupported input by emitting a clean legalization error, and the maintainer explicitly confirmed on the issue that this is \"not simply implemented\" and invited the reporter to implement it as a new feature.",
+  "model": "amazon-bedrock/us.moonshotai.kimi-k3",
+  "backend": "opencode",
+  "circt_commit": "5dc7f103d714aa40e13cae4fcf7ab98a1912f845",
+  "issue_number": 10571,
+  "llm_usage": {
+    "assess": {
+      "num_turns": 8,
+      "input_tokens": 56,
+      "output_tokens": 4765,
+      "reasoning_tokens": 0,
+      "cache_read": 36012,
+      "cache_write": 7792,
+      "cost_usd": 0.12283326
+    }
+  },
+  "llm_phases": {
+    "assess": {
+      "issue_number": 10571,
+      "phase": "assess",
+      "model": "amazon-bedrock/us.moonshotai.kimi-k3",
+      "backend": "opencode",
+      "session_id": "ses_ee0d01424ffezQj606Z68Gybcb",
+      "start_timestamp": "2026-10-09T05:43:15.671042+00:00",
+      "end_timestamp": "2026-10-09T05:43:54.349971+00:00",
+      "elapsed_seconds": 38.67893526199987,
+      "aws_region": "us-east-1",
+      "success": true
+    }
+  },
+  "llm_usage_total": {
+    "input_tokens": 56,
+    "output_tokens": 4765,
+    "reasoning_tokens": 0,
+    "cache_read": 36012,
+    "cache_write": 7792,
+    "cost_usd": 0.12283326,
+    "num_turns": 8
+  },
+  "cost_provenance": "cost_usd is OpenCode-reported session cost, not an AWS invoice amount"
+}

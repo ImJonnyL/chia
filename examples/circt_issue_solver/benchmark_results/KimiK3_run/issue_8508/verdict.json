@@ -1,0 +1,144 @@
+{
+  "status": "attempted",
+  "reproduced": true,
+  "build_ok": true,
+  "fixed": false,
+  "lit_ok": false,
+  "lit_passed": 1018,
+  "lit_failed": 4,
+  "lit_failures": [
+    "CIRCT :: firtool/extract-instances.fir (230 of 1075)",
+    "CIRCT :: Dialect/FIRRTL/SFCTests/ExtractSeqMems/Compose.fir (234 of 1075)",
+    "CIRCT :: Dialect/FIRRTL/inject-dut-hierarchy.mlir (289 of 1075)",
+    "CIRCT :: Dialect/FIRRTL/extract-instances-inject-dut-hier.mlir (473 of 1075)"
+  ],
+  "added": 75,
+  "removed": 29,
+  "test_paths": [
+    "test/Analysis",
+    "test/Conversion",
+    "test/Dialect",
+    "test/Scheduling",
+    "test/Target",
+    "test/Tools",
+    "test/Transforms",
+    "test/Unit",
+    "test/arcilator",
+    "test/circt-as-dis",
+    "test/circt-opt",
+    "test/circt-reduce",
+    "test/circt-synth",
+    "test/circt-test",
+    "test/circt-translate",
+    "test/circt-verilog",
+    "test/firld",
+    "test/firtool",
+    "test/hlstool",
+    "test/kanagawatool",
+    "test/lib",
+    "test/om-linker"
+  ],
+  "notes": null,
+  "model": "amazon-bedrock/us.moonshotai.kimi-k3",
+  "backend": "opencode",
+  "circt_commit": "5dc7f103d714aa40e13cae4fcf7ab98a1912f845",
+  "issue_number": 8508,
+  "llm_usage": {
+    "assess": {
+      "num_turns": 7,
+      "input_tokens": 49,
+      "output_tokens": 36207,
+      "reasoning_tokens": 0,
+      "cache_read": 47884,
+      "cache_write": 11575,
+      "cost_usd": 0.661125795
+    },
+    "repro": {
+      "num_turns": 6,
+      "input_tokens": 42,
+      "output_tokens": 2015,
+      "reasoning_tokens": 0,
+      "cache_read": 22760,
+      "cache_write": 5871,
+      "cost_usd": 0.065114775
+    },
+    "fix": {
+      "num_turns": 95,
+      "input_tokens": 665,
+      "output_tokens": 63671,
+      "reasoning_tokens": 0,
+      "cache_read": 3622852,
+      "cache_write": 61063,
+      "cost_usd": 2.5001920349999995
+    },
+    "writeup": {
+      "num_turns": 1,
+      "input_tokens": 7,
+      "output_tokens": 7278,
+      "reasoning_tokens": 0,
+      "cache_read": 0,
+      "cache_write": 5912,
+      "cost_usd": 0.1444971
+    }
+  },
+  "llm_phases": {
+    "assess": {
+      "issue_number": 8508,
+      "phase": "assess",
+      "model": "amazon-bedrock/us.moonshotai.kimi-k3",
+      "backend": "opencode",
+      "session_id": "ses_eb431307cffeRciK0gkef8xOfA",
+      "start_timestamp": "2026-10-17T21:40:06.165201+00:00",
+      "end_timestamp": "2026-10-17T21:58:40.978713+00:00",
+      "elapsed_seconds": 1114.8135188720007,
+      "aws_region": "us-east-1",
+      "success": true
+    },
+    "repro": {
+      "issue_number": 8508,
+      "phase": "repro",
+      "model": "amazon-bedrock/us.moonshotai.kimi-k3",
+      "backend": "opencode",
+      "session_id": "ses_eb4202dc3ffeeAHB95T7IjwD0o",
+      "start_timestamp": "2026-10-17T21:58:40.994140+00:00",
+      "end_timestamp": "2026-10-17T22:00:23.708758+00:00",
+      "elapsed_seconds": 102.71462572900055,
+      "aws_region": "us-east-1",
+      "success": true
+    },
+    "fix": {
+      "issue_number": 8508,
+      "phase": "fix",
+      "model": "amazon-bedrock/us.moonshotai.kimi-k3",
+      "backend": "opencode",
+      "session_id": "ses_eb41e9c2fffeOyW0g2mT0S6KA6",
+      "start_timestamp": "2026-10-17T22:00:23.786500+00:00",
+      "end_timestamp": "2026-10-17T22:28:29.971939+00:00",
+      "elapsed_seconds": 1686.1854450050014,
+      "aws_region": "us-east-1",
+      "success": true
+    },
+    "writeup": {
+      "issue_number": 8508,
+      "phase": "writeup",
+      "model": "amazon-bedrock/us.moonshotai.kimi-k3",
+      "backend": "opencode",
+      "session_id": "ses_eb4040643ffez2xQvCB4HHtz2a",
+      "start_timestamp": "2026-10-17T22:29:26.119586+00:00",
+      "end_timestamp": "2026-10-17T22:30:56.751741+00:00",
+      "elapsed_seconds": 90.63216102300066,
+      "aws_region": "us-east-1",
+      "success": true
+    }
+  },
+  "llm_usage_total": {
+    "input_tokens": 763,
+    "output_tokens": 109171,
+    "reasoning_tokens": 0,
+    "cache_read": 3693496,
+    "cache_write": 84421,
+    "cost_usd": 3.3709297049999996,
+    "num_turns": 109
+  },
+  "cost_provenance": "cost_usd is OpenCode-reported session cost, not an AWS invoice amount"
+}
