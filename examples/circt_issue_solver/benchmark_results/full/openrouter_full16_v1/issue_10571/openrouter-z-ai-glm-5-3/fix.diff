@@ -1,0 +1,53 @@
+diff --git a/lib/Dialect/HW/Transforms/HWAggregateToComb.cpp b/lib/Dialect/HW/Transforms/HWAggregateToComb.cpp
+index 4a3a29d..f36e47e 100644
+--- a/lib/Dialect/HW/Transforms/HWAggregateToComb.cpp
++++ b/lib/Dialect/HW/Transforms/HWAggregateToComb.cpp
+@@ -249,6 +249,9 @@ public:
+     addConversion([](hw::StructType t) -> Type {
+       return IntegerType::get(t.getContext(), hw::getBitWidth(t));
+     });
++    addConversion([](hw::UnionType t) -> Type {
++      return IntegerType::get(t.getContext(), hw::getBitWidth(t));
++    });
+     addTargetMaterialization([](mlir::OpBuilder &builder, mlir::Type resultType,
+                                 mlir::ValueRange inputs,
+                                 mlir::Location loc) -> mlir::Value {
+diff --git a/test/Dialect/HW/hw-aggregate-to-comb.mlir b/test/Dialect/HW/hw-aggregate-to-comb.mlir
+index 8ee6494..291bbd3 100644
+--- a/test/Dialect/HW/hw-aggregate-to-comb.mlir
++++ b/test/Dialect/HW/hw-aggregate-to-comb.mlir
+@@ -103,6 +103,34 @@ hw.module private @mux_array(in %cond: i1, in %true_val: !hw.array<2xi2>, in %fa
+   hw.output %0 : !hw.array<2xi2>
+ }
+ 
++// CHECK-LABEL: @mux_union(
++hw.module private @mux_union(in %cond: i1, in %true_val: !hw.union<a: i1>, in %false_val: !hw.union<a: i1>, out out: !hw.union<a: i1>) {
++  // Unions are lowered like other aggregates: bitcast the operands to an
++  // integer, mux the full bit pattern, and bitcast the result back.
++  // CHECK-NEXT: %[[FALSE_BITCAST:.+]] = hw.bitcast %false_val : (!hw.union<a: i1>) -> i1
++  // CHECK-NEXT: %[[TRUE_BITCAST:.+]] = hw.bitcast %true_val : (!hw.union<a: i1>) -> i1
++  // CHECK-NEXT: %[[MUX:.+]] = comb.mux %cond, %[[TRUE_BITCAST]], %[[FALSE_BITCAST]] : i1
++  // CHECK-NEXT: %[[RESULT:.+]] = hw.bitcast %[[MUX]] : (i1) -> !hw.union<a: i1>
++  // CHECK-NEXT: hw.output %[[RESULT]]
++  %0 = comb.mux %cond, %true_val, %false_val : !hw.union<a: i1>
++  hw.output %0 : !hw.union<a: i1>
++}
++
++// CHECK-LABEL: @mux_union_extract(
++hw.module private @mux_union_extract(in %cond: i1, in %true_val: !hw.union<foo: i3, bar: i16>, in %false_val: !hw.union<foo: i3, bar: i16>, out foo: i3) {
++  // The whole union bit pattern (including padding bits) is muxed, and the
++  // union operations around the mux remain legal.
++  // CHECK-NEXT: %[[FALSE_BITCAST:.+]] = hw.bitcast %false_val : (!hw.union<foo: i3, bar: i16>) -> i16
++  // CHECK-NEXT: %[[TRUE_BITCAST:.+]] = hw.bitcast %true_val : (!hw.union<foo: i3, bar: i16>) -> i16
++  // CHECK-NEXT: %[[MUX:.+]] = comb.mux %cond, %[[TRUE_BITCAST]], %[[FALSE_BITCAST]] : i16
++  // CHECK-NEXT: %[[RESULT:.+]] = hw.bitcast %[[MUX]] : (i16) -> !hw.union<foo: i3, bar: i16>
++  // CHECK-NEXT: %[[FOO:.+]] = hw.union_extract %[[RESULT]]["foo"] : !hw.union<foo: i3, bar: i16>
++  // CHECK-NEXT: hw.output %[[FOO]]
++  %0 = comb.mux %cond, %true_val, %false_val : !hw.union<foo: i3, bar: i16>
++  %1 = hw.union_extract %0["foo"] : !hw.union<foo: i3, bar: i16>
++  hw.output %1 : i3
++}
++
+ // CHECK-LABEL: @struct_extract(
+ hw.module private @struct_extract(in %s: !hw.struct<foo: i3, bar: i5>, out foo: i3, out bar: i5) {
+   // The first field "foo" occupies the MSBs

@@ -1,5 +1,9 @@
 # CIRCT benchmarking with OpenCode and AWS Bedrock
 
+For OpenRouter through the same OpenCode agent, follow
+[OpenRouter_benchmarking.md](OpenRouter_benchmarking.md). That guide uses a
+separate cluster and model selection; the AWS instructions below remain Bedrock-specific.
+
 This guide summarizes the benchmark changes and the tested authentication steps.
 The existing assess → reproduce → fix → verify/regression → writeup pipeline,
 MCP tools, and prompt files are preserved. See [BENCHMARK.md](BENCHMARK.md) for

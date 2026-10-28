@@ -1,0 +1,2 @@
+PASS: invalidated clock wire lowered cleanly
+PASS: bare invalid clock value lowered cleanly

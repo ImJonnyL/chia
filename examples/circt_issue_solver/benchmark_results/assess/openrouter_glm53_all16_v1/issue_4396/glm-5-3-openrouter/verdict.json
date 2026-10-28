@@ -1,0 +1,53 @@
+{
+  "status": "not_a_bug",
+  "reproduced": false,
+  "build_ok": null,
+  "fixed": null,
+  "lit_ok": null,
+  "lit_passed": null,
+  "lit_failed": null,
+  "lit_failures": null,
+  "added": null,
+  "removed": null,
+  "test_paths": null,
+  "notes": "This is a feature request / optimization enhancement, not a defect: CIRCT emits functionally correct IR and SystemVerilog for all the shown cases \u2014 nothing crashes, miscompiles, or violates the FIRRTL spec. The issue only observes that fold passes miss simplification opportunities for zero-width operands, and the reporter's closing comment (\"we can probably more generally replace zero-width with zero constants everywhere\") is an explicit design proposal for new canonicalization rules rather than a report of incorrect behavior.",
+  "model": "openrouter/z-ai/glm-5.3",
+  "backend": "opencode",
+  "circt_commit": "5dc7f103d714aa40e13cae4fcf7ab98a1912f845",
+  "issue_number": 4396,
+  "llm_usage": {
+    "assess": {
+      "num_turns": 1,
+      "input_tokens": 7787,
+      "output_tokens": 743,
+      "reasoning_tokens": 47,
+      "cache_read": 0,
+      "cache_write": 0,
+      "cost_usd": 0.0016503113
+    }
+  },
+  "llm_phases": {
+    "assess": {
+      "issue_number": 4396,
+      "phase": "assess",
+      "model": "openrouter/z-ai/glm-5.3",
+      "backend": "opencode",
+      "session_id": "ses_e81041a76ffeeeoGf7QgKjrJn5",
+      "start_timestamp": "2026-10-27T20:09:59.044329+00:00",
+      "end_timestamp": "2026-10-27T20:10:06.616927+00:00",
+      "elapsed_seconds": 7.572643347999929,
+      "aws_region": null,
+      "success": true
+    }
+  },
+  "llm_usage_total": {
+    "input_tokens": 7787,
+    "output_tokens": 743,
+    "reasoning_tokens": 47,
+    "cache_read": 0,
+    "cache_write": 0,
+    "cost_usd": 0.0016503113,
+    "num_turns": 1
+  },
+  "cost_provenance": "cost_usd is OpenCode-reported session cost, not a provider invoice amount"
+}

@@ -1,0 +1,53 @@
+{
+  "status": "not_a_bug",
+  "reproduced": false,
+  "build_ok": null,
+  "fixed": null,
+  "lit_ok": null,
+  "lit_passed": null,
+  "lit_failed": null,
+  "lit_failures": null,
+  "added": null,
+  "removed": null,
+  "test_paths": null,
+  "notes": "This is a Verilog output quality enhancement request, not a bug. The generated code is semantically correct. The issue author explicitly notes the output is \"semantically correct\" and uses hedging language (\"might be\", \"seems to\"). The CIRCT documentation in RationaleComb.md explicitly discusses this design choice and lists \"fancy extension elision\" as a future enhancement area, indicating multiple valid approaches exist with tradeoffs between output readability and optimization simplicity.",
+  "model": "amazon-bedrock/zai.glm-5",
+  "backend": "opencode",
+  "circt_commit": "5dc7f103d714aa40e13cae4fcf7ab98a1912f845",
+  "issue_number": 2669,
+  "llm_usage": {
+    "assess": {
+      "num_turns": 100,
+      "input_tokens": 1750009,
+      "output_tokens": 8155,
+      "reasoning_tokens": 0,
+      "cache_read": 0,
+      "cache_write": 0,
+      "cost_usd": 1.7761049999999996
+    }
+  },
+  "llm_phases": {
+    "assess": {
+      "issue_number": 2669,
+      "phase": "assess",
+      "model": "amazon-bedrock/zai.glm-5",
+      "backend": "opencode",
+      "session_id": "ses_eaa4280d1ffeiFG7QvgqEu27Rr",
+      "start_timestamp": "2026-10-19T19:57:23.102715+00:00",
+      "end_timestamp": "2026-10-19T20:05:00.166293+00:00",
+      "elapsed_seconds": 457.063582625,
+      "aws_region": "us-east-1",
+      "success": true
+    }
+  },
+  "llm_usage_total": {
+    "input_tokens": 1750009,
+    "output_tokens": 8155,
+    "reasoning_tokens": 0,
+    "cache_read": 0,
+    "cache_write": 0,
+    "cost_usd": 1.7761049999999996,
+    "num_turns": 100
+  },
+  "cost_provenance": "cost_usd is OpenCode-reported session cost, not an AWS invoice amount"
+}

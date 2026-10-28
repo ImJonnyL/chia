@@ -26,6 +26,15 @@ Copilot :mod:`chia.models.copilot`
 
 OpenCode :mod:`chia.models.opencode`
 
+When an explicit ``model`` is passed to ``OpenCodeLLM``, it also selects the
+background model and all built-in agent models (including summary and
+compaction). CHIA supplies a fixed session title to avoid a separate title
+request, and its generated inline config takes precedence over inherited
+inline model settings. Without an explicit model, OpenCode retains its own
+model defaults. Other background requests may still incur costs not included
+in exported session usage; the provider's activity records remain the billing
+reference.
+
 Antigravity :mod:`chia.models.antigravity`
 
 

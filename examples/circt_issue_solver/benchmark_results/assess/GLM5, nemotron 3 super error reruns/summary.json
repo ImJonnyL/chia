@@ -1,0 +1,21 @@
+[
+  {
+    "model": "glm-5",
+    "issue": 4354,
+    "status": "clear",
+    "success": true,
+    "decision_markers": [
+      "CLEAR",
+      "CLEAR"
+    ],
+    "circt_commit": "5dc7f103d714aa40e13cae4fcf7ab98a1912f845"
+  },
+  {
+    "model": "nemotron-3-super",
+    "issue": 10571,
+    "status": "clear",
+    "success": true,
+    "decision_markers": [],
+    "circt_commit": "5dc7f103d714aa40e13cae4fcf7ab98a1912f845"
+  }
+]

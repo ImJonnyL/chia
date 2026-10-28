@@ -1,0 +1,131 @@
+diff --git a/lib/Dialect/FIRRTL/Transforms/ExpandWhens.cpp b/lib/Dialect/FIRRTL/Transforms/ExpandWhens.cpp
+index c3fe48f..f0b7b2e 100644
+--- a/lib/Dialect/FIRRTL/Transforms/ExpandWhens.cpp
++++ b/lib/Dialect/FIRRTL/Transforms/ExpandWhens.cpp
+@@ -519,10 +519,34 @@ public:
+ // WhenOpVisitor
+ //===----------------------------------------------------------------------===//
+ 
+-/// This extends the LastConnectVisitor to handle all Simulation related
++namespace {
++
++/// Return true if the given block is the block of the given operation, or a
++/// block that encloses it. The `WhenOpVisitor` creates every operation it
++/// caches directly before the operation it is currently visiting, and it
++/// visits operations in program order. A cached value defined in the block of
++/// the use, or in a block that encloses it, is therefore always defined
++/// before the use. For the values cached by the `WhenOpVisitor`, this check is
++/// thus equivalent to a dominance check.
++static bool blockDominatesUse(Block *defBlock, Operation *use) {
++  for (Block *useBlock = use->getBlock(); useBlock;
++       useBlock = useBlock->getParentOp()->getBlock())
++    if (useBlock == defBlock)
++      return true;
++  return false;
++}
++
++/// Return true if the given value dominates the given operation, in the sense
++/// described by `blockDominatesUse`.
++static bool valueDominatesUse(Value value, Operation *use) {
++  auto *defOp = value.getDefiningOp();
++  return blockDominatesUse(
++      defOp ? defOp->getBlock() : cast<BlockArgument>(value).getOwner(), use);
++}
++
++/// This extends the LastConnectResolver to handle all Simulation related
+ /// constructs which do not need any processing at the module scope, but need to
+ /// be processed inside of a WhenOp.
+-namespace {
+ class WhenOpVisitor : public LastConnectResolver<WhenOpVisitor> {
+ 
+ public:
+@@ -578,7 +602,7 @@ private:
+     if (auto clockOp = property.getDefiningOp<LTLClockIntrinsicOp>()) {
+       auto input = ltlAndWithCondition(op, clockOp.getInput());
+       auto &newClockOp = createdLTLClockOps[{clockOp, input}];
+-      if (!newClockOp) {
++      if (!newClockOp || !blockDominatesUse(newClockOp->getBlock(), op)) {
+         newClockOp = OpBuilder(op).cloneWithoutRegions(clockOp);
+         newClockOp.getInputMutable().assign(input);
+       }
+@@ -587,7 +611,7 @@ private:
+ 
+     // Otherwise create a new `ltl.and` with the condition.
+     auto &newOp = createdLTLAndOps[{condition, property}];
+-    if (!newOp)
++    if (!newOp || !valueDominatesUse(newOp, op))
+       newOp = OpBuilder(op).createOrFold<LTLAndIntrinsicOp>(
+           condition.getLoc(), property.getType(), condition, property);
+     return newOp;
+@@ -605,7 +629,7 @@ private:
+     if (auto clockOp = property.getDefiningOp<LTLClockIntrinsicOp>()) {
+       auto input = ltlImplicationWithCondition(op, clockOp.getInput());
+       auto &newClockOp = createdLTLClockOps[{clockOp, input}];
+-      if (!newClockOp) {
++      if (!newClockOp || !blockDominatesUse(newClockOp->getBlock(), op)) {
+         newClockOp = OpBuilder(op).cloneWithoutRegions(clockOp);
+         newClockOp.getInputMutable().assign(input);
+       }
+@@ -616,7 +640,7 @@ private:
+     if (auto implOp = property.getDefiningOp<LTLImplicationIntrinsicOp>()) {
+       auto lhs = ltlAndWithCondition(op, implOp.getLhs());
+       auto &newImplOp = createdLTLImplicationOps[{lhs, implOp.getRhs()}];
+-      if (!newImplOp) {
++      if (!newImplOp || !valueDominatesUse(newImplOp, op)) {
+         auto clonedOp = OpBuilder(op).cloneWithoutRegions(implOp);
+         clonedOp.getLhsMutable().assign(lhs);
+         newImplOp = clonedOp;
+@@ -626,7 +650,7 @@ private:
+ 
+     // Otherwise create a new `ltl.implication` with the condition on the LHS.
+     auto &newImplOp = createdLTLImplicationOps[{condition, property}];
+-    if (!newImplOp)
++    if (!newImplOp || !valueDominatesUse(newImplOp, op))
+       newImplOp = OpBuilder(op).createOrFold<LTLImplicationIntrinsicOp>(
+           condition.getLoc(), property.getType(), condition, property);
+     return newImplOp;
+diff --git a/test/Dialect/FIRRTL/expand-whens.mlir b/test/Dialect/FIRRTL/expand-whens.mlir
+index 03c4148..53e7b9d 100644
+--- a/test/Dialect/FIRRTL/expand-whens.mlir
++++ b/test/Dialect/FIRRTL/expand-whens.mlir
+@@ -626,6 +626,40 @@ firrtl.module @LayerUnderWhen(in %cond : !firrtl.uint<1>, in %clock : !firrtl.cl
+   }
+ }
+ 
++// Check that the LTL properties created by merging the when condition into
++// assert properties are not reused across layerblocks. The operations created
++// for one layerblock do not dominate uses in a sibling layerblock or after the
++// layerblock, but operations created in the enclosing block do.
++// CHECK-LABEL: firrtl.module @WhenAroundLayerblockPropertyAsserts(
++firrtl.module @WhenAroundLayerblockPropertyAsserts(
++  in %cond: !firrtl.uint<1>,
++  in %a: !firrtl.uint<1>,
++  in %b: !firrtl.uint<1>
++) {
++  // CHECK-NOT:   firrtl.when
++  firrtl.when %cond : !firrtl.uint<1> {
++    firrtl.layerblock @Layer {
++      %a0 = firrtl.int.ltl.implication %a, %b : (!firrtl.uint<1>, !firrtl.uint<1>) -> !firrtl.uint<1>
++      // CHECK: firrtl.layerblock @Layer
++      // CHECK: [[AND0:%.+]] = firrtl.int.ltl.and %cond, %a
++      // CHECK: [[IMPL0:%.+]] = firrtl.int.ltl.implication [[AND0]], %b
++      // CHECK: firrtl.int.verif.assert [[IMPL0]], %a
++      firrtl.int.verif.assert %a0, %a : !firrtl.uint<1>, !firrtl.uint<1>
++    }
++    %a1 = firrtl.int.ltl.implication %a, %b : (!firrtl.uint<1>, !firrtl.uint<1>) -> !firrtl.uint<1>
++    // CHECK: [[AND1:%.+]] = firrtl.int.ltl.and %cond, %a
++    // CHECK: [[IMPL1:%.+]] = firrtl.int.ltl.implication [[AND1]], %b
++    // CHECK: firrtl.int.verif.assert [[IMPL1]], %a
++    firrtl.int.verif.assert %a1, %a : !firrtl.uint<1>, !firrtl.uint<1>
++    firrtl.layerblock @Layer {
++      %a2 = firrtl.int.ltl.implication %a, %b : (!firrtl.uint<1>, !firrtl.uint<1>) -> !firrtl.uint<1>
++      // CHECK: firrtl.layerblock @Layer
++      // CHECK: firrtl.int.verif.assert [[IMPL1]], %a
++      firrtl.int.verif.assert %a2, %a : !firrtl.uint<1>, !firrtl.uint<1>
++    }
++  }
++}
++
+ // CHECK: firrtl.class @ClassWithInput(in %in: !firrtl.string)
+ firrtl.class @ClassWithInput(in %in: !firrtl.string) {}
+ 

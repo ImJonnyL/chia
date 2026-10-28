@@ -120,7 +120,7 @@ def _persist(issue, res: dict, *, record_db: bool = True, output_dir: Path | Non
                       and u.get(key) is not None]
             totals[key] = sum(values) if values else None
         verdict["llm_usage_total"] = totals
-        verdict["cost_provenance"] = "cost_usd is OpenCode-reported session cost, not an AWS invoice amount"
+        verdict["cost_provenance"] = "cost_usd is OpenCode-reported session cost, not a provider invoice amount"
     art.joinpath("verdict.json").write_text(json.dumps(verdict, indent=2))
     for phase, blob in (res.get("logs") or {}).items():
         art.joinpath(f"llm_{phase}.md").write_text(blob.get("stream") or blob.get("result") or "")
@@ -164,8 +164,8 @@ def main() -> None:
     ap.add_argument("--backend", choices=sorted(BACKEND_DEFAULT_MODEL), default=None,
                     help="LLM backend: claude (default; cluster.yaml), antigravity "
                          "(Google Antigravity CLI / Gemini; cluster_antigravity.yaml) "
-                         "or opencode (OpenCode CLI with Amazon Bedrock; "
-                         "cluster_opencode_bedrock.yaml)")
+                         "or opencode (OpenCode CLI with Bedrock or OpenRouter; "
+                         "cluster_opencode_bedrock.yaml or cluster_opencode_openrouter.yaml)")
     ap.add_argument("--antigravity", action="store_true", help="alias for --backend antigravity")
     ap.add_argument("--model", default=None,
                     help="override the model id for the chosen backend (defaults: "

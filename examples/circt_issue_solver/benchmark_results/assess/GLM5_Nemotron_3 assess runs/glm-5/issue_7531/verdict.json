@@ -1,0 +1,53 @@
+{
+  "status": "not_a_bug",
+  "reproduced": false,
+  "build_ok": null,
+  "fixed": null,
+  "lit_ok": null,
+  "lit_passed": null,
+  "lit_failed": null,
+  "lit_failures": null,
+  "added": null,
+  "removed": null,
+  "test_paths": null,
+  "notes": "The issue was reported in August 2024 but no longer reproduces at the firtool-1.148.0 release. Testing confirms that `circt-opt -canonicalize` handles the exact reproducer successfully without crashes. The bug was likely fixed by upstream MLIR changes between 2024 and the current release, or by the self-referential operation fixes merged in March 2026 (commits 72acea92c and b59eca8f1, both included in firtool-1.148.0). This is a historical bug that has already been resolved, not a current defect requiring remediation.",
+  "model": "amazon-bedrock/zai.glm-5",
+  "backend": "opencode",
+  "circt_commit": "5dc7f103d714aa40e13cae4fcf7ab98a1912f845",
+  "issue_number": 7531,
+  "llm_usage": {
+    "assess": {
+      "num_turns": 81,
+      "input_tokens": 1705894,
+      "output_tokens": 7874,
+      "reasoning_tokens": 0,
+      "cache_read": 0,
+      "cache_write": 0,
+      "cost_usd": 1.7310907999999996
+    }
+  },
+  "llm_phases": {
+    "assess": {
+      "issue_number": 7531,
+      "phase": "assess",
+      "model": "amazon-bedrock/zai.glm-5",
+      "backend": "opencode",
+      "session_id": "ses_eaa193286ffefTTaobRVYYLHdf",
+      "start_timestamp": "2026-10-19T20:42:30.470917+00:00",
+      "end_timestamp": "2026-10-19T20:52:17.285606+00:00",
+      "elapsed_seconds": 586.8146937750007,
+      "aws_region": "us-east-1",
+      "success": true
+    }
+  },
+  "llm_usage_total": {
+    "input_tokens": 1705894,
+    "output_tokens": 7874,
+    "reasoning_tokens": 0,
+    "cache_read": 0,
+    "cache_write": 0,
+    "cost_usd": 1.7310907999999996,
+    "num_turns": 81
+  },
+  "cost_provenance": "cost_usd is OpenCode-reported session cost, not an AWS invoice amount"
+}

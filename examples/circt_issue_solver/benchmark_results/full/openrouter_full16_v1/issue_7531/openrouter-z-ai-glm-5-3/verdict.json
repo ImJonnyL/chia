@@ -1,0 +1,53 @@
+{
+  "status": "not_a_bug",
+  "reproduced": false,
+  "build_ok": null,
+  "fixed": null,
+  "lit_ok": null,
+  "lit_passed": null,
+  "lit_failed": null,
+  "lit_failures": null,
+  "added": null,
+  "removed": null,
+  "test_paths": null,
+  "notes": "The reported assertion crash no longer manifests on this checkout \u2014 the exact input and strictly harder variants canonicalize correctly (verifier-accepted IR in, valid IR out, unreachable code properly deleted), because the crash site was upstream MLIR's rewrite infrastructure (`PatternMatch.cpp`), which the reporter himself suspected and which has since been reworked in the prebuilt SDK (that component is out of scope for a CIRCT fix in any case). What remains in the issue thread are open design/investigation questions \u2014 whether Moore should verify more strictly than MLIR's designed tolerance for cycles in unreachable blocks (reachable comb cycles are already properly diagnosed), and which SV-frontend pass might leave unreachable blocks (no reproducer) \u2014 neither of which is a defect in CIRCT's own tree, and the assert itself cannot even fire in this NDEBUG-built environment.",
+  "model": "openrouter/z-ai/glm-5.3",
+  "backend": "opencode",
+  "circt_commit": "5dc7f103d714aa40e13cae4fcf7ab98a1912f845",
+  "issue_number": 7531,
+  "llm_usage": {
+    "assess": {
+      "num_turns": 23,
+      "input_tokens": 38151,
+      "output_tokens": 8325,
+      "reasoning_tokens": 57624,
+      "cache_read": 1131584,
+      "cache_write": 0,
+      "cost_usd": 0.1729614925
+    }
+  },
+  "llm_phases": {
+    "assess": {
+      "issue_number": 7531,
+      "phase": "assess",
+      "model": "openrouter/z-ai/glm-5.3",
+      "backend": "opencode",
+      "session_id": "ses_e8096bab2ffeNYkFr9ZbCmrz2o",
+      "start_timestamp": "2026-10-27T22:09:26.984170+00:00",
+      "end_timestamp": "2026-10-27T22:20:09.041886+00:00",
+      "elapsed_seconds": 642.057721268,
+      "aws_region": null,
+      "success": true
+    }
+  },
+  "llm_usage_total": {
+    "input_tokens": 38151,
+    "output_tokens": 8325,
+    "reasoning_tokens": 57624,
+    "cache_read": 1131584,
+    "cache_write": 0,
+    "cost_usd": 0.1729614925,
+    "num_turns": 23
+  },
+  "cost_provenance": "cost_usd is OpenCode-reported session cost, not a provider invoice amount"
+}

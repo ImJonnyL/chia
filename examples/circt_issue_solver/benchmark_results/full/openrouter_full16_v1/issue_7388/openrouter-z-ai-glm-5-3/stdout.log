@@ -1,0 +1,209 @@
+2026-10-27 22:02:50,553	INFO cli.py:41 -- [37mJob submission server address[39m: [1mhttp://localhost:8265[22m
+2026-10-27 22:02:50,563	SUCC cli.py:65 -- [32m-------------------------------------------------------[39m
+2026-10-27 22:02:50,563	SUCC cli.py:66 -- [32mJob 'raysubmit_rp7PRBEhT2zCadeE' submitted successfully[39m
+2026-10-27 22:02:50,563	SUCC cli.py:67 -- [32m-------------------------------------------------------[39m
+2026-10-27 22:02:50,563	INFO cli.py:326 -- [36mNext steps[39m
+2026-10-27 22:02:50,563	INFO cli.py:327 -- Query the logs of the job:
+2026-10-27 22:02:50,563	INFO cli.py:329 -- [1mray job logs raysubmit_rp7PRBEhT2zCadeE[22m
+2026-10-27 22:02:50,563	INFO cli.py:331 -- Query the status of the job:
+2026-10-27 22:02:50,563	INFO cli.py:333 -- [1mray job status raysubmit_rp7PRBEhT2zCadeE[22m
+2026-10-27 22:02:50,563	INFO cli.py:335 -- Request the job to be stopped:
+2026-10-27 22:02:50,563	INFO cli.py:337 -- [1mray job stop raysubmit_rp7PRBEhT2zCadeE[22m
+2026-10-27 22:02:50,565	INFO cli.py:347 -- Tailing logs until the job exits (disable with --no-wait):
+2026-10-27 22:02:50,558	INFO job_manager.py:587 -- Runtime env is setting up.
+Running entrypoint for job raysubmit_rp7PRBEhT2zCadeE: python /home/ubuntu/chia/examples/circt_issue_solver/circt_issue_loop.py --backend opencode --model openrouter/z-ai/glm-5.3 --issues-dir /home/ubuntu/chia/examples/circt_issue_solver/issuestouse --output-dir /home/ubuntu/chia/examples/circt_issue_solver/benchmark_results/full/openrouter_full16_v1/issue_7388/openrouter-z-ai-glm-5-3 --issue 7388
+2026-10-27 22:02:51,768 INFO circtissues: LLM backend=opencode model=openrouter/z-ai/glm-5.3
+/home/ubuntu/miniconda3/envs/circtissues/lib/python3.10/site-packages/ray/_private/worker.py:2052: FutureWarning: Tip: In future versions of Ray, Ray will no longer override accelerator visible devices env var if num_gpus=0 or num_gpus=None (default). To enable this behavior and turn off this error message, set RAY_ACCEL_ENV_VAR_OVERRIDE_ON_ZERO=0
+  warnings.warn(
+2026-10-27 22:02:52,712 INFO circtissues: local corpus selected 1: [7388]
+[36m(run_issue_remote pid=39339)[0m /home/ray/anaconda3/envs/py_worker/lib/python3.10/site-packages/pydantic_settings/sources/utils.py:47: IncompleteFieldDefinitionWarning: Field 'lifespan' has an incomplete definition: its annotation contains an unresolved forward reference, so settings sources may fail to correctly resolve its value. Call `model_rebuild()` on the model where the field is defined, once all the referenced types are defined.
+[36m(run_issue_remote pid=39339)[0m   warnings.warn(
+[36m(run_issue_remote pid=39339)[0m bash_7388 started at 172.31.38.160:8000 on node 74370dee9bdfa3984754fa1a8b924c1654055f423a79727dd504187b
+[36m(_ToolServerActor pid=39340)[0m INFO:     Started server process [39340]
+[36m(_ToolServerActor pid=39340)[0m INFO:     Waiting for application startup.
+[36m(_ToolServerActor pid=39340)[0m INFO:     Application startup complete.
+[36m(_ToolServerActor pid=39340)[0m INFO:     Uvicorn running on http://172.31.38.160:8000 (Press CTRL+C to quit)
+[36m(_ToolServerActor pid=39414)[0m ERROR:    [Errno 98] error while attempting to bind on address ('172.31.38.160', 8000): address already in use
+[36m(_ToolServerActor pid=39414)[0m INFO:     Waiting for application shutdown.
+[36m(_ToolServerActor pid=39414)[0m INFO:     Application shutdown complete.
+[36m(_ToolServerActor pid=39414)[0m INFO:     Started server process [39414][32m [repeated 2x across cluster] (Ray deduplicates logs by default. Set RAY_DEDUP_LOGS=0 to disable log deduplication, or see https://docs.ray.io/en/master/ray-observability/user-guides/configure-logging.html#log-deduplication for more options.)[0m
+[36m(_ToolServerActor pid=39414)[0m INFO:     Waiting for application startup.[32m [repeated 2x across cluster][0m
+[36m(_ToolServerActor pid=39414)[0m INFO:     Application startup complete.[32m [repeated 2x across cluster][0m
+[36m(_ToolServerActor pid=39414)[0m INFO:     Uvicorn running on http://172.31.38.160:8001 (Press CTRL+C to quit)
+[36m(run_issue_remote pid=39339)[0m build_7388 started at 172.31.38.160:8001 on node 74370dee9bdfa3984754fa1a8b924c1654055f423a79727dd504187b
+[36m(_ToolServerActor pid=39454)[0m ERROR:    [Errno 98] error while attempting to bind on address ('172.31.38.160', 8000): address already in use
+[36m(_ToolServerActor pid=39454)[0m INFO:     Waiting for application shutdown.
+[36m(_ToolServerActor pid=39454)[0m INFO:     Application shutdown complete.
+[36m(_ToolServerActor pid=39454)[0m ERROR:    [Errno 98] error while attempting to bind on address ('172.31.38.160', 8001): address already in use
+[36m(_ToolServerActor pid=39454)[0m INFO:     Waiting for application shutdown.
+[36m(_ToolServerActor pid=39454)[0m INFO:     Application shutdown complete.
+[36m(_ToolServerActor pid=39454)[0m INFO:     Started server process [39454][32m [repeated 2x across cluster][0m
+[36m(_ToolServerActor pid=39454)[0m INFO:     Waiting for application startup.[32m [repeated 2x across cluster][0m
+[36m(_ToolServerActor pid=39454)[0m INFO:     Application startup complete.[32m [repeated 2x across cluster][0m
+[36m(_ToolServerActor pid=39454)[0m INFO:     Uvicorn running on http://172.31.38.160:8002 (Press CTRL+C to quit)
+[36m(_ToolServerActor pid=39454)[0m INFO:     Started server process [39454]
+[36m(_ToolServerActor pid=39454)[0m INFO:     Waiting for application startup.
+[36m(_ToolServerActor pid=39454)[0m INFO:     Application startup complete.
+[36m(run_issue_remote pid=39339)[0m lit_7388 started at 172.31.38.160:8002 on node 74370dee9bdfa3984754fa1a8b924c1654055f423a79727dd504187b
+[36m(run_issue_remote pid=39339)[0m OpenCodeLLM is experimental: only exercised by unit tests so far, not validated in production.
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:43538 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:43538 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:43538 - "GET /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:43548 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:43548 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:43548 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:43548 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:43548 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:43548 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:43548 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:43548 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:43548 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:43548 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:43548 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:43548 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:43548 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:43548 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:43548 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:43548 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:43548 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:43548 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:43548 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:43548 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:43548 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:43548 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:43548 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:33140 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:33140 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:33140 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:33140 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(run_issue_remote pid=39339)[0m OpenCodeLLM is experimental: only exercised by unit tests so far, not validated in production.
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:59218 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:59218 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:59218 - "GET /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39414)[0m INFO:     172.31.38.160:44524 - "POST /build_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39414)[0m INFO:     172.31.38.160:44524 - "POST /build_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39454)[0m INFO:     172.31.38.160:45532 - "GET /lit_7388/mcp HTTP/1.1" 200 OK[32m [repeated 2x across cluster][0m
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:59220 - "POST /bash_7388/mcp HTTP/1.1" 200 OK[32m [repeated 9x across cluster][0m
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:59220 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted[32m [repeated 5x across cluster][0m
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:51786 - "POST /bash_7388/mcp HTTP/1.1" 200 OK[32m [repeated 6x across cluster][0m
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:59220 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted[32m [repeated 6x across cluster][0m
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:51786 - "POST /bash_7388/mcp HTTP/1.1" 200 OK[32m [repeated 3x across cluster][0m
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:51786 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted[32m [repeated 3x across cluster][0m
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:51786 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:51786 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:51786 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56006 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56006 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56006 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56006 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56006 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56006 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56006 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56006 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56006 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56006 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(run_issue_remote pid=39339)[0m OpenCodeLLM is experimental: only exercised by unit tests so far, not validated in production.
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:51974 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:51974 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:51974 - "GET /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:51990 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39414)[0m INFO:     172.31.38.160:54916 - "POST /build_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39454)[0m INFO:     172.31.38.160:38760 - "GET /lit_7388/mcp HTTP/1.1" 200 OK[32m [repeated 2x across cluster][0m
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:51990 - "POST /bash_7388/mcp HTTP/1.1" 200 OK[32m [repeated 8x across cluster][0m
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:51990 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted[32m [repeated 4x across cluster][0m
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:51990 - "POST /bash_7388/mcp HTTP/1.1" 200 OK[32m [repeated 4x across cluster][0m
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:51990 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted[32m [repeated 4x across cluster][0m
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:51990 - "POST /bash_7388/mcp HTTP/1.1" 200 OK[32m [repeated 3x across cluster][0m
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:51990 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted[32m [repeated 4x across cluster][0m
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:56358 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:53044 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:53044 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:53044 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:53044 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:53044 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:53044 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39414)[0m INFO:     172.31.38.160:47572 - "POST /build_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39414)[0m INFO:     172.31.38.160:47572 - "POST /build_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39414)[0m INFO:     172.31.38.160:47572 - "POST /build_7388/mcp HTTP/1.1" 200 OK[32m [repeated 2x across cluster][0m
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:58998 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:58998 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:58998 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:54026 - "POST /bash_7388/mcp HTTP/1.1" 200 OK[32m [repeated 4x across cluster][0m
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:54026 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:54026 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:54026 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:54026 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:54026 - "POST /bash_7388/mcp HTTP/1.1" 200 OK[32m [repeated 4x across cluster][0m
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:54026 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:54026 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:54026 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:54026 - "POST /bash_7388/mcp HTTP/1.1" 200 OK[32m [repeated 5x across cluster][0m
+[36m(_ToolServerActor pid=39454)[0m INFO:     172.31.38.160:56480 - "POST /lit_7388/mcp HTTP/1.1" 202 Accepted[32m [repeated 2x across cluster][0m
+[36m(run_issue_remote pid=39339)[0m [ninja] ninja -C /workspace/circt/build -j 16 circt-opt firtool circt-translate arcilator circt-lec circt-bmc
+[36m(run_issue_remote pid=39339)[0m [lit] /home/ray/anaconda3/envs/py_worker/bin/lit --no-progress-bar --filter-out=circt-tblgen test/Analysis test/Conversion test/Dialect test/Scheduling test/Target test/Tools test/Transforms test/Unit test/arcilator test/circt-as-dis test/circt-opt test/circt-reduce test/circt-synth test/circt-test test/circt-translate test/circt-verilog test/firld test/firtool test/hlstool test/kanagawatool test/lib test/om-linker
+[36m(run_issue_remote pid=39339)[0m OpenCodeLLM is experimental: only exercised by unit tests so far, not validated in production.
+[36m(_ToolServerActor pid=39454)[0m INFO:     Shutting down
+[36m(_ToolServerActor pid=39454)[0m INFO:     Waiting for application shutdown.
+[36m(_ToolServerActor pid=39454)[0m INFO:     Application shutdown complete.
+[36m(_ToolServerActor pid=39454)[0m INFO:     Finished server process [39454]
+2026-10-27 22:08:57,913 INFO circtissues: issue #7388 -> fixed  (+30/-4, lit_ok=True)
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:54026 - "POST /bash_7388/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=39340)[0m INFO:     172.31.38.160:54026 - "POST /bash_7388/mcp HTTP/1.1" 202 Accepted[32m [repeated 2x across cluster][0m
+[36m(_ToolServerActor pid=39340)[0m INFO:     Shutting down[32m [repeated 2x across cluster][0m
+[36m(_ToolServerActor pid=39340)[0m INFO:     Waiting for application shutdown.[32m [repeated 2x across cluster][0m
+[36m(_ToolServerActor pid=39340)[0m INFO:     Application shutdown complete.[32m [repeated 2x across cluster][0m
+[36m(_ToolServerActor pid=39340)[0m INFO:     Finished server process [39340][32m [repeated 2x across cluster][0m
+2026-10-27 22:09:03,222	SUCC cli.py:65 -- [32m------------------------------------------[39m
+2026-10-27 22:09:03,222	SUCC cli.py:66 -- [32mJob 'raysubmit_rp7PRBEhT2zCadeE' succeeded[39m
+2026-10-27 22:09:03,222	SUCC cli.py:67 -- [32m------------------------------------------[39m

@@ -1,0 +1,53 @@
+{
+  "status": "not_a_bug",
+  "reproduced": false,
+  "build_ok": null,
+  "fixed": null,
+  "lit_ok": null,
+  "lit_passed": null,
+  "lit_failed": null,
+  "lit_failures": null,
+  "added": null,
+  "removed": null,
+  "test_paths": null,
+  "notes": "This is an unimplemented feature / enhancement request, not a defect in existing behavior \u2014 the maintainer's own comment on the issue (\"It's not simply implemented. Please feel free to implement\") confirms the pass never claimed to support `hw.union` types. The pass works correctly for its documented scope (arrays, structs); adding union support (type-converter entry plus `union_create`/`union_extract` conversions) is new functionality to be designed, not a fix to incorrect behavior.",
+  "model": "openrouter/z-ai/glm-5.3",
+  "backend": "opencode",
+  "circt_commit": "5dc7f103d714aa40e13cae4fcf7ab98a1912f845",
+  "issue_number": 10571,
+  "llm_usage": {
+    "assess": {
+      "num_turns": 13,
+      "input_tokens": 7663,
+      "output_tokens": 1156,
+      "reasoning_tokens": 1607,
+      "cache_read": 67008,
+      "cache_write": 0,
+      "cost_usd": 0.009020694899999999
+    }
+  },
+  "llm_phases": {
+    "assess": {
+      "issue_number": 10571,
+      "phase": "assess",
+      "model": "openrouter/z-ai/glm-5.3",
+      "backend": "opencode",
+      "session_id": "ses_e80e65c3affeKkJLkBKAGTqDxt",
+      "start_timestamp": "2026-10-27T20:42:28.258575+00:00",
+      "end_timestamp": "2026-10-27T20:42:57.977028+00:00",
+      "elapsed_seconds": 29.71845293699971,
+      "aws_region": null,
+      "success": true
+    }
+  },
+  "llm_usage_total": {
+    "input_tokens": 7663,
+    "output_tokens": 1156,
+    "reasoning_tokens": 1607,
+    "cache_read": 67008,
+    "cache_write": 0,
+    "cost_usd": 0.009020694899999999,
+    "num_turns": 13
+  },
+  "cost_provenance": "cost_usd is OpenCode-reported session cost, not a provider invoice amount"
+}

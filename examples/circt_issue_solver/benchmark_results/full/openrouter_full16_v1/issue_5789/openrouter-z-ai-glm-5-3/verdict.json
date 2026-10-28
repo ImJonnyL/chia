@@ -1,0 +1,53 @@
+{
+  "status": "not_a_bug",
+  "reproduced": false,
+  "build_ok": null,
+  "fixed": null,
+  "lit_ok": null,
+  "lit_passed": null,
+  "lit_failed": null,
+  "lit_failures": null,
+  "added": null,
+  "removed": null,
+  "test_paths": null,
+  "notes": "This was a genuine missing-verifier bug when filed in Aug 2023, but it has already been fixed in this checkout (firtool-1.148.0): port inner symbols are now verified against the port type via `verifyPortInnerSymsIfPortList` (lib/Dialect/HW/HWOpInterfaces.cpp) wired into the `InnerSymbolTable` trait verification (include/circt/Dialect/HW/HWOpInterfaces.h), with lit coverage in test/Dialect/FIRRTL/errors.mlir. The issue's exact repro (and HW/extmodule/bundle variants) is rejected by the tree's `circt-opt` with the diagnostic \"verification of inner symbol failed on port 0 with name \"x\": field id 5 is greater than the maximum field id 0\", so there is no remaining defect to fix.",
+  "model": "openrouter/z-ai/glm-5.3",
+  "backend": "opencode",
+  "circt_commit": "5dc7f103d714aa40e13cae4fcf7ab98a1912f845",
+  "issue_number": 5789,
+  "llm_usage": {
+    "assess": {
+      "num_turns": 31,
+      "input_tokens": 62407,
+      "output_tokens": 4615,
+      "reasoning_tokens": 10074,
+      "cache_read": 525504,
+      "cache_write": 0,
+      "cost_usd": 0.061134074899999995
+    }
+  },
+  "llm_phases": {
+    "assess": {
+      "issue_number": 5789,
+      "phase": "assess",
+      "model": "openrouter/z-ai/glm-5.3",
+      "backend": "opencode",
+      "session_id": "ses_e80a85a0cffesdVfyn1rHNRgGb",
+      "start_timestamp": "2026-10-27T21:50:12.099673+00:00",
+      "end_timestamp": "2026-10-27T21:51:38.244893+00:00",
+      "elapsed_seconds": 86.14522554799987,
+      "aws_region": null,
+      "success": true
+    }
+  },
+  "llm_usage_total": {
+    "input_tokens": 62407,
+    "output_tokens": 4615,
+    "reasoning_tokens": 10074,
+    "cache_read": 525504,
+    "cache_write": 0,
+    "cost_usd": 0.061134074899999995,
+    "num_turns": 31
+  },
+  "cost_provenance": "cost_usd is OpenCode-reported session cost, not a provider invoice amount"
+}

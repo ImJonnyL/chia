@@ -166,3 +166,77 @@ def test_runner_outcomes(harness, tmp_path, monkeypatch, stage, return_code, ver
     expected = "completed" if stage == "full" and return_code == 0 and verdict == {"status": "fixed"} else "failed"
     assert runner["status"] == expected
     assert "llm_usage" not in runner
+
+
+@pytest.mark.parametrize("model", ["openrouter/z-ai/glm-5.3", "amazon-bedrock/us.zai.glm-5"])
+def test_provider_selection_reaches_solver(harness, tmp_path, model):
+    source = tmp_path / "models.yaml"
+    source.write_text(yaml.safe_dump({"models": [{"name": "selected", "model": model}]}))
+    entry, = harness.load_models(source)
+    for stage in ("assess", "full"):
+        command = harness.build_command(stage, 10571, entry, tmp_path, tmp_path / stage)
+        assert command[command.index("--model") + 1] == model
+        assert command[command.index("--backend") + 1] == "opencode"
+
+
+@pytest.mark.parametrize("model", ["openrouter/", "openrouter/glm-5.3", "openrouter/z-ai/", "openrouter/z-ai/glm 5", "amazon-bedrock/"])
+def test_incomplete_provider_ids_rejected(harness, tmp_path, model):
+    source = tmp_path / "models.yaml"
+    source.write_text(yaml.safe_dump({"models": [{"name": "bad", "model": model}]}))
+    with pytest.raises(ValueError, match="Model IDs"):
+        harness.load_models(source)
+
+
+def test_openrouter_cluster_credential_routing(monkeypatch, harness):
+    from chia.cluster.config import load_raw_config, build_config
+    monkeypatch.setenv("CHIA_HEAD", "127.0.0.1")
+    monkeypatch.setenv("USER", "testuser")
+    monkeypatch.setenv("OPENROUTER_ENV_FILE", "/tmp/test credentials/openrouter.env")
+    raw = load_raw_config(str(FLOW_DIR / "cluster_opencode_openrouter.yaml"))
+    build_config(raw)  # Exercise CHIA's real cluster parser without starting workers.
+    llm = raw["available_node_types"]["circt_llm"]["docker"]
+    circt = raw["available_node_types"]["circt_worker"]["docker"]
+    assert '--env-file "/tmp/test credentials/openrouter.env"' in llm["run_options"]
+    assert all("env-file" not in option for option in circt["run_options"])
+    assert ".aws" not in str(raw) and "AWS_PROFILE" not in str(raw)
+    assert llm["container_name"] == "circt_issue_solver_openrouter_llm_testuser"
+    assert harness.load_models(FLOW_DIR / "models_openrouter.yaml") == [
+        {"name": "glm-5-3-openrouter", "model": "openrouter/z-ai/glm-5.3"}]
+
+
+@pytest.mark.parametrize("stage", ["assess", "full"])
+@pytest.mark.parametrize("model", ["openrouter/example/model-a", "openrouter/example/model-b"])
+def test_direct_model_cli(harness, tmp_path, monkeypatch, stage, model):
+    corpus = tmp_path / "corpus/issue_7"
+    corpus.mkdir(parents=True)
+    (corpus / "issue.md").write_text("# Issue #7: Frozen\n\nbody\n")
+    calls = []
+
+    def fake_run(command, **kwargs):
+        calls.append(command)
+        output = Path(command[command.index("--output-dir") + 1])
+        (output / "verdict.json").write_text(json.dumps({
+            "status": "clear", "llm_phases": {"assess": {"success": True}}}))
+        (output / "llm_assess.md").write_text("DECISION: CLEAR")
+        return SimpleNamespace(returncode=0)
+
+    monkeypatch.setattr(harness.subprocess, "run", fake_run)
+    monkeypatch.setattr("sys.argv", ["benchmark", stage, "--issue", "7", "--model", model,
+                                     "--run-name", "direct", "--issues-dir", str(corpus.parent),
+                                     "--results-dir", str(tmp_path / "results")])
+    assert harness.main() == 0
+    assert len(calls) == 1
+    command = calls[0]
+    assert command[command.index("--model") + 1] == model
+    output = Path(command[command.index("--output-dir") + 1])
+    assert output.name == harness.directory_name(model)
+    assert json.loads((output / "runner.json").read_text())["model"] == model
+
+
+@pytest.mark.parametrize("args", [[], ["--model", "openrouter/example/model", "--models", "models.yaml"],
+                                 ["--model", "openrouter/incomplete"]])
+def test_model_cli_requires_one_valid_selection(harness, monkeypatch, args):
+    monkeypatch.setattr("sys.argv", ["benchmark", "assess", "--issue", "7", "--run-name", "test"] + args)
+    with pytest.raises(SystemExit) as exc:
+        harness.main()
+    assert exc.value.code == 2

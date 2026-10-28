@@ -1,0 +1,9 @@
+module {
+  hw.module @demo(in %a : !hw.union<a: i1>, in %b : !hw.union<a: i1>, in %c : i1, out d : !hw.union<a: i1>) {
+    %0 = hw.bitcast %b : (!hw.union<a: i1>) -> i1
+    %1 = hw.bitcast %a : (!hw.union<a: i1>) -> i1
+    %2 = comb.mux %c, %1, %0 : i1
+    %3 = hw.bitcast %2 : (i1) -> !hw.union<a: i1>
+    hw.output %3 : !hw.union<a: i1>
+  }
+}

@@ -9,6 +9,17 @@ import pytest
 FLOW_DIR = Path(__file__).resolve().parents[1]
 
 
+@pytest.fixture(autouse=True)
+def offline_profiler(monkeypatch):
+    # Profiling's actor lookup can auto-start Ray while subprocess.run is mocked.
+    # These transport tests do not need a cluster or collector.
+    from chia.trace import profiler
+    monkeypatch.setattr(profiler, "get_collector", lambda namespace=None: None)
+    profiler.get_profiler.reset()
+    yield
+    profiler.get_profiler.reset()
+
+
 @pytest.fixture
 def flow(monkeypatch):
     monkeypatch.syspath_prepend(str(FLOW_DIR))
@@ -66,7 +77,8 @@ def test_git_reset_checks_local_revision_and_head_before_build(flow, monkeypatch
 
 
 @pytest.mark.parametrize("assess_only", [True, False])
-def test_export_phase_and_verdict_accounting(flow, monkeypatch, tmp_path, assess_only):
+@pytest.mark.parametrize("model", ["amazon-bedrock/moonshotai.kimi-k2.5", "openrouter/z-ai/glm-5.3", "openrouter/example/another-model"])
+def test_export_phase_and_verdict_accounting(flow, monkeypatch, tmp_path, assess_only, model):
     import ray
     import circt_util
     import issue_task
@@ -90,6 +102,20 @@ def test_export_phase_and_verdict_accounting(flow, monkeypatch, tmp_path, assess
     ]}
     _install_fake_subprocess(monkeypatch, run_stdout=_step_start("ses_benchmark"),
                              export_obj=export, capture=capture)
+    if model.startswith("openrouter/"):
+        from chia.models import opencode as oc_module
+        monkeypatch.setenv("OPENROUTER_API_KEY", "test-placeholder-not-a-secret")
+        fake_run = oc_module.subprocess.run
+
+        def check_credentials(command, **kwargs):
+            if command[1] == "run":
+                assert kwargs["env"]["OPENROUTER_API_KEY"] == "test-placeholder-not-a-secret"
+                config = Path(kwargs["env"]["OPENCODE_CONFIG"]).read_text()
+                assert "test-placeholder-not-a-secret" not in config
+                assert command[command.index("--model") + 1] == model
+            return fake_run(command, **kwargs)
+
+        monkeypatch.setattr(oc_module.subprocess, "run", check_credentials)
     monkeypatch.setattr(OpenCodeLLM.prompt, "options", lambda **kw: SimpleNamespace(
         chia_remote=lambda llm, prompt, tools: llm.prompt(prompt, tools)))
     class Tool:
@@ -121,7 +147,7 @@ def test_export_phase_and_verdict_accounting(flow, monkeypatch, tmp_path, assess
                         {"success": (ok := next(lit_calls)), "passed": int(ok),
                          "failed": int(not ok), "failures": [] if ok else ["CIRCT :: Mock/test.mlir"],
                          "log_tail": "mock lit"})
-    cfg = dict(flow.CFG, backend="opencode", model="amazon-bedrock/moonshotai.kimi-k2.5",
+    cfg = dict(flow.CFG, backend="opencode", model=model,
                repro_dir=str(tmp_path / "generated"), repro_path=str(tmp_path / "generated/repro.sh"))
     issue = load_issue(FLOW_DIR / "issuestouse", 10571)
     res = issue_task.run_issue_remote(issue.to_markdown(), issue.number, cfg, assess_only=assess_only)
@@ -134,12 +160,16 @@ def test_export_phase_and_verdict_accounting(flow, monkeypatch, tmp_path, assess
         blob = res["logs"][phase]
         assert blob["session_id"] == "ses_benchmark"
         assert blob["issue_number"] == 10571 and blob["phase"] == phase
-        assert blob["aws_region"] == "us-west-2"
+        assert blob["aws_region"] == ("us-west-2" if model.startswith("amazon-bedrock/") else None)
         assert blob["start_timestamp"] <= blob["end_timestamp"]
         assert blob["usage"] == {"input_tokens": 13, "output_tokens": 3, "reasoning_tokens": 1,
                                  "cache_read": 4, "cache_write": 0, "cost_usd": 0.03, "num_turns": 2}
     for call in capture["calls"]:
         if call["sub"] == "run":
+            assert call["config"]["model"] == model
+            assert call["config"]["small_model"] == model
+            assert all(agent["model"] == model for agent in call["config"]["agent"].values())
+            assert call["cmd"][call["cmd"].index("--title") + 1] == "CHIA workflow"
             perms = call["config"]["permission"]
             assert perms["*"] == "deny" and "provider" not in call["config"]
             assert all(k == "*" or k.startswith(("bash_", "build_", "lit_")) for k in perms)

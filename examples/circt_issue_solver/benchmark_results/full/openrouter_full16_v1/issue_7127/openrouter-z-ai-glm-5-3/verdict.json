@@ -1,0 +1,53 @@
+{
+  "status": "not_a_bug",
+  "reproduced": false,
+  "build_ok": null,
+  "fixed": null,
+  "lit_ok": null,
+  "lit_passed": null,
+  "lit_failed": null,
+  "lit_failures": null,
+  "added": null,
+  "removed": null,
+  "test_paths": null,
+  "notes": "This is a design question/feature request about cosmetic name fidelity, not a defect: DropConst's alias-stripping via `BaseTypeAliasType::getModifiedType` (which deliberately sheds an alias whenever its aliased type is modified) is intentional and the emitted hardware is semantically identical \u2014 only the typedef name is lost. The issue itself poses the desired behavior as an open question with two defensible answers (keep the alias minus const vs. drop it, as today), so there is no unambiguous \"correct behavior\" to implement.",
+  "model": "openrouter/z-ai/glm-5.3",
+  "backend": "opencode",
+  "circt_commit": "5dc7f103d714aa40e13cae4fcf7ab98a1912f845",
+  "issue_number": 7127,
+  "llm_usage": {
+    "assess": {
+      "num_turns": 16,
+      "input_tokens": 24496,
+      "output_tokens": 3068,
+      "reasoning_tokens": 7359,
+      "cache_read": 154496,
+      "cache_write": 0,
+      "cost_usd": 0.026954844800000002
+    }
+  },
+  "llm_phases": {
+    "assess": {
+      "issue_number": 7127,
+      "phase": "assess",
+      "model": "openrouter/z-ai/glm-5.3",
+      "backend": "opencode",
+      "session_id": "ses_e809e9e1affeM4OYiSTmL3FveL",
+      "start_timestamp": "2026-10-27T22:00:50.022292+00:00",
+      "end_timestamp": "2026-10-27T22:02:44.104982+00:00",
+      "elapsed_seconds": 114.08269308799936,
+      "aws_region": null,
+      "success": true
+    }
+  },
+  "llm_usage_total": {
+    "input_tokens": 24496,
+    "output_tokens": 3068,
+    "reasoning_tokens": 7359,
+    "cache_read": 154496,
+    "cache_write": 0,
+    "cost_usd": 0.026954844800000002,
+    "num_turns": 16
+  },
+  "cost_provenance": "cost_usd is OpenCode-reported session cost, not a provider invoice amount"
+}

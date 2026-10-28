@@ -1,0 +1,192 @@
+2026-10-19 21:09:54,937	INFO cli.py:41 -- [37mJob submission server address[39m: [1mhttp://localhost:8265[22m
+2026-10-19 21:09:54,978	SUCC cli.py:65 -- [32m-------------------------------------------------------[39m
+2026-10-19 21:09:54,979	SUCC cli.py:66 -- [32mJob 'raysubmit_CgwWydApEb9B9UdM' submitted successfully[39m
+2026-10-19 21:09:54,979	SUCC cli.py:67 -- [32m-------------------------------------------------------[39m
+2026-10-19 21:09:54,979	INFO cli.py:326 -- [36mNext steps[39m
+2026-10-19 21:09:54,979	INFO cli.py:327 -- Query the logs of the job:
+2026-10-19 21:09:54,979	INFO cli.py:329 -- [1mray job logs raysubmit_CgwWydApEb9B9UdM[22m
+2026-10-19 21:09:54,979	INFO cli.py:331 -- Query the status of the job:
+2026-10-19 21:09:54,979	INFO cli.py:333 -- [1mray job status raysubmit_CgwWydApEb9B9UdM[22m
+2026-10-19 21:09:54,979	INFO cli.py:335 -- Request the job to be stopped:
+2026-10-19 21:09:54,979	INFO cli.py:337 -- [1mray job stop raysubmit_CgwWydApEb9B9UdM[22m
+2026-10-19 21:09:54,985	INFO cli.py:347 -- Tailing logs until the job exits (disable with --no-wait):
+2026-10-19 21:09:54,968	INFO job_manager.py:587 -- Runtime env is setting up.
+Running entrypoint for job raysubmit_CgwWydApEb9B9UdM: python /home/ubuntu/chia/examples/circt_issue_solver/circt_issue_loop.py --backend opencode --model amazon-bedrock/nvidia.nemotron-super-3-120b --issues-dir /home/ubuntu/chia/examples/circt_issue_solver/issuestouse --output-dir /home/ubuntu/chia/examples/circt_issue_solver/benchmark_results/assess/glm5_nemotron_all16_20261019_195709/nemotron-3-super/issue_2266 --assess-only 2266
+2026-10-19 21:09:57,271 INFO circtissues: LLM backend=opencode model=amazon-bedrock/nvidia.nemotron-super-3-120b
+/home/ubuntu/miniconda3/envs/circtissues/lib/python3.10/site-packages/ray/_private/worker.py:2052: FutureWarning: Tip: In future versions of Ray, Ray will no longer override accelerator visible devices env var if num_gpus=0 or num_gpus=None (default). To enable this behavior and turn off this error message, set RAY_ACCEL_ENV_VAR_OVERRIDE_ON_ZERO=0
+  warnings.warn(
+[36m(run_issue_remote pid=8104)[0m /home/ray/anaconda3/envs/py_worker/lib/python3.10/site-packages/pydantic_settings/sources/utils.py:47: IncompleteFieldDefinitionWarning: Field 'lifespan' has an incomplete definition: its annotation contains an unresolved forward reference, so settings sources may fail to correctly resolve its value. Call `model_rebuild()` on the model where the field is defined, once all the referenced types are defined.
+[36m(run_issue_remote pid=8104)[0m   warnings.warn(
+[36m(_ToolServerActor pid=8103)[0m INFO:     Started server process [8103]
+[36m(_ToolServerActor pid=8103)[0m INFO:     Waiting for application startup.
+[36m(_ToolServerActor pid=8103)[0m INFO:     Application startup complete.
+[36m(_ToolServerActor pid=8103)[0m ERROR:    [Errno 98] error while attempting to bind on address ('172.31.38.160', 8000): address already in use
+[36m(_ToolServerActor pid=8103)[0m INFO:     Waiting for application shutdown.
+[36m(_ToolServerActor pid=8103)[0m INFO:     Application shutdown complete.
+[36m(_ToolServerActor pid=8103)[0m INFO:     Started server process [8103]
+[36m(_ToolServerActor pid=8103)[0m INFO:     Waiting for application startup.
+[36m(_ToolServerActor pid=8103)[0m INFO:     Application startup complete.
+[36m(_ToolServerActor pid=8103)[0m INFO:     Uvicorn running on http://172.31.38.160:8001 (Press CTRL+C to quit)
+[36m(run_issue_remote pid=8104)[0m bash_2266 started at 172.31.38.160:8001 on node d9d2055c118c9db5cc167f78cfebc8885200c06c54a3c96b1fc51d54
+[36m(run_issue_remote pid=8104)[0m OpenCodeLLM is experimental: only exercised by unit tests so far, not validated in production.
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56882 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56882 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56882 - "GET /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:56890 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:50850 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:50850 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:50850 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:50850 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:50850 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:50850 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:50850 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:50850 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:50850 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:50850 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:50850 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:50850 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:50850 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:50850 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:50850 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:50850 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:50850 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:50850 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:50850 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:50850 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:50850 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:50850 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:50850 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:50850 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:47404 - "POST /bash_2266/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=8103)[0m INFO:     172.31.38.160:47404 - "POST /bash_2266/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=8103)[0m INFO:     Shutting down
+2026-10-19 21:11:46,533 INFO circtissues: issue #2266 -> clear  (+None/-None, lit_ok=None)
+
+===== assess-only #2266: [FIRTOOL] -verilog flag should not include firrtl_black_box_resource_files.f =====
+DECISION -> status='clear'
+NOTE: None
+
+----- assess transcript (tail) -----
+hat the tool SHOULD do instead - The file list contents should NOT be emitted into the main Verilog output when using `-verilog`. Instead, they should either:
+   - Be omitted entirely (since they're not Verilog), OR
+   - Only be emitted when using `-split-verilog` to separate files as intended
+
+Looking at the split verilog implementation, it correctly emits file lists to separate `.f` files. The `-verilog` flag should not emulate this behavior since it's supposed to produce a single Verilog file.
+
+The correct behavior is that `-verilog` should produce ONLY Verilog code, and file list operations should be ignored (not emit any content) in this mode, since they represent metadata about files to be used with other tools, not actual Verilog content to be synthesized.
+
+This is clear because:
+- The issue reporter explicitly states that `-split-verilog` does NOT have this issue
+- File lists are clearly not Verilog code - they're lists of file names
+- The split verilog implementation shows the correct way to handle file lists (separate files)
+- Emitting non-Verilog content into a Verilog output file is clearly wrong
+
+Let me end with the decision format:
+
+
+[Tool Call: bash_2266_bash_2266_run_command]
+Args: {"command": "echo \"BUG: firtool -verilog incorrectly emits file list contents as plain text in the Verilog output, creating non-Verilog content\nEXPECTED: firtool -verilog should emit only Verilog code and ignore file list operations (emit no content for them)\nDECISION: CLEAR\""}
+
+[Tool Result]
+BUG: firtool -verilog incorrectly emits file list contents as plain text in the Verilog output, creating non-Verilog content
+EXPECTED: firtool -verilog should emit only Verilog code and ignore file list operations (emit no content for them)
+DECISION: CLEAR
+
+
+[Usage]
+{"total": 31790, "input": 30895, "output": 895, "reasoning": 0, "cache": {"write": 0, "read": 0}, "cost_usd": 0.005216, "reason": "tool-calls"}
+
+[Response]
+BUG: firtool -verilog incorrectly emits file list contents as plain text in the Verilog output, creating non-Verilog content
+EXPECTED: firtool -verilog should emit only Verilog code and ignore file list operations (emit no content for them)
+DECISION: CLEAR
+
+[Usage]
+{"total": 31938, "input": 31872, "output": 66, "reasoning": 0, "cache": {"write": 0, "read": 0}, "cost_usd": 0.0048237, "reason": "stop"}
+
+[Result]
+{"num_turns": 52, "input_tokens": 849408, "output_tokens": 6879, "reasoning_tokens": 0, "cache_read": 0, "cache_write": 0, "cost_usd": 0.13188255}
+
+
+[36m(_ToolServerActor pid=8103)[0m INFO:     Waiting for application shutdown.
+[36m(_ToolServerActor pid=8103)[0m INFO:     Application shutdown complete.
+[36m(_ToolServerActor pid=8103)[0m INFO:     Finished server process [8103]
+2026-10-19 21:11:52,219	SUCC cli.py:65 -- [32m------------------------------------------[39m
+2026-10-19 21:11:52,219	SUCC cli.py:66 -- [32mJob 'raysubmit_CgwWydApEb9B9UdM' succeeded[39m
+2026-10-19 21:11:52,219	SUCC cli.py:67 -- [32m------------------------------------------[39m

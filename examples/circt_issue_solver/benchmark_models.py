@@ -25,8 +25,12 @@ def directory_name(name: str) -> str:
 
 
 def load_models(path: Path) -> list[dict]:
-    """Load model names and Bedrock/OpenCode IDs, rejecting directory collisions."""
-    data = yaml.safe_load(path.read_text())
+    """Load model names and Bedrock or OpenRouter OpenCode IDs, rejecting directory collisions."""
+    return _validate_models(yaml.safe_load(path.read_text()))
+
+
+def _validate_models(data: object) -> list[dict]:
+    """Validate file-based and command-line selections identically."""
     if not isinstance(data, dict) or not isinstance(data.get("models"), list):
         raise ValueError("Models YAML must contain a 'models' list")
     models, seen = [], set()
@@ -35,8 +39,11 @@ def load_models(path: Path) -> list[dict]:
                 not isinstance(entry.get(k), str) or not entry[k].strip()
                 for k in ("name", "model")):
             raise ValueError("Each model requires nonempty string 'name' and 'model'")
-        if not entry["model"].startswith("amazon-bedrock/") or entry["model"] == "amazon-bedrock/":
-            raise ValueError("Model IDs must use the amazon-bedrock/ OpenCode provider")
+        provider, _, model_id = entry["model"].partition("/")
+        if (provider not in ("amazon-bedrock", "openrouter")
+                or not model_id or any(c.isspace() for c in model_id)
+                or (provider == "openrouter" and not re.fullmatch(r"[^/]+/[^/]+", model_id))):
+            raise ValueError("Model IDs must use amazon-bedrock/<id> or openrouter/<author>/<model>")
         folder = directory_name(entry["name"])
         if folder.casefold() in seen:
             raise ValueError(f"Duplicate sanitized model directory: {folder}")
@@ -96,7 +103,9 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("stage", choices=("assess", "full"))
     ap.add_argument("--issue", required=True, type=int)
-    ap.add_argument("--models", required=True, type=Path)
+    selection = ap.add_mutually_exclusive_group(required=True)
+    selection.add_argument("--models", type=Path, help="YAML model selection")
+    selection.add_argument("--model", help="one complete OpenCode model ID; also used as the output name")
     ap.add_argument("--run-name", required=True)
     ap.add_argument("--max-parallel", type=int)
     ap.add_argument("--issues-dir", type=Path, default=FLOW_DIR / "issuestouse")
@@ -109,7 +118,8 @@ def main() -> int:
     if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_-]*", args.run_name):
         ap.error("--run-name must use letters, digits, underscores or hyphens")
     try:
-        models = load_models(args.models)
+        models = (load_models(args.models) if args.models is not None else
+                  _validate_models({"models": [{"name": args.model, "model": args.model}]}))
         if not models:
             ap.error("No models selected; nothing to run")
         corpus = args.issues_dir.resolve()

@@ -1,0 +1,67 @@
+diff --git a/lib/Conversion/FIRRTLToHW/LowerToHW.cpp b/lib/Conversion/FIRRTLToHW/LowerToHW.cpp
+index 024c7d0..ecad76f 100644
+--- a/lib/Conversion/FIRRTLToHW/LowerToHW.cpp
++++ b/lib/Conversion/FIRRTLToHW/LowerToHW.cpp
+@@ -881,8 +881,7 @@ void FIRRTLModuleLowering::lowerFileHeader(CircuitOp op,
+ 
+   // Helper function to emit #ifndef guard.
+   auto emitGuard = [&](const char *guard, llvm::function_ref<void(void)> body) {
+-    sv::IfDefOp::create(
+-        b, guard, [] {}, body);
++    sv::IfDefOp::create(b, guard, [] {}, body);
+   };
+ 
+   if (state.usedFileDescriptorLib)
+@@ -3233,8 +3232,7 @@ void FIRRTLLowering::addToAlwaysBlock(
+       auto createIfOp = [&]() {
+         // It is weird but intended. Here we want to create an empty sv.if
+         // with an else block.
+-        insideIfOp = sv::IfOp::create(
+-            builder, reset, [] {}, [] {});
++        insideIfOp = sv::IfOp::create(builder, reset, [] {}, [] {});
+       };
+       if (resetStyle == sv::ResetType::AsyncReset) {
+         sv::EventControl events[] = {clockEdge, resetEdge};
+@@ -3572,6 +3570,15 @@ LogicalResult FIRRTLLowering::visitExpr(FEnumCreateOp op) {
+     auto tag = sv::LocalParamOp::create(builder, op.getLoc(), tagType, tagValue,
+                                         tagName);
+     auto bodyType = structType.getFieldType("body");
++    if (!input) {
++      // The payload is zero-width and has been lowered to nothing. Create a
++      // zero bit value of the field's type as the input to the union create
++      // op.
++      if (!isZeroBitFIRRTLType(op.getInput().getType()))
++        return op.emitError() << "input lowering failed";
++      input = hw::ConstantOp::create(builder, op.getLoc(),
++                                     lowerType(element.type), 0);
++    }
+     auto body = hw::UnionCreateOp::create(builder, bodyType, tagName, input);
+     SmallVector<Value> operands = {tag.getResult(), body.getResult()};
+     return setLoweringTo<hw::StructCreateOp>(op, structType, operands);
+diff --git a/test/Conversion/FIRRTLToHW/lower-to-hw.mlir b/test/Conversion/FIRRTLToHW/lower-to-hw.mlir
+index 22a3955..1340ec0 100644
+--- a/test/Conversion/FIRRTLToHW/lower-to-hw.mlir
++++ b/test/Conversion/FIRRTLToHW/lower-to-hw.mlir
+@@ -2013,3 +2013,22 @@ firrtl.circuit "InstanceChoiceTest" {
+     firrtl.instance_choice inst {instance_macro = @targets$Power$InstanceChoiceTest$inst} @Bar alternatives @Power { @Low -> @Baz } ()
+   }
+ }
++
++// -----
++
++// Check that creating a data enum value for a field with a zero-width
++// payload does not crash. https://github.com/llvm/circt/issues/7388
++// CHECK-LABEL: hw.module @Issue7388(
++// CHECK-SAME: out sink : !hw.struct<tag: i1, body: !hw.union<Some: i8, None: i0>>
++firrtl.circuit "Issue7388" {
++  firrtl.module @Issue7388(out %sink: !firrtl.enum<Some: uint<8>, None: uint<0>>) {
++    // CHECK: %None = sv.localparam {value = true} : i1
++    // CHECK: %c0_i0 = hw.constant 0 : i0
++    // CHECK: %0 = hw.union_create "None", %c0_i0 : !hw.union<Some: i8, None: i0>
++    // CHECK: %1 = hw.struct_create (%None, %0) : !hw.struct<tag: i1, body: !hw.union<Some: i8, None: i0>>
++    // CHECK: hw.output %1 : !hw.struct<tag: i1, body: !hw.union<Some: i8, None: i0>>
++    %c0_ui0 = firrtl.constant 0 : !firrtl.uint<0>
++    %0 = firrtl.enumcreate None(%c0_ui0) : (!firrtl.uint<0>) -> !firrtl.enum<Some: uint<8>, None: uint<0>>
++    firrtl.matchingconnect %sink, %0 : !firrtl.enum<Some: uint<8>, None: uint<0>>
++  }
++}

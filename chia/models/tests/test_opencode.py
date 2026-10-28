@@ -1157,3 +1157,44 @@ def test_bedrock_uses_inherited_aws_chain_and_reports_timing(monkeypatch):
     assert result.elapsed_seconds >= 0
     assert "provider" not in capture["calls"][0]["config"]
     assert capture["calls"][0]["config"]["permission"] == {"*": "deny"}
+
+
+@pytest.mark.parametrize("model", ["openrouter/z-ai/glm-5.3", "openrouter/deepseek/deepseek-v3.2",
+                                    "amazon-bedrock/us.zai.glm-5", "google-vertex/gemini-test"])
+def test_explicit_model_controls_all_builtin_agents(model):
+    llm = OpenCodeLLM(model=model, agent_name="custom_chia")
+    config = llm._build_config([])
+    assert config["model"] == config["small_model"] == model
+    for name in ("build", "plan", "general", "explore", "title", "summary", "compaction", "custom_chia"):
+        assert config["agent"][name]["model"] == model
+    command = llm._build_run_cmd("hello")
+    assert command[command.index("--model") + 1] == model
+    assert command[command.index("--title") + 1] == "CHIA workflow"
+
+
+def test_unspecified_model_preserves_configured_default():
+    config = OpenCodeLLM()._build_config([])
+    assert "model" not in config and "small_model" not in config
+
+
+def test_inherited_inline_model_cannot_override_selection(monkeypatch):
+    model = "openrouter/example/selected-model"
+    monkeypatch.setenv("OPENCODE_CONFIG_CONTENT", json.dumps({
+        "small_model": "openrouter/example/unwanted-model",
+        "agent": {"title": {"model": "openrouter/example/unwanted-model"}}}))
+    capture = {"calls": []}
+    _install_fake_subprocess(monkeypatch, run_stdout=_step_start(),
+                             export_obj=_export_obj(), capture=capture)
+    fake_run = oc_mod.subprocess.run
+
+    def check_config(command, **kwargs):
+        if command[1] == "run":
+            config = json.loads(kwargs["env"]["OPENCODE_CONFIG_CONTENT"])
+            assert config["model"] == config["small_model"] == model
+            assert config["agent"]["title"]["model"] == model
+            assert "unwanted-model" not in json.dumps(config)
+        return fake_run(command, **kwargs)
+
+    monkeypatch.setattr(oc_mod.subprocess, "run", check_config)
+    result = OpenCodeLLM(model=model)._run_opencode("hello", [])
+    assert result.result == "PONG"

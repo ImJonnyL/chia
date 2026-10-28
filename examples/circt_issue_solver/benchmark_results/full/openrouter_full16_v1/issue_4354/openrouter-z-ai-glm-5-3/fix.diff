@@ -1,0 +1,68 @@
+diff --git a/lib/Conversion/FIRRTLToHW/LowerToHW.cpp b/lib/Conversion/FIRRTLToHW/LowerToHW.cpp
+index 024c7d0..bd2534f 100644
+--- a/lib/Conversion/FIRRTLToHW/LowerToHW.cpp
++++ b/lib/Conversion/FIRRTLToHW/LowerToHW.cpp
+@@ -435,6 +435,10 @@ private:
+   /// applicable).
+   DenseMap<std::pair<Attribute, Attribute>, Attribute> instanceForceNames;
+ 
++  /// A mapping of forced instantiation names to the instances that use them
++  /// (if applicable).  Keyed by the parent module and the forced name.
++  DenseMap<std::pair<Attribute, Attribute>, Attribute> instancesUsingForceNames;
++
+   /// The set of guard macros to emit declarations for.
+   SetVector<StringAttr> macroDeclNames;
+   std::mutex macroDeclMutex;
+@@ -1098,6 +1102,24 @@ bool FIRRTLModuleLowering::handleForceNameAnnos(
+       failed = true;
+       return false;
+     }
++
++    // Check that the forced name is not already used by a different instance
++    // in the same module.  Two instances with the same forced name would
++    // otherwise be silently uniqued later, which is surprising to the user.
++    auto nameInserted = loweringState.instancesUsingForceNames.insert(
++        {{inst.getModule(), anno.getMember("name")}, inst.getName()});
++    if (!nameInserted.second && nameInserted.first->second != inst.getName()) {
++      auto diag = oldModule.emitOpError()
++                  << "contains multiple '" << forceNameAnnoClass
++                  << "' with the same name '" << anno.getMember("name")
++                  << "' targeting different instances";
++      diag.attachNote() << "instance '" << nameInserted.first->second
++                        << "' already uses this forced name";
++      diag.attachNote() << "the erroneous annotation is '" << anno.getDict()
++                        << "'";
++      failed = true;
++      return false;
++    }
+     return true;
+   });
+   return failed;
+diff --git a/test/Conversion/FIRRTLToHW/lower-to-hw-errors.mlir b/test/Conversion/FIRRTLToHW/lower-to-hw-errors.mlir
+index 106dd5c..dee3741 100644
+--- a/test/Conversion/FIRRTLToHW/lower-to-hw-errors.mlir
++++ b/test/Conversion/FIRRTLToHW/lower-to-hw-errors.mlir
+@@ -278,3 +278,23 @@ firrtl.circuit "InstanceChoiceWithoutInstanceMacro" {
+     firrtl.instance_choice inst @Foo alternatives @Opt { @FPGA -> @Foo } ()
+   }
+ }
++
++// -----
++
++// Two instances inside the same module forced to the same name is an error.
++firrtl.circuit "ForceNameDupTop" {
++  hw.hierpath private @nla_1 [@ForceNameDupTop::@sym_foo, @ForceNameDupSubmodule]
++  hw.hierpath private @nla_2 [@ForceNameDupTop::@sym_bar, @ForceNameDupSubmodule]
++  // expected-error @+3 {{'firrtl.module' op contains multiple 'chisel3.util.experimental.ForceNameAnnotation' with the same name '"Foo"' targeting different instances}}
++  // expected-note @+2 {{instance '"sym_foo"' already uses this forced name}}
++  // expected-note @+1 {{the erroneous annotation is}}
++  firrtl.module private @ForceNameDupSubmodule() attributes {annotations = [
++    {circt.nonlocal = @nla_1,
++     class = "chisel3.util.experimental.ForceNameAnnotation", name = "Foo"},
++    {circt.nonlocal = @nla_2,
++     class = "chisel3.util.experimental.ForceNameAnnotation", name = "Foo"}]} {}
++  firrtl.module @ForceNameDupTop() {
++    firrtl.instance foo sym @sym_foo @ForceNameDupSubmodule()
++    firrtl.instance bar sym @sym_bar @ForceNameDupSubmodule()
++  }
++}

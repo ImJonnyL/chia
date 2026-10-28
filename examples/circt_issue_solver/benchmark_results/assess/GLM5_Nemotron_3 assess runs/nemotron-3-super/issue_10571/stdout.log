@@ -1,0 +1,79 @@
+2026-10-19 21:41:25,744	INFO cli.py:41 -- [37mJob submission server address[39m: [1mhttp://localhost:8265[22m
+2026-10-19 21:41:25,755	SUCC cli.py:65 -- [32m-------------------------------------------------------[39m
+2026-10-19 21:41:25,755	SUCC cli.py:66 -- [32mJob 'raysubmit_bKfqPLFPxzw3vMHC' submitted successfully[39m
+2026-10-19 21:41:25,755	SUCC cli.py:67 -- [32m-------------------------------------------------------[39m
+2026-10-19 21:41:25,755	INFO cli.py:326 -- [36mNext steps[39m
+2026-10-19 21:41:25,755	INFO cli.py:327 -- Query the logs of the job:
+2026-10-19 21:41:25,755	INFO cli.py:329 -- [1mray job logs raysubmit_bKfqPLFPxzw3vMHC[22m
+2026-10-19 21:41:25,755	INFO cli.py:331 -- Query the status of the job:
+2026-10-19 21:41:25,755	INFO cli.py:333 -- [1mray job status raysubmit_bKfqPLFPxzw3vMHC[22m
+2026-10-19 21:41:25,755	INFO cli.py:335 -- Request the job to be stopped:
+2026-10-19 21:41:25,755	INFO cli.py:337 -- [1mray job stop raysubmit_bKfqPLFPxzw3vMHC[22m
+2026-10-19 21:41:25,758	INFO cli.py:347 -- Tailing logs until the job exits (disable with --no-wait):
+2026-10-19 21:41:25,750	INFO job_manager.py:587 -- Runtime env is setting up.
+Running entrypoint for job raysubmit_bKfqPLFPxzw3vMHC: python /home/ubuntu/chia/examples/circt_issue_solver/circt_issue_loop.py --backend opencode --model amazon-bedrock/nvidia.nemotron-super-3-120b --issues-dir /home/ubuntu/chia/examples/circt_issue_solver/issuestouse --output-dir /home/ubuntu/chia/examples/circt_issue_solver/benchmark_results/assess/glm5_nemotron_all16_20261019_195709/nemotron-3-super/issue_10571 --assess-only 10571
+2026-10-19 21:41:27,060 INFO circtissues: LLM backend=opencode model=amazon-bedrock/nvidia.nemotron-super-3-120b
+/home/ubuntu/miniconda3/envs/circtissues/lib/python3.10/site-packages/ray/_private/worker.py:2052: FutureWarning: Tip: In future versions of Ray, Ray will no longer override accelerator visible devices env var if num_gpus=0 or num_gpus=None (default). To enable this behavior and turn off this error message, set RAY_ACCEL_ENV_VAR_OVERRIDE_ON_ZERO=0
+  warnings.warn(
+[36m(run_issue_remote pid=15814)[0m /home/ray/anaconda3/envs/py_worker/lib/python3.10/site-packages/pydantic_settings/sources/utils.py:47: IncompleteFieldDefinitionWarning: Field 'lifespan' has an incomplete definition: its annotation contains an unresolved forward reference, so settings sources may fail to correctly resolve its value. Call `model_rebuild()` on the model where the field is defined, once all the referenced types are defined.
+[36m(run_issue_remote pid=15814)[0m   warnings.warn(
+[36m(pid=15886)[0m *** SIGSEGV received at time=1792446088 on cpu 2 ***
+[36m(pid=15886)[0m PC: @     0x76fbef945806  (unknown)  getenv
+[36m(pid=15886)[0m     @     0x76fbef942330       3488  (unknown)
+[36m(pid=15886)[0m     @     0x76fbee68a8c7         64  opentelemetry::v1::sdk::common::GetRawEnvironmentVariable()
+[36m(pid=15886)[0m     @     0x76fbee68b2bf        624  opentelemetry::v1::sdk::common::GetDurationEnvironmentVariable()
+[36m(pid=15886)[0m     @     0x76fbee6316dc        128  opentelemetry::v1::exporter::otlp::GetOtlpDefaultMetricsTimeout()
+[36m(pid=15886)[0m     @     0x76fbee62ff28        176  opentelemetry::v1::exporter::otlp::OtlpGrpcMetricExporterOptions::OtlpGrpcMetricExporterOptions()
+[36m(pid=15886)[0m     @     0x76fbee6263e3       1408  ray::observability::OpenTelemetryMetricRecorder::Start()
+[36m(pid=15886)[0m     @     0x76fbee04dba0       1232  ray::core::CoreWorkerProcessImpl::CoreWorkerProcessImpl()::{lambda()#2}::operator()()
+[36m(pid=15886)[0m     @     0x76fbee44a94a       1264  ray::rpc::MetricsAgentClientImpl::WaitForServerReadyWithRetry()::{lambda()#1}::operator()<>()
+[36m(pid=15886)[0m     @     0x76fbee44cbb5        160  ray::rpc::ClientCallImpl<>::OnReplyReceived()
+[36m(pid=15886)[0m     @     0x76fbee04f8c5         32  std::_Function_handler<>::_M_invoke()
+[36m(pid=15886)[0m     @     0x76fbee61ef9b       1248  EventTracker::RecordExecution()
+[36m(pid=15886)[0m     @     0x76fbee615abb         48  std::_Function_handler<>::_M_invoke()
+[36m(pid=15886)[0m     @     0x76fbee14fdcb        128  boost::asio::detail::executor_op<>::do_complete()
+[36m(pid=15886)[0m     @     0x76fbeeb69f8b        128  boost::asio::detail::scheduler::do_run_one()
+[36m(pid=15886)[0m     @     0x76fbeeb6b929        288  boost::asio::detail::scheduler::run()
+[36m(pid=15886)[0m     @     0x76fbeeb6c032         96  boost::asio::io_context::run()
+[36m(pid=15886)[0m     @     0x76fbee04cf94       1280  ray::core::CoreWorkerProcessImpl::CreateCoreWorker()::{lambda()#1}::operator()()
+[36m(pid=15886)[0m     @     0x76fbee182e00         64  thread_proxy
+[36m(pid=15886)[0m     @     0x76fbef999aa4        176  (unknown)
+[36m(pid=15886)[0m     @     0x76fbefa26a64  (unknown)  clone
+[36m(pid=15886)[0m [2026-10-19 21:41:28,809 E 15886 15908] logging.cc:474: *** SIGSEGV received at time=1792446088 on cpu 2 ***
+[36m(pid=15886)[0m [2026-10-19 21:41:28,809 E 15886 15908] logging.cc:474: PC: @     0x76fbef945806  (unknown)  getenv
+[36m(pid=15886)[0m [2026-10-19 21:41:28,809 E 15886 15908] logging.cc:474:     @     0x76fbef942330       3488  (unknown)
+[36m(pid=15886)[0m [2026-10-19 21:41:28,809 E 15886 15908] logging.cc:474:     @     0x76fbee68a8c7         64  opentelemetry::v1::sdk::common::GetRawEnvironmentVariable()
+[36m(pid=15886)[0m [2026-10-19 21:41:28,809 E 15886 15908] logging.cc:474:     @     0x76fbee68b2bf        624  opentelemetry::v1::sdk::common::GetDurationEnvironmentVariable()
+[36m(pid=15886)[0m [2026-10-19 21:41:28,809 E 15886 15908] logging.cc:474:     @     0x76fbee6316dc        128  opentelemetry::v1::exporter::otlp::GetOtlpDefaultMetricsTimeout()
+[36m(pid=15886)[0m [2026-10-19 21:41:28,809 E 15886 15908] logging.cc:474:     @     0x76fbee62ff28        176  opentelemetry::v1::exporter::otlp::OtlpGrpcMetricExporterOptions::OtlpGrpcMetricExporterOptions()
+[36m(pid=15886)[0m [2026-10-19 21:41:28,809 E 15886 15908] logging.cc:474:     @     0x76fbee6263e3       1408  ray::observability::OpenTelemetryMetricRecorder::Start()
+[36m(pid=15886)[0m [2026-10-19 21:41:28,809 E 15886 15908] logging.cc:474:     @     0x76fbee04dba0       1232  ray::core::CoreWorkerProcessImpl::CoreWorkerProcessImpl()::{lambda()#2}::operator()()
+[36m(pid=15886)[0m [2026-10-19 21:41:28,809 E 15886 15908] logging.cc:474:     @     0x76fbee44a94a       1264  ray::rpc::MetricsAgentClientImpl::WaitForServerReadyWithRetry()::{lambda()#1}::operator()<>()
+[36m(pid=15886)[0m [2026-10-19 21:41:28,809 E 15886 15908] logging.cc:474:     @     0x76fbee44cbb5        160  ray::rpc::ClientCallImpl<>::OnReplyReceived()
+[36m(pid=15886)[0m [2026-10-19 21:41:28,809 E 15886 15908] logging.cc:474:     @     0x76fbee04f8c5         32  std::_Function_handler<>::_M_invoke()
+[36m(pid=15886)[0m [2026-10-19 21:41:28,809 E 15886 15908] logging.cc:474:     @     0x76fbee61ef9b       1248  EventTracker::RecordExecution()
+[36m(pid=15886)[0m [2026-10-19 21:41:28,809 E 15886 15908] logging.cc:474:     @     0x76fbee615abb         48  std::_Function_handler<>::_M_invoke()
+[36m(pid=15886)[0m [2026-10-19 21:41:28,809 E 15886 15908] logging.cc:474:     @     0x76fbee14fdcb        128  boost::asio::detail::executor_op<>::do_complete()
+[36m(pid=15886)[0m [2026-10-19 21:41:28,809 E 15886 15908] logging.cc:474:     @     0x76fbeeb69f8b        128  boost::asio::detail::scheduler::do_run_one()
+[36m(pid=15886)[0m [2026-10-19 21:41:28,809 E 15886 15908] logging.cc:474:     @     0x76fbeeb6b929        288  boost::asio::detail::scheduler::run()
+[36m(pid=15886)[0m [2026-10-19 21:41:28,809 E 15886 15908] logging.cc:474:     @     0x76fbeeb6c032         96  boost::asio::io_context::run()
+[36m(pid=15886)[0m [2026-10-19 21:41:28,809 E 15886 15908] logging.cc:474:     @     0x76fbee04cf94       1280  ray::core::CoreWorkerProcessImpl::CreateCoreWorker()::{lambda()#1}::operator()()
+[36m(pid=15886)[0m [2026-10-19 21:41:28,809 E 15886 15908] logging.cc:474:     @     0x76fbee182e00         64  thread_proxy
+[36m(pid=15886)[0m [2026-10-19 21:41:28,809 E 15886 15908] logging.cc:474:     @     0x76fbef999aa4        176  (unknown)
+[36m(pid=15886)[0m [2026-10-19 21:41:28,809 E 15886 15908] logging.cc:474:     @     0x76fbefa26a64  (unknown)  clone
+[36m(pid=15886)[0m Fatal Python error: Segmentation fault
+[36m(pid=15886)[0m 
+[36m(pid=15886)[0m 
+[36m(pid=15886)[0m Extension modules: msgpack._cmsgpack, psutil._psutil_linux, google._upb._message, charset_normalizer.md, charset_normalizer.cd, requests.packages.charset_normalizer.md, requests.packages.chardet.md, requests.packages.charset_normalizer.cd, requests.packages.chardet.cd, yaml._yaml, ray._raylet (total: 11)
+[33m(raylet)[0m A worker died or was killed while executing a task by an unexpected system error. To troubleshoot the problem, check the logs for the dead worker. Lease ID: 85000000c9d5779d8b51245a0c8f9c46721b259e2aeb0a75e8ad2662917d93c2 Worker ID: b51de545024399836794debcfc6cc6885825fe230c7cc1056728d452 Node ID: 6a5b0bba6e222295994fface0e766fcd83de0da1bc34b449c8b7b9e6 Worker IP address: 172.31.38.160 Worker port: 10075 Worker PID: 15886 Worker exit type: SYSTEM_ERROR Worker exit detail: Worker unexpectedly exits with a connection error code 2. End of file. Some common causes include: (1) the process was killed by the OOM killer due to high memory usage, (2) ray stop --force was called, or (3) the worker crashed unexpectedly due to SIGSEGV or another unexpected error.
+2026-10-19 21:41:28,933 INFO circtissues: issue #10571 -> error  (+None/-None, lit_ok=None)
+
+===== assess-only #10571: [HWAggregateToComb] Mux of unions =====
+DECISION -> status='error'
+NOTE: pipeline failed during setup: ActorDiedError
+
+----- assess transcript (tail) -----
+
+2026-10-19 21:41:33,794	SUCC cli.py:65 -- [32m------------------------------------------[39m
+2026-10-19 21:41:33,794	SUCC cli.py:66 -- [32mJob 'raysubmit_bKfqPLFPxzw3vMHC' succeeded[39m
+2026-10-19 21:41:33,794	SUCC cli.py:67 -- [32m------------------------------------------[39m

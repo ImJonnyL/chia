@@ -329,7 +329,9 @@ class OpenCodeLLM(LLMCallBase):
     Each :meth:`prompt` call runs ``opencode run`` (to create a session and get
     its id) then ``opencode export`` (to read the assistant response + usage
     from opencode's local DB). Returns the same :class:`QueryResult` shape as the
-    other backends; ``returncode`` is the ``run`` exit code.
+    other backends; ``returncode`` is the ``run`` exit code. An explicit
+    ``model`` also selects the background and built-in agent models. Sessions
+    receive a fixed title to avoid a separate title-generation request.
     """
 
     # Honors both --dangerously-skip-permissions and a `permission` config block.
@@ -599,6 +601,14 @@ class OpenCodeLLM(LLMCallBase):
                 }
             },
         }
+        # Explicit selection must also cover background agents, whose model
+        # overrides can otherwise be inherited from OpenCode's global config.
+        if self.model:
+            cfg["model"] = self.model
+            cfg["small_model"] = self.model
+            for name in ("build", "plan", "general", "explore", "title",
+                         "summary", "compaction", self.agent_name):
+                cfg["agent"].setdefault(name, {})["model"] = self.model
         if tools:
             mcp: dict = {}
             for tool in tools:
@@ -633,6 +643,8 @@ class OpenCodeLLM(LLMCallBase):
             "run",
             "--format", "json",
             "--agent", self.agent_name,
+            # A non-default title avoids an unnecessary title-generation call.
+            "--title", "CHIA workflow",
         ]
         if self.dangerously_skip_permissions:
             cmd.append("--dangerously-skip-permissions")
@@ -669,6 +681,9 @@ class OpenCodeLLM(LLMCallBase):
         # auth (we don't touch them).
         env = dict(os.environ)
         env["OPENCODE_CONFIG"] = cfg_path
+        # Inline config has higher precedence than the config file. Replace
+        # inherited inline overrides with the same generated configuration.
+        env["OPENCODE_CONFIG_CONTENT"] = json.dumps(cfg)
         env["OPENCODE_DISABLE_PROJECT_CONFIG"] = "1"
 
         run_cmd = self._build_run_cmd(user_message)

@@ -1,0 +1,139 @@
+{
+  "status": "fixed",
+  "reproduced": true,
+  "build_ok": true,
+  "fixed": true,
+  "lit_ok": true,
+  "lit_passed": 1022,
+  "lit_failed": 0,
+  "lit_failures": [],
+  "added": 12,
+  "removed": 0,
+  "test_paths": [
+    "test/Analysis",
+    "test/Conversion",
+    "test/Dialect",
+    "test/Scheduling",
+    "test/Target",
+    "test/Tools",
+    "test/Transforms",
+    "test/Unit",
+    "test/arcilator",
+    "test/circt-as-dis",
+    "test/circt-opt",
+    "test/circt-reduce",
+    "test/circt-synth",
+    "test/circt-test",
+    "test/circt-translate",
+    "test/circt-verilog",
+    "test/firld",
+    "test/firtool",
+    "test/hlstool",
+    "test/kanagawatool",
+    "test/lib",
+    "test/om-linker"
+  ],
+  "notes": null,
+  "model": "openrouter/z-ai/glm-5.3",
+  "backend": "opencode",
+  "circt_commit": "5dc7f103d714aa40e13cae4fcf7ab98a1912f845",
+  "issue_number": 6740,
+  "llm_usage": {
+    "assess": {
+      "num_turns": 13,
+      "input_tokens": 7688,
+      "output_tokens": 1181,
+      "reasoning_tokens": 1566,
+      "cache_read": 76352,
+      "cache_write": 0,
+      "cost_usd": 0.009643844
+    },
+    "repro": {
+      "num_turns": 25,
+      "input_tokens": 9580,
+      "output_tokens": 4388,
+      "reasoning_tokens": 13430,
+      "cache_read": 306304,
+      "cache_write": 0,
+      "cost_usd": 0.0467191876
+    },
+    "fix": {
+      "num_turns": 22,
+      "input_tokens": 11309,
+      "output_tokens": 1188,
+      "reasoning_tokens": 2027,
+      "cache_read": 181184,
+      "cache_write": 0,
+      "cost_usd": 0.0177750767
+    },
+    "writeup": {
+      "num_turns": 1,
+      "input_tokens": 3027,
+      "output_tokens": 904,
+      "reasoning_tokens": 5107,
+      "cache_read": 0,
+      "cache_write": 0,
+      "cost_usd": 0.0086269873
+    }
+  },
+  "llm_phases": {
+    "assess": {
+      "issue_number": 6740,
+      "phase": "assess",
+      "model": "openrouter/z-ai/glm-5.3",
+      "backend": "opencode",
+      "session_id": "ses_e80a60991ffePz2BVGaAIXshp3",
+      "start_timestamp": "2026-10-27T21:52:43.765095+00:00",
+      "end_timestamp": "2026-10-27T21:53:08.973919+00:00",
+      "elapsed_seconds": 25.2088447240003,
+      "aws_region": null,
+      "success": true
+    },
+    "repro": {
+      "issue_number": 6740,
+      "phase": "repro",
+      "model": "openrouter/z-ai/glm-5.3",
+      "backend": "opencode",
+      "session_id": "ses_e80a5a6feffeQUtxp9k6aBiBfD",
+      "start_timestamp": "2026-10-27T21:53:08.993301+00:00",
+      "end_timestamp": "2026-10-27T21:56:47.875893+00:00",
+      "elapsed_seconds": 218.88259673800167,
+      "aws_region": null,
+      "success": true
+    },
+    "fix": {
+      "issue_number": 6740,
+      "phase": "fix",
+      "model": "openrouter/z-ai/glm-5.3",
+      "backend": "opencode",
+      "session_id": "ses_e80a24fb2ffeTahjQiPNTrwlOX",
+      "start_timestamp": "2026-10-27T21:56:47.958241+00:00",
+      "end_timestamp": "2026-10-27T21:58:05.413440+00:00",
+      "elapsed_seconds": 77.45520444200156,
+      "aws_region": null,
+      "success": true
+    },
+    "writeup": {
+      "issue_number": 6740,
+      "phase": "writeup",
+      "model": "openrouter/z-ai/glm-5.3",
+      "backend": "opencode",
+      "session_id": "ses_e80a01898ffe6wJqEO8jcXH0cX",
+      "start_timestamp": "2026-10-27T21:59:13.098886+00:00",
+      "end_timestamp": "2026-10-27T22:00:20.593121+00:00",
+      "elapsed_seconds": 67.49424372999965,
+      "aws_region": null,
+      "success": true
+    }
+  },
+  "llm_usage_total": {
+    "input_tokens": 31604,
+    "output_tokens": 7661,
+    "reasoning_tokens": 22130,
+    "cache_read": 563840,
+    "cache_write": 0,
+    "cost_usd": 0.0827650956,
+    "num_turns": 61
+  },
+  "cost_provenance": "cost_usd is OpenCode-reported session cost, not a provider invoice amount"
+}

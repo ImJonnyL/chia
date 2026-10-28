@@ -1,0 +1,53 @@
+{
+  "status": "unclear",
+  "reproduced": false,
+  "build_ok": null,
+  "fixed": null,
+  "lit_ok": null,
+  "lit_passed": null,
+  "lit_failed": null,
+  "lit_failures": null,
+  "added": null,
+  "removed": null,
+  "test_paths": null,
+  "notes": "The defect itself is concrete (an upstream-`PatternMatch.cpp` assertion when `-canonicalize` runs on a procedure containing an unreachable-block self-referential `moore.add`), but the correct behavior is genuinely unsettled: the maintainers explicitly debated reject-with-a-verifier-diagnostic vs. making canonicalization handle the IR vs. fixing the never-identified pass that produced the unreachable blocks, and never converged (\"Maybe an upstream bug?\", \"WDYT?\"). No doc, spec, or in-tree convention singles out one resolution \u2014 the only related test (`@SelfAssignNet`) covers a graph region, not an SSACFG procedure \u2014 and no CIRCT canonicalization pattern even applies to the repro's procedure body, so the root cause most plausibly lives in upstream MLIR infra, which is out of scope for this pipeline.",
+  "model": "openrouter/z-ai/glm-5.3",
+  "backend": "opencode",
+  "circt_commit": "5dc7f103d714aa40e13cae4fcf7ab98a1912f845",
+  "issue_number": 7531,
+  "llm_usage": {
+    "assess": {
+      "num_turns": 6,
+      "input_tokens": 37180,
+      "output_tokens": 3188,
+      "reasoning_tokens": 31915,
+      "cache_read": 167168,
+      "cache_write": 0,
+      "cost_usd": 0.0632609572
+    }
+  },
+  "llm_phases": {
+    "assess": {
+      "issue_number": 7531,
+      "phase": "assess",
+      "model": "openrouter/z-ai/glm-5.3",
+      "backend": "opencode",
+      "session_id": "ses_e80fffeb1ffejilK5k1IZv6DSx",
+      "start_timestamp": "2026-10-27T20:14:28.313871+00:00",
+      "end_timestamp": "2026-10-27T20:19:20.173193+00:00",
+      "elapsed_seconds": 291.85932930499985,
+      "aws_region": null,
+      "success": true
+    }
+  },
+  "llm_usage_total": {
+    "input_tokens": 37180,
+    "output_tokens": 3188,
+    "reasoning_tokens": 31915,
+    "cache_read": 167168,
+    "cache_write": 0,
+    "cost_usd": 0.0632609572,
+    "num_turns": 6
+  },
+  "cost_provenance": "cost_usd is OpenCode-reported session cost, not a provider invoice amount"
+}

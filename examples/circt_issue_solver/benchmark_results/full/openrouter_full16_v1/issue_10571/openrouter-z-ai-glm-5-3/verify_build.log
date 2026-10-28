@@ -1,0 +1,5 @@
+ninja: Entering directory `/workspace/circt/build'
+[1/4] Linking CXX executable bin/circt-bmc
+[2/4] Linking CXX executable bin/arcilator
+[3/4] Linking CXX executable bin/firtool
+[4/4] Linking CXX executable bin/circt-translate

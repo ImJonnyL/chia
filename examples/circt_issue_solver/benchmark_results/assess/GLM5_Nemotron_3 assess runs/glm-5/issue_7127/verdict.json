@@ -1,0 +1,53 @@
+{
+  "status": "not_a_bug",
+  "reproduced": false,
+  "build_ok": null,
+  "fixed": null,
+  "lit_ok": null,
+  "lit_passed": null,
+  "lit_failed": null,
+  "lit_failures": null,
+  "added": null,
+  "removed": null,
+  "test_paths": null,
+  "notes": "This is a design question about whether type aliases should be preserved when DropConst modifies their inner type, not a bug report. The reporter frames it as doubtful (\"reasonable case\", \"arguably\", \"low-priority FYI\"), presents arguments both ways, and describes no actual failure, crash, or specification violation - only asking whether different-but-consistent behavior might be preferable.",
+  "model": "amazon-bedrock/zai.glm-5",
+  "backend": "opencode",
+  "circt_commit": "5dc7f103d714aa40e13cae4fcf7ab98a1912f845",
+  "issue_number": 7127,
+  "llm_usage": {
+    "assess": {
+      "num_turns": 73,
+      "input_tokens": 809040,
+      "output_tokens": 6986,
+      "reasoning_tokens": 0,
+      "cache_read": 0,
+      "cache_write": 0,
+      "cost_usd": 0.8313952
+    }
+  },
+  "llm_phases": {
+    "assess": {
+      "issue_number": 7127,
+      "phase": "assess",
+      "model": "amazon-bedrock/zai.glm-5",
+      "backend": "opencode",
+      "session_id": "ses_eaa24e002ffeBN6TgMmV0n3clV",
+      "start_timestamp": "2026-10-19T20:29:45.124002+00:00",
+      "end_timestamp": "2026-10-19T20:42:15.923671+00:00",
+      "elapsed_seconds": 750.799675273,
+      "aws_region": "us-east-1",
+      "success": true
+    }
+  },
+  "llm_usage_total": {
+    "input_tokens": 809040,
+    "output_tokens": 6986,
+    "reasoning_tokens": 0,
+    "cache_read": 0,
+    "cache_write": 0,
+    "cost_usd": 0.8313952,
+    "num_turns": 73
+  },
+  "cost_provenance": "cost_usd is OpenCode-reported session cost, not an AWS invoice amount"
+}

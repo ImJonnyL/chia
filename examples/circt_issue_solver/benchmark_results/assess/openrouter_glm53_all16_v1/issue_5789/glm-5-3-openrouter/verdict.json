@@ -1,0 +1,53 @@
+{
+  "status": "not_a_bug",
+  "reproduced": false,
+  "build_ok": null,
+  "fixed": null,
+  "lit_ok": null,
+  "lit_passed": null,
+  "lit_failed": null,
+  "lit_failures": null,
+  "added": null,
+  "removed": null,
+  "test_paths": null,
+  "notes": "The issue described a real verifier gap when filed in 2023, but at the pinned firtool-1.148.0 revision the behavior is working as intended \u2014 port inner symbols are now verified (`hw::verifyPortInnerSymsIfPortList` invoked from the `InnerSymbolTable` trait's verify hook, checking each port symbol's field ID and names against the port type), and the issue's exact repro is rejected with the diagnostic `field id 5 is greater than the maximum field id 0`, while valid port symbols still pass. The requested fix is already present with regression-test coverage, so there is no defect remaining for the pipeline to fix.",
+  "model": "openrouter/z-ai/glm-5.3",
+  "backend": "opencode",
+  "circt_commit": "5dc7f103d714aa40e13cae4fcf7ab98a1912f845",
+  "issue_number": 5789,
+  "llm_usage": {
+    "assess": {
+      "num_turns": 13,
+      "input_tokens": 52691,
+      "output_tokens": 4233,
+      "reasoning_tokens": 25755,
+      "cache_read": 307968,
+      "cache_write": 0,
+      "cost_usd": 0.06688529609999999
+    }
+  },
+  "llm_phases": {
+    "assess": {
+      "issue_number": 5789,
+      "phase": "assess",
+      "model": "openrouter/z-ai/glm-5.3",
+      "backend": "opencode",
+      "session_id": "ses_e8102b032ffe1FI7cC4kN7CzOD",
+      "start_timestamp": "2026-10-27T20:11:31.792972+00:00",
+      "end_timestamp": "2026-10-27T20:16:40.751505+00:00",
+      "elapsed_seconds": 308.95854002700025,
+      "aws_region": null,
+      "success": true
+    }
+  },
+  "llm_usage_total": {
+    "input_tokens": 52691,
+    "output_tokens": 4233,
+    "reasoning_tokens": 25755,
+    "cache_read": 307968,
+    "cache_write": 0,
+    "cost_usd": 0.06688529609999999,
+    "num_turns": 13
+  },
+  "cost_provenance": "cost_usd is OpenCode-reported session cost, not a provider invoice amount"
+}

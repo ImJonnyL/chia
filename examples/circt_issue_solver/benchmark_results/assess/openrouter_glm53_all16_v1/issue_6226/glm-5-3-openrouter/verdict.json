@@ -1,0 +1,53 @@
+{
+  "status": "not_a_bug",
+  "reproduced": false,
+  "build_ok": null,
+  "fixed": null,
+  "lit_ok": null,
+  "lit_passed": null,
+  "lit_failed": null,
+  "lit_failures": null,
+  "added": null,
+  "removed": null,
+  "test_paths": null,
+  "notes": "The reported parse failure does not reproduce on this checkout (firtool-1.148.0 / commit 5dc7f10): all four issue variants parse, print generically, and round-trip with exit code 0 and no diagnostics. The issue is stale/already fixed, so there is no incorrect behavior in this tree for the pipeline to attempt a fix against.",
+  "model": "openrouter/z-ai/glm-5.3",
+  "backend": "opencode",
+  "circt_commit": "5dc7f103d714aa40e13cae4fcf7ab98a1912f845",
+  "issue_number": 6226,
+  "llm_usage": {
+    "assess": {
+      "num_turns": 4,
+      "input_tokens": 4014,
+      "output_tokens": 367,
+      "reasoning_tokens": 1407,
+      "cache_read": 12160,
+      "cache_write": 0,
+      "cost_usd": 0.0036020026
+    }
+  },
+  "llm_phases": {
+    "assess": {
+      "issue_number": 6226,
+      "phase": "assess",
+      "model": "openrouter/z-ai/glm-5.3",
+      "backend": "opencode",
+      "session_id": "ses_e8101e76dffe0km4UZeg9Y7RKb",
+      "start_timestamp": "2026-10-27T20:12:23.204001+00:00",
+      "end_timestamp": "2026-10-27T20:12:39.670390+00:00",
+      "elapsed_seconds": 16.466393954999603,
+      "aws_region": null,
+      "success": true
+    }
+  },
+  "llm_usage_total": {
+    "input_tokens": 4014,
+    "output_tokens": 367,
+    "reasoning_tokens": 1407,
+    "cache_read": 12160,
+    "cache_write": 0,
+    "cost_usd": 0.0036020026,
+    "num_turns": 4
+  },
+  "cost_provenance": "cost_usd is OpenCode-reported session cost, not a provider invoice amount"
+}

@@ -1,0 +1,53 @@
+{
+  "status": "not_a_bug",
+  "reproduced": false,
+  "build_ok": null,
+  "fixed": null,
+  "lit_ok": null,
+  "lit_passed": null,
+  "lit_failed": null,
+  "lit_failures": null,
+  "added": null,
+  "removed": null,
+  "test_paths": null,
+  "notes": "This is a missed-optimization / enhancement request (an RFC on how to fold binary ops with zero-width operands), not a defect: the produced IR and SystemVerilog are semantically correct and nothing crashes or miscompiles. The author's own comment proposes alternative designs (per-op rules vs. globally replacing zero-width values with constants) without committing to one, so there is no incorrect behavior to fix \u2014 only an open design question.",
+  "model": "openrouter/z-ai/glm-5.3",
+  "backend": "opencode",
+  "circt_commit": "5dc7f103d714aa40e13cae4fcf7ab98a1912f845",
+  "issue_number": 4396,
+  "llm_usage": {
+    "assess": {
+      "num_turns": 2,
+      "input_tokens": 8126,
+      "output_tokens": 578,
+      "reasoning_tokens": 72,
+      "cache_read": 7808,
+      "cache_write": 0,
+      "cost_usd": 0.0020159786
+    }
+  },
+  "llm_phases": {
+    "assess": {
+      "issue_number": 4396,
+      "phase": "assess",
+      "model": "openrouter/z-ai/glm-5.3",
+      "backend": "opencode",
+      "session_id": "ses_e80bb693affebnaxKknePzI3RQ",
+      "start_timestamp": "2026-10-27T21:29:22.996539+00:00",
+      "end_timestamp": "2026-10-27T21:29:30.807971+00:00",
+      "elapsed_seconds": 7.81143824100036,
+      "aws_region": null,
+      "success": true
+    }
+  },
+  "llm_usage_total": {
+    "input_tokens": 8126,
+    "output_tokens": 578,
+    "reasoning_tokens": 72,
+    "cache_read": 7808,
+    "cache_write": 0,
+    "cost_usd": 0.0020159786,
+    "num_turns": 2
+  },
+  "cost_provenance": "cost_usd is OpenCode-reported session cost, not a provider invoice amount"
+}

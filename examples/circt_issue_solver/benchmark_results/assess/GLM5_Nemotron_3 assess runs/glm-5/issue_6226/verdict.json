@@ -1,0 +1,53 @@
+{
+  "status": "not_a_bug",
+  "reproduced": false,
+  "build_ok": null,
+  "fixed": null,
+  "lit_ok": null,
+  "lit_passed": null,
+  "lit_failed": null,
+  "lit_failures": null,
+  "added": null,
+  "removed": null,
+  "test_paths": null,
+  "notes": "This issue describes a bug that was fixed in commit 12d168633 on October 13, 2023. The fix is included in the current checkout (firtool-1.148.0). The issue has adequate test coverage in test/Dialect/HW/basic.mlir. The issue is stale and does not represent a current defect in CIRCT.",
+  "model": "amazon-bedrock/zai.glm-5",
+  "backend": "opencode",
+  "circt_commit": "5dc7f103d714aa40e13cae4fcf7ab98a1912f845",
+  "issue_number": 6226,
+  "llm_usage": {
+    "assess": {
+      "num_turns": 93,
+      "input_tokens": 1352640,
+      "output_tokens": 8532,
+      "reasoning_tokens": 0,
+      "cache_read": 0,
+      "cache_write": 0,
+      "cost_usd": 1.3799423999999998
+    }
+  },
+  "llm_phases": {
+    "assess": {
+      "issue_number": 6226,
+      "phase": "assess",
+      "model": "amazon-bedrock/zai.glm-5",
+      "backend": "opencode",
+      "session_id": "ses_eaa2dad2effeZk4QfL0dGEk7cc",
+      "start_timestamp": "2026-10-19T20:20:08.340378+00:00",
+      "end_timestamp": "2026-10-19T20:29:29.628687+00:00",
+      "elapsed_seconds": 561.2883142700002,
+      "aws_region": "us-east-1",
+      "success": true
+    }
+  },
+  "llm_usage_total": {
+    "input_tokens": 1352640,
+    "output_tokens": 8532,
+    "reasoning_tokens": 0,
+    "cache_read": 0,
+    "cache_write": 0,
+    "cost_usd": 1.3799423999999998,
+    "num_turns": 93
+  },
+  "cost_provenance": "cost_usd is OpenCode-reported session cost, not an AWS invoice amount"
+}

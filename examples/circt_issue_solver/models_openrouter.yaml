@@ -1,0 +1,5 @@
+# Example selection: replace entries for other models, or pass --model directly.
+# OpenCode provider / OpenRouter author / model. Verify access before a batch.
+models:
+  - name: glm-5-3-openrouter
+    model: openrouter/z-ai/glm-5.3

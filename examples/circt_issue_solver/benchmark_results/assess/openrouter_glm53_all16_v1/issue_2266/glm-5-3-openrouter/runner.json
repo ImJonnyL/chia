@@ -1,0 +1,24 @@
+{
+  "issue_number": 2266,
+  "model_name": "glm-5-3-openrouter",
+  "model": "openrouter/z-ai/glm-5.3",
+  "stage": "assess",
+  "command": [
+    "/home/ubuntu/chia/examples/circt_issue_solver/fix_issues_submit.sh",
+    "--backend",
+    "opencode",
+    "--model",
+    "openrouter/z-ai/glm-5.3",
+    "--issues-dir",
+    "/home/ubuntu/chia/examples/circt_issue_solver/issuestouse",
+    "--output-dir",
+    "/home/ubuntu/chia/examples/circt_issue_solver/benchmark_results/assess/openrouter_glm53_all16_v1/issue_2266/glm-5-3-openrouter",
+    "--assess-only",
+    "2266"
+  ],
+  "start_timestamp": "2026-10-27T20:09:19.236699+00:00",
+  "status": "completed",
+  "return_code": 0,
+  "finish_timestamp": "2026-10-27T20:11:21.371861+00:00",
+  "elapsed_seconds": 122.1350261739999
+}

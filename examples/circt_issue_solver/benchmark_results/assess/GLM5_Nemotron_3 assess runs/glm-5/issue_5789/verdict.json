@@ -1,0 +1,53 @@
+{
+  "status": "not_a_bug",
+  "reproduced": false,
+  "build_ok": null,
+  "fixed": null,
+  "lit_ok": null,
+  "lit_passed": null,
+  "lit_failed": null,
+  "lit_failures": null,
+  "added": null,
+  "removed": null,
+  "test_paths": null,
+  "notes": "This issue describes a missing verification for inner symbols on ports, but the verification IS implemented and working correctly in the current codebase (firtool-1.148.0). The `verifyPortInnerSymsIfPortList` function properly validates fieldIDs against port types, and testing confirms that invalid fieldIDs like fieldID 5 on a `uint<1>` port are correctly rejected with appropriate error messages. This appears to be a historical bug report that has since been addressed.",
+  "model": "amazon-bedrock/zai.glm-5",
+  "backend": "opencode",
+  "circt_commit": "5dc7f103d714aa40e13cae4fcf7ab98a1912f845",
+  "issue_number": 5789,
+  "llm_usage": {
+    "assess": {
+      "num_turns": 87,
+      "input_tokens": 1864835,
+      "output_tokens": 7434,
+      "reasoning_tokens": 0,
+      "cache_read": 0,
+      "cache_write": 0,
+      "cost_usd": 1.8886237999999995
+    }
+  },
+  "llm_phases": {
+    "assess": {
+      "issue_number": 5789,
+      "phase": "assess",
+      "model": "amazon-bedrock/zai.glm-5",
+      "backend": "opencode",
+      "session_id": "ses_eaa2f4656ffewCmMq5ZLkrvDeh",
+      "start_timestamp": "2026-10-19T20:18:23.524662+00:00",
+      "end_timestamp": "2026-10-19T20:27:15.050013+00:00",
+      "elapsed_seconds": 531.525362895,
+      "aws_region": "us-east-1",
+      "success": true
+    }
+  },
+  "llm_usage_total": {
+    "input_tokens": 1864835,
+    "output_tokens": 7434,
+    "reasoning_tokens": 0,
+    "cache_read": 0,
+    "cache_write": 0,
+    "cost_usd": 1.8886237999999995,
+    "num_turns": 87
+  },
+  "cost_provenance": "cost_usd is OpenCode-reported session cost, not an AWS invoice amount"
+}

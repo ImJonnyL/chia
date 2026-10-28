@@ -1,0 +1,53 @@
+{
+  "status": "unclear",
+  "reproduced": false,
+  "build_ok": null,
+  "fixed": null,
+  "lit_ok": null,
+  "lit_passed": null,
+  "lit_failed": null,
+  "lit_failures": null,
+  "added": null,
+  "removed": null,
+  "test_paths": null,
+  "notes": "The defect itself is clear and real \u2014 `InjectDUTHierarchy` unconditionally `cast<FModuleOp>`s the DUT (InjectDUTHierarchy.cpp:201), so an extmodule DUT (which `applyDUTAnno` accepts and `InstanceInfo` explicitly tests as legal) crashes assert builds and, in release builds, gets its `sym_name` renamed while its `defname` is left to collide with the newly created module, producing verifier-failing IR. What is unclear is the correct behavior: the annotation is an out-of-spec, SiFive-proprietary transform whose documented semantics (\"move all the logic of the original DUT into the named module\") are vacuous for a bodyless blackbox, so no doc, spec, or test defines the intended output. At least four materially different resolutions are defensible \u2014 diagnose-and-reject in the pass, extend the pass with new (unspecified) wrapping semantics, reject `MarkDUTAnnotation` on extmodules at lowering time (contradicting tested extmodule-DUT support elsewhere), or wontfix given the in-source \"this pass should be deleted\" plan \u2014 and the issue never states which is wanted. The reporter (the pass's author) explicitly hedges that \"this circuit is weird as the DUT is a blackbox,\" so any fix would have to invent the expected behavior rather than match one.",
+  "model": "openrouter/z-ai/glm-5.3",
+  "backend": "opencode",
+  "circt_commit": "5dc7f103d714aa40e13cae4fcf7ab98a1912f845",
+  "issue_number": 8508,
+  "llm_usage": {
+    "assess": {
+      "num_turns": 8,
+      "input_tokens": 45114,
+      "output_tokens": 2700,
+      "reasoning_tokens": 20522,
+      "cache_read": 133632,
+      "cache_write": 0,
+      "cost_usd": 0.04487151340000001
+    }
+  },
+  "llm_phases": {
+    "assess": {
+      "issue_number": 8508,
+      "phase": "assess",
+      "model": "openrouter/z-ai/glm-5.3",
+      "backend": "opencode",
+      "session_id": "ses_e80849e3effe4Jk9BrC3m72IYT",
+      "start_timestamp": "2026-10-27T22:29:13.907768+00:00",
+      "end_timestamp": "2026-10-27T22:32:38.390280+00:00",
+      "elapsed_seconds": 204.482519444,
+      "aws_region": null,
+      "success": true
+    }
+  },
+  "llm_usage_total": {
+    "input_tokens": 45114,
+    "output_tokens": 2700,
+    "reasoning_tokens": 20522,
+    "cache_read": 133632,
+    "cache_write": 0,
+    "cost_usd": 0.04487151340000001,
+    "num_turns": 8
+  },
+  "cost_provenance": "cost_usd is OpenCode-reported session cost, not a provider invoice amount"
+}

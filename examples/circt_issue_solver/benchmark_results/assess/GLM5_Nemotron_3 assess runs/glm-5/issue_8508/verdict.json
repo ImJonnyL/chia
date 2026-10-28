@@ -1,0 +1,53 @@
+{
+  "status": "unclear",
+  "reproduced": false,
+  "build_ok": null,
+  "fixed": null,
+  "lit_ok": null,
+  "lit_passed": null,
+  "lit_failed": null,
+  "lit_failures": null,
+  "added": null,
+  "removed": null,
+  "test_paths": null,
+  "notes": "The bug is clear: the pass incorrectly assumes the DUT is always an FModuleOp. However, the expected behavior is ambiguous. Multiple reasonable resolutions exist: (1) reject the input with a diagnostic explaining that extmodules (black boxes) have no logic to wrap, (2) extend the pass to handle this case correctly, or (3) disallow MarkDUTAnnotation on extmodules at verification time. The issue acknowledges the input is \"weird\" without specifying which resolution is correct, and the annotation documentation doesn't clarify whether extmodules should be supported as DUTs.",
+  "model": "amazon-bedrock/zai.glm-5",
+  "backend": "opencode",
+  "circt_commit": "5dc7f103d714aa40e13cae4fcf7ab98a1912f845",
+  "issue_number": 8508,
+  "llm_usage": {
+    "assess": {
+      "num_turns": 44,
+      "input_tokens": 656243,
+      "output_tokens": 3258,
+      "reasoning_tokens": 0,
+      "cache_read": 0,
+      "cache_write": 0,
+      "cost_usd": 0.6666686
+    }
+  },
+  "llm_phases": {
+    "assess": {
+      "issue_number": 8508,
+      "phase": "assess",
+      "model": "amazon-bedrock/zai.glm-5",
+      "backend": "opencode",
+      "session_id": "ses_eaa1002e8ffeOwZVD8i7mYxRKR",
+      "start_timestamp": "2026-10-19T20:52:32.478858+00:00",
+      "end_timestamp": "2026-10-19T20:56:57.313669+00:00",
+      "elapsed_seconds": 264.8348160579999,
+      "aws_region": "us-east-1",
+      "success": true
+    }
+  },
+  "llm_usage_total": {
+    "input_tokens": 656243,
+    "output_tokens": 3258,
+    "reasoning_tokens": 0,
+    "cache_read": 0,
+    "cache_write": 0,
+    "cost_usd": 0.6666686,
+    "num_turns": 44
+  },
+  "cost_provenance": "cost_usd is OpenCode-reported session cost, not an AWS invoice amount"
+}

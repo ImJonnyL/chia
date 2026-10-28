@@ -1,0 +1,24 @@
+{
+  "issue_number": 6740,
+  "model_name": "glm-5",
+  "model": "amazon-bedrock/zai.glm-5",
+  "stage": "assess",
+  "command": [
+    "/home/ubuntu/chia/examples/circt_issue_solver/fix_issues_submit.sh",
+    "--backend",
+    "opencode",
+    "--model",
+    "amazon-bedrock/zai.glm-5",
+    "--issues-dir",
+    "/home/ubuntu/chia/examples/circt_issue_solver/issuestouse",
+    "--output-dir",
+    "/home/ubuntu/chia/examples/circt_issue_solver/benchmark_results/assess/glm5_nemotron_all16_20261019_195709/glm-5/issue_6740",
+    "--assess-only",
+    "6740"
+  ],
+  "start_timestamp": "2026-10-19T20:27:19.775857+00:00",
+  "status": "completed",
+  "return_code": 0,
+  "finish_timestamp": "2026-10-19T20:36:38.898138+00:00",
+  "elapsed_seconds": 559.1222027149997
+}

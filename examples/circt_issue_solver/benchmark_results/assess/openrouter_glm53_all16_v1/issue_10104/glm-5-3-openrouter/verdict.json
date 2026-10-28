@@ -1,0 +1,53 @@
+{
+  "status": "clear",
+  "reproduced": false,
+  "build_ok": null,
+  "fixed": null,
+  "lit_ok": null,
+  "lit_passed": null,
+  "lit_failed": null,
+  "lit_failures": null,
+  "added": null,
+  "removed": null,
+  "test_paths": null,
+  "notes": null,
+  "model": "openrouter/z-ai/glm-5.3",
+  "backend": "opencode",
+  "circt_commit": "5dc7f103d714aa40e13cae4fcf7ab98a1912f845",
+  "issue_number": 10104,
+  "llm_usage": {
+    "assess": {
+      "num_turns": 4,
+      "input_tokens": 6718,
+      "output_tokens": 869,
+      "reasoning_tokens": 959,
+      "cache_read": 13376,
+      "cache_write": 0,
+      "cost_usd": 0.0039503946000000005
+    }
+  },
+  "llm_phases": {
+    "assess": {
+      "issue_number": 10104,
+      "phase": "assess",
+      "model": "openrouter/z-ai/glm-5.3",
+      "backend": "opencode",
+      "session_id": "ses_e80fc80d0ffeH2ihQxOSfK7y3A",
+      "start_timestamp": "2026-10-27T20:18:17.138205+00:00",
+      "end_timestamp": "2026-10-27T20:18:31.976386+00:00",
+      "elapsed_seconds": 14.838184100000035,
+      "aws_region": null,
+      "success": true
+    }
+  },
+  "llm_usage_total": {
+    "input_tokens": 6718,
+    "output_tokens": 869,
+    "reasoning_tokens": 959,
+    "cache_read": 13376,
+    "cache_write": 0,
+    "cost_usd": 0.0039503946000000005,
+    "num_turns": 4
+  },
+  "cost_provenance": "cost_usd is OpenCode-reported session cost, not a provider invoice amount"
+}

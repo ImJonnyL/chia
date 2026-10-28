@@ -95,7 +95,7 @@ def run_issue_remote(issue_md: str, number: int, cfg: dict,
                 timeout_seconds=cfg["timeouts"][phase], resume_session=True,
             )
         elif backend == "opencode":
-            # Built-in provider and inherited AWS credential chain. Only CHIA
+            # Built-in provider and inherited provider credentials. Only CHIA
             # MCP tools may operate on the CIRCT worker; deny local CLI tools.
             from chia.models.opencode import OpenCodeLLM
             perms = {"*": "deny", **{f"{t.name}_*": "allow" for t in tools}}

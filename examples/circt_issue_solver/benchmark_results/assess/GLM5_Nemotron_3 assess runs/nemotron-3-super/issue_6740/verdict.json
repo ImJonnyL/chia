@@ -1,0 +1,53 @@
+{
+  "status": "clear",
+  "reproduced": false,
+  "build_ok": null,
+  "fixed": null,
+  "lit_ok": null,
+  "lit_passed": null,
+  "lit_failed": null,
+  "lit_failures": null,
+  "added": null,
+  "removed": null,
+  "test_paths": null,
+  "notes": null,
+  "model": "amazon-bedrock/nvidia.nemotron-super-3-120b",
+  "backend": "opencode",
+  "circt_commit": "5dc7f103d714aa40e13cae4fcf7ab98a1912f845",
+  "issue_number": 6740,
+  "llm_usage": {
+    "assess": {
+      "num_turns": 30,
+      "input_tokens": 267301,
+      "output_tokens": 4071,
+      "reasoning_tokens": 0,
+      "cache_read": 0,
+      "cache_write": 0,
+      "cost_usd": 0.0427413
+    }
+  },
+  "llm_phases": {
+    "assess": {
+      "issue_number": 6740,
+      "phase": "assess",
+      "model": "amazon-bedrock/nvidia.nemotron-super-3-120b",
+      "backend": "opencode",
+      "session_id": "ses_ea9f1d22dffeLy21Kc1S31qnu5",
+      "start_timestamp": "2026-10-19T21:25:29.535769+00:00",
+      "end_timestamp": "2026-10-19T21:26:26.254447+00:00",
+      "elapsed_seconds": 56.71868526599974,
+      "aws_region": "us-east-1",
+      "success": true
+    }
+  },
+  "llm_usage_total": {
+    "input_tokens": 267301,
+    "output_tokens": 4071,
+    "reasoning_tokens": 0,
+    "cache_read": 0,
+    "cache_write": 0,
+    "cost_usd": 0.0427413,
+    "num_turns": 30
+  },
+  "cost_provenance": "cost_usd is OpenCode-reported session cost, not an AWS invoice amount"
+}

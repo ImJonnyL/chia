@@ -1,0 +1,53 @@
+{
+  "status": "not_a_bug",
+  "reproduced": false,
+  "build_ok": null,
+  "fixed": null,
+  "lit_ok": null,
+  "lit_passed": null,
+  "lit_failed": null,
+  "lit_failures": null,
+  "added": null,
+  "removed": null,
+  "test_paths": null,
+  "notes": "The reported mixed ssaName/true-name parse failure no longer reproduces on the pinned firtool-1.148.0 tree \u2014 all four issue variants parse, print (generic and pretty), and roundtrip successfully with exit code 0 and correct true-name preservation. The issue is stale/fixed; there is no defect left in this checkout for the pipeline to address.",
+  "model": "openrouter/z-ai/glm-5.3",
+  "backend": "opencode",
+  "circt_commit": "5dc7f103d714aa40e13cae4fcf7ab98a1912f845",
+  "issue_number": 6226,
+  "llm_usage": {
+    "assess": {
+      "num_turns": 3,
+      "input_tokens": 3784,
+      "output_tokens": 306,
+      "reasoning_tokens": 411,
+      "cache_read": 7296,
+      "cache_write": 0,
+      "cost_usd": 0.001770996
+    }
+  },
+  "llm_phases": {
+    "assess": {
+      "issue_number": 6226,
+      "phase": "assess",
+      "model": "openrouter/z-ai/glm-5.3",
+      "backend": "opencode",
+      "session_id": "ses_e80a69a03ffecjl2nLtjyDzgH6",
+      "start_timestamp": "2026-10-27T21:52:06.771882+00:00",
+      "end_timestamp": "2026-10-27T21:52:14.833546+00:00",
+      "elapsed_seconds": 8.061671053999817,
+      "aws_region": null,
+      "success": true
+    }
+  },
+  "llm_usage_total": {
+    "input_tokens": 3784,
+    "output_tokens": 306,
+    "reasoning_tokens": 411,
+    "cache_read": 7296,
+    "cache_write": 0,
+    "cost_usd": 0.001770996,
+    "num_turns": 3
+  },
+  "cost_provenance": "cost_usd is OpenCode-reported session cost, not a provider invoice amount"
+}

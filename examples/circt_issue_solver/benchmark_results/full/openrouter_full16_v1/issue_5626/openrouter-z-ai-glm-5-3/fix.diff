@@ -1,0 +1,85 @@
+diff --git a/lib/Conversion/FIRRTLToHW/LowerToHW.cpp b/lib/Conversion/FIRRTLToHW/LowerToHW.cpp
+index 024c7d0..3fdf1eb 100644
+--- a/lib/Conversion/FIRRTLToHW/LowerToHW.cpp
++++ b/lib/Conversion/FIRRTLToHW/LowerToHW.cpp
+@@ -1773,14 +1773,54 @@ struct FIRRTLLowering : public FIRRTLVisitor<FIRRTLLowering, LogicalResult> {
+   /// ensure that the InnerSymAttr has a symbol with fieldID zero.
+   hw::InnerSymAttr lowerInnerSymbol(hw::InnerSymbolOpInterface op) {
+     auto attr = op.getInnerSymAttr();
+-    // TODO: we should be checking for symbol collisions here and renaming as
+-    // neccessary. As well, we should record the renamings in a map so that we
+-    // can update any InnerRefAttrs that we find.
++    // TODO: we should record any renamings in a map so that we can update any
++    // InnerRefAttrs that we find.
+     if (requiresInnerSymbol(op))
+       std::tie(attr, std::ignore) = getOrAddInnerSym(
+           op.getContext(), attr, 0,
+           [&]() -> hw::InnerSymbolNamespace & { return moduleNamespace; });
+-    return attr;
++    if (!attr || !op.getInnerSymAttr())
++      // Either no inner symbol at all, or one that was just freshly
++      // generated (and therefore unique).  Nothing to check.
++      return attr;
++
++    // An explicitly specified inner symbol is not necessarily unique within
++    // the module: LowerToHW invents inner symbols for dontTouch'd ports
++    // without consulting this namespace, so a body operation's explicit
++    // inner symbol can collide with one of those.  Check every symbol
++    // against the rest of the module and rename the colliding ones to a
++    // fresh, unique name.
++    SmallVector<hw::InnerSymPropertiesAttr, 4> props;
++    llvm::append_range(props, attr.getProps());
++    for (auto &prop : props) {
++      auto name = prop.getName();
++      if (!innerSymNameTakenByOther(op, name))
++        continue;
++      auto newName = moduleNamespace.newName("sym");
++      prop = hw::InnerSymPropertiesAttr::get(
++          op.getContext(), StringAttr::get(op.getContext(), newName),
++          prop.getFieldID(), prop.getSymVisibility());
++    }
++    llvm::sort(props, [](const auto &lhs, const auto &rhs) {
++      return lhs.getFieldID() < rhs.getFieldID();
++    });
++    return hw::InnerSymAttr::get(op.getContext(), props);
++  }
++
++  /// Return true if the inner symbol `name` is currently claimed inside the
++  /// module by anything other than `op` itself, e.g. by a port or by another
++  /// operation.
++  bool innerSymNameTakenByOther(hw::InnerSymbolOpInterface op,
++                                StringAttr name) {
++    bool taken = false;
++    hw::InnerSymbolTable::walkSymbols(
++        theModule.getOperation(),
++        [&](StringAttr symName, const hw::InnerSymTarget &target) {
++          if (symName == name && target.getOp() != op.getOperation())
++            taken = true;
++          return success();
++        });
++    return taken;
+   }
+ 
+   /// Prepare input operands for instance creation. Processes port information
+diff --git a/test/Conversion/FIRRTLToHW/lower-to-hw-module.mlir b/test/Conversion/FIRRTLToHW/lower-to-hw-module.mlir
+index eb519b0..5828484 100644
+--- a/test/Conversion/FIRRTLToHW/lower-to-hw-module.mlir
++++ b/test/Conversion/FIRRTLToHW/lower-to-hw-module.mlir
+@@ -301,4 +301,17 @@ firrtl.circuit "Simple" {
+     in %0: !firrtl.uint<1> [{class = "firrtl.transforms.DontTouchAnnotation"}],
+     in %1: !firrtl.uint<1> [{class = "firrtl.transforms.DontTouchAnnotation"}]
+   ) {}
++
++  // The symbol invented for a dontTouch'd port must not collide with an
++  // explicit inner symbol on an operation in the module body. The body
++  // operation is renamed to a fresh, unique inner symbol.
++  // CHECK-LABEL: hw.module @DTPortBodySym
++  // CHECK-SAME: (in %a : i1 {hw.exportPort = #hw<innerSym@__DTPortBodySym__DONTTOUCH__0__a>})
++  // CHECK: hw.wire %a sym @sym
++  firrtl.module @DTPortBodySym(
++    in %a: !firrtl.uint<1> [{class = "firrtl.transforms.DontTouchAnnotation"}]
++  ) {
++    %w = firrtl.wire sym @__DTPortBodySym__DONTTOUCH__0__a : !firrtl.uint<1>
++    firrtl.connect %w, %a : !firrtl.uint<1>, !firrtl.uint<1>
++  }
+ }

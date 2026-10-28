@@ -1,0 +1,115 @@
+2026-10-19 20:03:25,275	INFO cli.py:41 -- [37mJob submission server address[39m: [1mhttp://localhost:8265[22m
+2026-10-19 20:03:25,286	SUCC cli.py:65 -- [32m-------------------------------------------------------[39m
+2026-10-19 20:03:25,286	SUCC cli.py:66 -- [32mJob 'raysubmit_yGmpUgKJhQ21yKbi' submitted successfully[39m
+2026-10-19 20:03:25,286	SUCC cli.py:67 -- [32m-------------------------------------------------------[39m
+2026-10-19 20:03:25,286	INFO cli.py:326 -- [36mNext steps[39m
+2026-10-19 20:03:25,286	INFO cli.py:327 -- Query the logs of the job:
+2026-10-19 20:03:25,286	INFO cli.py:329 -- [1mray job logs raysubmit_yGmpUgKJhQ21yKbi[22m
+2026-10-19 20:03:25,286	INFO cli.py:331 -- Query the status of the job:
+2026-10-19 20:03:25,286	INFO cli.py:333 -- [1mray job status raysubmit_yGmpUgKJhQ21yKbi[22m
+2026-10-19 20:03:25,286	INFO cli.py:335 -- Request the job to be stopped:
+2026-10-19 20:03:25,286	INFO cli.py:337 -- [1mray job stop raysubmit_yGmpUgKJhQ21yKbi[22m
+2026-10-19 20:03:25,291	INFO cli.py:347 -- Tailing logs until the job exits (disable with --no-wait):
+2026-10-19 20:03:25,281	INFO job_manager.py:587 -- Runtime env is setting up.
+Running entrypoint for job raysubmit_yGmpUgKJhQ21yKbi: python /home/ubuntu/chia/examples/circt_issue_solver/circt_issue_loop.py --backend opencode --model amazon-bedrock/zai.glm-5 --issues-dir /home/ubuntu/chia/examples/circt_issue_solver/issuestouse --output-dir /home/ubuntu/chia/examples/circt_issue_solver/benchmark_results/assess/glm5_nemotron_all16_20261019_195709/glm-5/issue_4354 --assess-only 4354
+2026-10-19 20:03:26,601 INFO circtissues: LLM backend=opencode model=amazon-bedrock/zai.glm-5
+/home/ubuntu/miniconda3/envs/circtissues/lib/python3.10/site-packages/ray/_private/worker.py:2052: FutureWarning: Tip: In future versions of Ray, Ray will no longer override accelerator visible devices env var if num_gpus=0 or num_gpus=None (default). To enable this behavior and turn off this error message, set RAY_ACCEL_ENV_VAR_OVERRIDE_ON_ZERO=0
+  warnings.warn(
+[36m(run_issue_remote pid=678)[0m /home/ray/anaconda3/envs/py_worker/lib/python3.10/site-packages/pydantic_settings/sources/utils.py:47: IncompleteFieldDefinitionWarning: Field 'lifespan' has an incomplete definition: its annotation contains an unresolved forward reference, so settings sources may fail to correctly resolve its value. Call `model_rebuild()` on the model where the field is defined, once all the referenced types are defined.
+[36m(run_issue_remote pid=678)[0m   warnings.warn(
+[36m(run_issue_remote pid=678)[0m bash_4354 started at 172.31.38.160:8000 on node 6a5b0bba6e222295994fface0e766fcd83de0da1bc34b449c8b7b9e6
+[36m(run_issue_remote pid=678)[0m OpenCodeLLM is experimental: only exercised by unit tests so far, not validated in production.
+[36m(_ToolServerActor pid=677)[0m INFO:     Started server process [677]
+[36m(_ToolServerActor pid=677)[0m INFO:     Waiting for application startup.
+[36m(_ToolServerActor pid=677)[0m INFO:     Application startup complete.
+[36m(_ToolServerActor pid=677)[0m INFO:     Uvicorn running on http://172.31.38.160:8000 (Press CTRL+C to quit)
+[36m(pid=509)[0m E1019 13:03:29.243119179     509 chttp2_server.cc:1063]                UNKNOWN:No address added out of total 1 resolved for '0.0.0.0:10023' {created_time:"2026-10-19T13:03:29.242700357-07:00", children:[UNKNOWN:Failed to add any wildcard listeners {created_time:"2026-10-19T13:03:29.242690061-07:00", children:[UNKNOWN:Unable to configure socket {created_time:"2026-10-19T13:03:29.242667903-07:00", fd:26, children:[UNKNOWN:Address already in use {created_time:"2026-10-19T13:03:29.242659156-07:00", errno:98, os_error:"Address already in use", syscall:"bind"}]}, UNKNOWN:Unable to configure socket {created_time:"2026-10-19T13:03:29.242686848-07:00", fd:26, children:[UNKNOWN:Address already in use {syscall:"bind", os_error:"Address already in use", errno:98, created_time:"2026-10-19T13:03:29.242684063-07:00"}]}]}]}
+[36m(pid=509)[0m [2026-10-19 13:03:29,283 C 509 509] grpc_server.cc:133:  An unexpected system state has occurred. You have likely discovered a bug in Ray. Please report this issue at https://github.com/ray-project/ray/issues and we'll work with you to fix it. Check failed: server_ Failed to start the grpc server. The specified port is 10023. This means that Ray's core components will not be able to function correctly. If the server startup error message is `Address already in use`, it indicates the server fails to start because the port is already used by other processes (such as --node-manager-port, --object-manager-port, --gcs-server-port, and ports between --min-worker-port, --max-worker-port). Try running sudo lsof -i :10023 to check if there are other processes listening to the port.
+[36m(pid=509)[0m *** StackTrace Information ***
+[36m(pid=509)[0m /home/ray/anaconda3/lib/python3.10/site-packages/ray/_raylet.so(+0x16eb52a) [0x7b6984bfa52a] ray::operator<<()
+[36m(pid=509)[0m /home/ray/anaconda3/lib/python3.10/site-packages/ray/_raylet.so(_ZN3ray6RayLogD1Ev+0x469) [0x7b6984bfcb59] ray::RayLog::~RayLog()
+[36m(pid=509)[0m /home/ray/anaconda3/lib/python3.10/site-packages/ray/_raylet.so(_ZN3ray3rpc10GrpcServer3RunEv+0x12d1) [0x7b69841ba881] ray::rpc::GrpcServer::Run()
+[36m(pid=509)[0m /home/ray/anaconda3/lib/python3.10/site-packages/ray/_raylet.so(_ZN3ray4core21CoreWorkerProcessImpl16CreateCoreWorkerENS0_17CoreWorkerOptionsERKNS_8WorkerIDE+0x950) [0x7b6983f910f0] ray::core::CoreWorkerProcessImpl::CreateCoreWorker()
+[36m(pid=509)[0m /home/ray/anaconda3/lib/python3.10/site-packages/ray/_raylet.so(_ZN3ray4core21CoreWorkerProcessImplC2ERKNS0_17CoreWorkerOptionsE+0xadb) [0x7b6983f9452b] ray::core::CoreWorkerProcessImpl::CoreWorkerProcessImpl()
+[36m(pid=509)[0m /home/ray/anaconda3/lib/python3.10/site-packages/ray/_raylet.so(_ZN3ray4core17CoreWorkerProcess10InitializeERKNS0_17CoreWorkerOptionsE+0x34) [0x7b6983f956f4] ray::core::CoreWorkerProcess::Initialize()
+[36m(pid=509)[0m /home/ray/anaconda3/lib/python3.10/site-packages/ray/_raylet.so(+0x94497e) [0x7b6983e5397e] __pyx_pf_3ray_7_raylet_10CoreWorker___cinit__()
+[36m(pid=509)[0m /home/ray/anaconda3/lib/python3.10/site-packages/ray/_raylet.so(+0x945d9b) [0x7b6983e54d9b] __pyx_pw_3ray_7_raylet_10CoreWorker_1__cinit__()
+[36m(pid=509)[0m /home/ray/anaconda3/lib/python3.10/site-packages/ray/_raylet.so(+0x946719) [0x7b6983e55719] __pyx_tp_new_3ray_7_raylet_CoreWorker()
+[36m(pid=509)[0m ray::IDLE(_PyObject_MakeTpCall+0x177) [0x627b4b19a577] _PyObject_MakeTpCall
+[36m(pid=509)[0m ray::IDLE(_PyEval_EvalFrameDefault+0x51c0) [0x627b4b1965b0] _PyEval_EvalFrameDefault
+[36m(pid=509)[0m ray::IDLE(_PyFunction_Vectorcall+0x6c) [0x627b4b1a1dfc] _PyFunction_Vectorcall
+[36m(pid=509)[0m ray::IDLE(PyObject_Call+0xba) [0x627b4b1afd0a] PyObject_Call
+[36m(pid=509)[0m ray::IDLE(_PyEval_EvalFrameDefault+0x2d09) [0x627b4b1940f9] _PyEval_EvalFrameDefault
+[36m(pid=509)[0m ray::IDLE(_PyFunction_Vectorcall+0x6c) [0x627b4b1a1dfc] _PyFunction_Vectorcall
+[36m(pid=509)[0m ray::IDLE(_PyEval_EvalFrameDefault+0x130f) [0x627b4b1926ff] _PyEval_EvalFrameDefault
+[36m(pid=509)[0m ray::IDLE(+0x1d5cac) [0x627b4b239cac] _PyEval_Vector
+[36m(pid=509)[0m ray::IDLE(PyEval_EvalCode+0x85) [0x627b4b239bf5] PyEval_EvalCode
+[36m(pid=509)[0m ray::IDLE(+0x20732a) [0x627b4b26b32a] run_eval_code_obj
+[36m(pid=509)[0m ray::IDLE(+0x201d13) [0x627b4b265d13] run_mod
+[36m(pid=509)[0m ray::IDLE(+0x976be) [0x627b4b0fb6be] pyrun_file.cold
+[36m(pid=509)[0m ray::IDLE(_PyRun_SimpleFileObject+0x1bb) [0x627b4b2603db] _PyRun_SimpleFileObject
+[36m(pid=509)[0m ray::IDLE(_PyRun_AnyFileObject+0x44) [0x627b4b25ff74] _PyRun_AnyFileObject
+[36m(pid=509)[0m ray::IDLE(Py_RunMain+0x371) [0x627b4b25d3e1] Py_RunMain
+[36m(pid=509)[0m ray::IDLE(Py_BytesMain+0x37) [0x627b4b22d447] Py_BytesMain
+[36m(pid=509)[0m /lib/x86_64-linux-gnu/libc.so.6(+0x29d90) [0x7b69857c7d90]
+[36m(pid=509)[0m /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0x80) [0x7b69857c7e40] __libc_start_main
+[36m(pid=509)[0m ray::IDLE(+0x1c930e) [0x627b4b22d30e]
+[36m(pid=509)[0m 
+[36m(_ToolServerActor pid=677)[0m INFO:     172.31.38.160:46426 - "POST /bash_4354/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=677)[0m INFO:     172.31.38.160:46426 - "POST /bash_4354/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=677)[0m INFO:     172.31.38.160:46426 - "GET /bash_4354/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=677)[0m INFO:     172.31.38.160:46438 - "POST /bash_4354/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=677)[0m INFO:     172.31.38.160:46438 - "POST /bash_4354/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=677)[0m INFO:     172.31.38.160:46438 - "POST /bash_4354/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=677)[0m INFO:     172.31.38.160:46438 - "POST /bash_4354/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=677)[0m INFO:     172.31.38.160:46438 - "POST /bash_4354/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=677)[0m INFO:     172.31.38.160:46438 - "POST /bash_4354/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=677)[0m INFO:     172.31.38.160:46438 - "POST /bash_4354/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=677)[0m INFO:     172.31.38.160:46648 - "POST /bash_4354/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=677)[0m INFO:     172.31.38.160:46648 - "POST /bash_4354/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=677)[0m INFO:     172.31.38.160:46648 - "POST /bash_4354/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=677)[0m INFO:     172.31.38.160:46648 - "POST /bash_4354/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=677)[0m INFO:     172.31.38.160:44500 - "POST /bash_4354/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=677)[0m INFO:     172.31.38.160:44500 - "POST /bash_4354/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=677)[0m INFO:     172.31.38.160:44500 - "POST /bash_4354/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=677)[0m INFO:     172.31.38.160:44500 - "POST /bash_4354/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=677)[0m INFO:     172.31.38.160:44500 - "POST /bash_4354/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=677)[0m INFO:     172.31.38.160:44500 - "POST /bash_4354/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=677)[0m INFO:     172.31.38.160:44500 - "POST /bash_4354/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=677)[0m INFO:     172.31.38.160:44500 - "POST /bash_4354/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=677)[0m INFO:     172.31.38.160:42098 - "POST /bash_4354/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=677)[0m INFO:     172.31.38.160:42098 - "POST /bash_4354/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=677)[0m INFO:     172.31.38.160:42098 - "POST /bash_4354/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=677)[0m INFO:     172.31.38.160:42098 - "POST /bash_4354/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=677)[0m INFO:     172.31.38.160:48810 - "POST /bash_4354/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=677)[0m INFO:     172.31.38.160:48810 - "POST /bash_4354/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=677)[0m INFO:     172.31.38.160:48810 - "POST /bash_4354/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=677)[0m INFO:     172.31.38.160:48810 - "POST /bash_4354/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=677)[0m INFO:     172.31.38.160:48824 - "POST /bash_4354/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=677)[0m INFO:     172.31.38.160:48824 - "POST /bash_4354/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=677)[0m INFO:     172.31.38.160:48824 - "POST /bash_4354/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=677)[0m INFO:     172.31.38.160:48824 - "POST /bash_4354/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=677)[0m INFO:     172.31.38.160:52720 - "POST /bash_4354/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=677)[0m INFO:     172.31.38.160:52720 - "POST /bash_4354/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=677)[0m INFO:     172.31.38.160:52720 - "POST /bash_4354/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=677)[0m INFO:     172.31.38.160:52720 - "POST /bash_4354/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=677)[0m INFO:     172.31.38.160:42996 - "POST /bash_4354/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=677)[0m INFO:     172.31.38.160:42996 - "POST /bash_4354/mcp HTTP/1.1" 202 Accepted
+[36m(_ToolServerActor pid=677)[0m INFO:     172.31.38.160:42996 - "POST /bash_4354/mcp HTTP/1.1" 200 OK
+[36m(_ToolServerActor pid=677)[0m INFO:     172.31.38.160:42996 - "POST /bash_4354/mcp HTTP/1.1" 202 Accepted
+[36m(OpenCodeLLM.prompt pid=508)[0m opencode run exited 1: 
+[36m(_ToolServerActor pid=677)[0m INFO:     Shutting down
+[36m(_ToolServerActor pid=677)[0m INFO:     Waiting for application shutdown.
+[36m(_ToolServerActor pid=677)[0m INFO:     Application shutdown complete.
+[36m(_ToolServerActor pid=677)[0m INFO:     Finished server process [677]
+2026-10-19 20:05:06,423 INFO circtissues: issue #4354 -> error  (+None/-None, lit_ok=None)
+
+===== assess-only #4354: [LowerToHW] An Error Should Be Generated if ForceNameAnnotation Would Not Be Unique =====
+DECISION -> status='error'
+NOTE: pipeline failed during assess: RayTaskError(InvalidRequestError)
+
+----- assess transcript (tail) -----
+
+2026-10-19 20:05:10,458	SUCC cli.py:65 -- [32m------------------------------------------[39m
+2026-10-19 20:05:10,458	SUCC cli.py:66 -- [32mJob 'raysubmit_yGmpUgKJhQ21yKbi' succeeded[39m
+2026-10-19 20:05:10,458	SUCC cli.py:67 -- [32m------------------------------------------[39m

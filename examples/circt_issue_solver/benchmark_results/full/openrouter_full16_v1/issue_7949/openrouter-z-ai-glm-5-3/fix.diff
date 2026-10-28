@@ -1,0 +1,165 @@
+diff --git a/include/circt/Dialect/DC/DCOps.td b/include/circt/Dialect/DC/DCOps.td
+index aef37af..2e0f3b3 100644
+--- a/include/circt/Dialect/DC/DCOps.td
++++ b/include/circt/Dialect/DC/DCOps.td
+@@ -198,7 +198,7 @@ def PackOp : DCOp<"pack", [
+     let arguments = (ins TokenType:$token, AnyType:$input);
+     let results = (outs ValueType:$output);
+     let assemblyFormat = "$token `,` $input attr-dict `:` type($input)";
+-    let hasFolder = 1;
++    let hasCanonicalizer = 1;
+ }
+ 
+ def UnpackOp : DCOp<"unpack", [
+@@ -214,7 +214,6 @@ def UnpackOp : DCOp<"unpack", [
+     let results = (outs TokenType:$token, AnyType:$output);
+     let assemblyFormat = "$input attr-dict `:` qualified(type($input))";
+     let hasCanonicalizer = 1;
+-    let hasFolder = 1;
+ }
+ 
+ def MergeOp : DCOp<"merge"> {
+diff --git a/lib/Dialect/DC/DCOps.cpp b/lib/Dialect/DC/DCOps.cpp
+index fe68625..315d4a1 100644
+--- a/lib/Dialect/DC/DCOps.cpp
++++ b/lib/Dialect/DC/DCOps.cpp
+@@ -328,21 +328,29 @@ struct EliminateRedundantUnpackPattern : public OpRewritePattern<UnpackOp> {
+   }
+ };
+ 
+-void UnpackOp::getCanonicalizationPatterns(RewritePatternSet &results,
+-                                           MLIRContext *context) {
+-  results.insert<EliminateRedundantUnpackPattern>(context);
+-}
++// Unpack of a pack is a no-op. Eliminate the unpack and, when no other
++// consumer of the packed value remains, the pack as well. Keeping the
++// (empty) pack around would leave the packed token with more uses than it
++// had before, which the HW lowering does not support.
++struct EliminatePackUnpackPattern : public OpRewritePattern<UnpackOp> {
++  using OpRewritePattern<UnpackOp>::OpRewritePattern;
++  LogicalResult matchAndRewrite(UnpackOp unpack,
++                                PatternRewriter &rewriter) const override {
++    auto pack = unpack.getInput().getDefiningOp<PackOp>();
++    if (!pack)
++      return failure();
+ 
+-LogicalResult UnpackOp::fold(FoldAdaptor adaptor,
+-                             SmallVectorImpl<OpFoldResult> &results) {
+-  // Unpack of a pack is a no-op.
+-  if (auto pack = getInput().getDefiningOp<PackOp>()) {
+-    results.push_back(pack.getToken());
+-    results.push_back(pack.getInput());
++    rewriter.replaceOp(unpack, {pack.getToken(), pack.getInput()});
++    if (pack->use_empty())
++      rewriter.eraseOp(pack);
+     return success();
+   }
++};
+ 
+-  return failure();
++void UnpackOp::getCanonicalizationPatterns(RewritePatternSet &results,
++                                           MLIRContext *context) {
++  results.insert<EliminateRedundantUnpackPattern, EliminatePackUnpackPattern>(
++      context);
+ }
+ 
+ LogicalResult UnpackOp::inferReturnTypes(
+@@ -359,15 +367,28 @@ LogicalResult UnpackOp::inferReturnTypes(
+ // PackOp
+ // =============================================================================
+ 
+-OpFoldResult PackOp::fold(FoldAdaptor adaptor) {
+-  auto token = getToken();
++// Pack of an unpack is a no-op. Eliminate the pack and, when the unpack has
++// no remaining users, the unpack as well. Keeping the unpack around would
++// leave the unpacked value with more uses than it had before, which the HW
++// lowering does not support.
++struct EliminateUnpackPackPattern : public OpRewritePattern<PackOp> {
++  using OpRewritePattern<PackOp>::OpRewritePattern;
++  LogicalResult matchAndRewrite(PackOp pack,
++                                PatternRewriter &rewriter) const override {
++    auto unpack = pack.getToken().getDefiningOp<UnpackOp>();
++    if (!unpack || unpack.getOutput() != pack.getInput())
++      return failure();
+ 
+-  // Pack of an unpack is a no-op.
+-  if (auto unpack = token.getDefiningOp<UnpackOp>()) {
+-    if (unpack.getOutput() == getInput())
+-      return unpack.getInput();
++    rewriter.replaceOp(pack, unpack.getInput());
++    if (unpack->use_empty())
++      rewriter.eraseOp(unpack);
++    return success();
+   }
+-  return {};
++};
++
++void PackOp::getCanonicalizationPatterns(RewritePatternSet &results,
++                                         MLIRContext *context) {
++  results.insert<EliminateUnpackPackPattern>(context);
+ }
+ 
+ LogicalResult PackOp::inferReturnTypes(
+diff --git a/test/Conversion/DCToHW/basic.mlir b/test/Conversion/DCToHW/basic.mlir
+index 1816276..fc74095 100644
+--- a/test/Conversion/DCToHW/basic.mlir
++++ b/test/Conversion/DCToHW/basic.mlir
+@@ -202,3 +202,25 @@ hw.module.extern @ext(in %a : i32, out b : i32)
+ 
+ // CHECK:  hw.module.extern @extDC(in %a : !esi.channel<i32>, out b : i32)
+ hw.module.extern @extDC(in %a : !dc.value<i32>, out b : i32)
++
++// An unpack of a pack, the token of which is forked, must lower without
++// creating multiple consumers of a single ESI channel. The `dc.unpack` /
++// `dc.pack` pair must not be folded away during the conversion, since the
++// lowering requires every DC value to be used exactly once.
++// CHECK-LABEL: hw.module @unpackOfPackFork(
++// CHECK:           %[[TOKEN:.*]], %{{.*}} = esi.wrap.vr %{{.*}} : i0
++// CHECK:           %{{.*}}, %{{.*}} = esi.unwrap.vr %[[TOKEN]], %{{.*}} : i0
++// CHECK:           %[[PACKED:.*]], %{{.*}} = esi.wrap.vr %{{.*}} : i32
++// CHECK:           %{{.*}}, %{{.*}} = esi.unwrap.vr %[[PACKED]], %{{.*}} : i32
++// CHECK:           hw.output %{{.*}} : !esi.channel<i32>
++// CHECK:         }
++hw.module @unpackOfPackFork(in %arg0 : !dc.value<i32>, in %clk : !seq.clock {dc.clock}, in %rst : i1 {dc.reset}, out out0 : !dc.value<i32>) {
++    %t, %v = dc.unpack %arg0 : !dc.value<i32>
++    %c = hw.constant 0 : i32
++    %p = dc.pack %t, %c : i32
++    %t2, %v2 = dc.unpack %p : !dc.value<i32>
++    %f:2 = dc.fork [2] %t2
++    %a = dc.pack %f#0, %v2 : i32
++    dc.sink %f#1
++    hw.output %a : !dc.value<i32>
++}
+diff --git a/test/Dialect/DC/canonicalization.mlir b/test/Dialect/DC/canonicalization.mlir
+index baf316e..57dc811 100644
+--- a/test/Dialect/DC/canonicalization.mlir
++++ b/test/Dialect/DC/canonicalization.mlir
+@@ -166,3 +166,28 @@ hw.module @TestForkCanonicalization(in %arg0: !dc.token, out out0: !dc.token, ou
+   dc.sink %0#2
+   hw.output %1, %2 : !dc.token, !dc.token
+ }
++
++// Unpack of a pack is a no-op. The pack is only eliminated when its result
++// has no other uses.
++// CHECK-LABEL:   func.func @unpackOfPackMultiUse(
++// CHECK-SAME:                          %[[VAL_0:.*]]: !dc.token,
++// CHECK-SAME:                          %[[VAL_1:.*]]: i32) -> (!dc.token, i32, !dc.value<i32>) {
++// CHECK:           %[[VAL_2:.*]] = dc.pack %[[VAL_0]], %[[VAL_1]] : i32
++// CHECK:           return %[[VAL_0]], %[[VAL_1]], %[[VAL_2]] : !dc.token, i32, !dc.value<i32>
++// CHECK:         }
++func.func @unpackOfPackMultiUse(%a: !dc.token, %b : i32) -> (!dc.token, i32, !dc.value<i32>) {
++    %0 = dc.pack %a, %b : i32
++    %1:2 = dc.unpack %0 : !dc.value<i32>
++    return %1#0, %1#1, %0 : !dc.token, i32, !dc.value<i32>
++}
++
++// Pack of an unpack is a no-op. Both operations are eliminated.
++// CHECK-LABEL:   func.func @packOfUnpack(
++// CHECK-SAME:                          %[[VAL_0:.*]]: !dc.value<i32>) -> !dc.value<i32> {
++// CHECK:           return %[[VAL_0]] : !dc.value<i32>
++// CHECK:         }
++func.func @packOfUnpack(%a : !dc.value<i32>) -> (!dc.value<i32>) {
++    %0:2 = dc.unpack %a : !dc.value<i32>
++    %1 = dc.pack %0#0, %0#1 : i32
++    return %1 : !dc.value<i32>
++}
